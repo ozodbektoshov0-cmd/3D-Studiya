@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3D Studiya — ko’rish, tahrirlash, konvertatsiya</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--tx:#1a2230;--mt:#66727f;--ac:#0b6b5e;--ac2:#fff;--bd:#d3d9e0;--vp:#dfe5ea;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1216;--pn:#171d24;--tx:#e5eaf0;--mt:#8995a3;--ac:#3fc9ae;--ac2:#06231d;--bd:#28313b;--vp:#0f1419;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1216;--pn:#171d24;--tx:#e5eaf0;--mt:#8995a3;--ac:#3fc9ae;--ac2:#06231d;--bd:#28313b;--vp:#0f1419;color-scheme:dark}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:14px/1.4 "Segoe UI",system-ui,sans-serif}
+#app{display:flex;flex-direction:column;height:100%}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;background:var(--pn);border-bottom:1px solid var(--bd)}
+header b{font-size:17px;margin-right:auto;letter-spacing:.2px}
+.btn,select,button{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 11px;cursor:pointer}
+.pri{background:var(--ac);color:var(--ac2);border-color:var(--ac);font-weight:600}
+button.on{outline:2px solid var(--ac)}
+.chk{display:flex;align-items:center;gap:4px;color:var(--mt)}
+main{flex:1;display:flex;min-height:0}
+#vp{flex:1;position:relative;min-width:0;background:var(--vp)}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+#tb{position:absolute;left:8px;top:8px;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 16px)}
+#hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mt);pointer-events:none;padding:24px}
+#vp.drag{outline:3px dashed var(--ac);outline-offset:-6px}
+aside{width:260px;overflow:auto;background:var(--pn);border-left:1px solid var(--bd);padding:10px}
+aside h3{margin:0 0 6px;font-size:14px}
+#list button{display:block;width:100%;text-align:left;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#prop{margin-top:10px;display:grid;grid-template-columns:auto 1fr;gap:6px 8px;align-items:center}
+#prop input[type=text]{width:100%;box-sizing:border-box;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:5px}
+#prop input[type=color]{width:100%;height:30px;border:1px solid var(--bd);border-radius:6px;background:none;padding:2px}
+#prop .full{grid-column:1/3}
+#st{display:block;margin-top:10px;color:var(--mt)}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:8px 14px;border-radius:8px;display:none;z-index:9;max-width:90%}
+@media(max-width:760px){main{flex-direction:column}aside{width:auto;height:34%;border-left:0;border-top:1px solid var(--bd)}}
+</style></head><body>
+<div id="app">
+<header>
+<b>3D Studiya</b>
+<label class="btn pri">Fayl ochish<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff"></label>
+<select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply</select>
+<label class="chk"><input type="checkbox" id="zup">Z-up</label>
+<button id="ex" class="pri">Yuklab olish</button>
+</header>
+<main>
+<div id="vp"><canvas id="c"></canvas>
+<div id="tb">
+<button data-m="translate" class="on">Ko’chirish</button><button data-m="rotate">Aylantirish</button><button data-m="scale">O’lcham</button>
+<button id="wf">Karkas</button><button id="fit">Kamera</button>
+</div>
+<div id="hint">Modelni shu yerga tashlang yoki “Fayl ochish” ni bosing.<br>GLB · GLTF · OBJ · STL · PLY · DFF (GTA)</div>
+</div>
+<aside>
+<h3>Obyektlar</h3><div id="list"></div>
+<div id="prop" hidden>
+<span>Nom</span><input type="text" id="nm">
+<span>Rang</span><input type="color" id="col">
+<button id="vis" class="full">Yashirish / ko’rsatish</button>
+<button id="del" class="full">O’chirish</button>
+</div>
+<small id="st">Model ochilmagan.</small>
+</aside>
+</main></div>
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/TransformControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/STLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/PLYLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/exporters/GLTFExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/exporters/OBJExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/exporters/STLExporter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/exporters/PLYExporter.js"></script>
+<script>
+const $=s=>document.querySelector(s),vp=$('#vp'),cv=$('#c');
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3500)};
+const R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(Math.min(devicePixelRatio,2));
+const S=new THREE.Scene(),cam=new THREE.PerspectiveCamera(50,1,.01,5000);cam.position.set(4,3,5);
+S.add(new THREE.HemisphereLight(0xffffff,0x445566,1.2));
+const dl=new THREE.DirectionalLight(0xffffff,1.3);dl.position.set(5,10,7);S.add(dl);
+S.add(new THREE.GridHelper(20,20,0x7f8c99,0x7f8c9955));
+const ctl=new THREE.OrbitControls(cam,cv);ctl.enableDamping=true;
+const tc=new THREE.TransformControls(cam,cv);S.add(tc);
+tc.addEventListener('dragging-changed',e=>ctl.enabled=!e.value);
+const root=new THREE.Group();S.add(root);let sel=null,wire=false,name='model';
+new ResizeObserver(()=>{const r=vp.getBoundingClientRect();R.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}).observe(vp);
+(function loop(){requestAnimationFrame(loop);ctl.update();R.render(S,cam)})();
+
+/* ---- DFF (RenderWare) o’qish ---- */
+function dff(b){
+ const v=new DataView(b);
+ const K=(p,e)=>{const r=[];while(p+12<=e){const s=v.getUint32(p+4,true);r.push([v.getUint32(p,true),p+12,s]);p+=12+s}return r};
+ const str=(p,n)=>{let s='';for(let i=0;i<n&&v.getUint8(p+i);i++)s+=String.fromCharCode(v.getUint8(p+i));return s};
+ const f4=p=>v.getFloat32(p,true);
+ function G(d,e){
+  let ver=v.getUint32(d-4,true);if(ver&0xFFFF0000)ver=((ver>>>14)&0x3FF00)+((ver>>>16)&0x3F)+0x30000;
+  const ch=K(d,e);let q=ch[0][1];
+  const fl=v.getUint32(q,true),nt=v.getUint32(q+4,true),nv=v.getUint32(q+8,true);q+=16;if(ver<0x34000)q+=12;
+  if(fl&0x01000000)throw Error('PS2 native DFF qo’llanmaydi');
+  const nu=((fl>>>16)&255)||(fl&4?1:fl&0x80?2:0);if(fl&8)q+=nv*4;
+  const uv=nu?new Float32Array(nv*2):null;
+  for(let k=0;k<nu;k++)for(let i=0;i<nv;i++,q+=8)if(!k){uv[i*2]=f4(q);uv[i*2+1]=1-f4(q+4)}
+  const tri=[];
+  for(let i=0;i<nt;i++,q+=8){const m=v.getUint16(q+4,true);(tri[m]=tri[m]||[]).push(v.getUint16(q+2,true),v.getUint16(q,true),v.getUint16(q+6,true))}
+  q+=16;const hv=v.getUint32(q,true),hn=v.getUint32(q+4,true);q+=8;
+  const pos=new Float32Array(nv*3),nor=hn?new Float32Array(nv*3):null;
+  if(hv)for(let i=0;i<nv*3;i++)pos[i]=f4(q+i*4);q+=hv*nv*12;
+  if(hn)for(let i=0;i<nv*3;i++)nor[i]=f4(q+i*4);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  if(nor)g.setAttribute('normal',new THREE.BufferAttribute(nor,3));if(uv)g.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+  let idx=[];tri.forEach((t,m)=>{if(t){g.addGroup(idx.length,t.length,m);idx=idx.concat(t)}});
+  g.setIndex(idx);if(!nor)g.computeVertexNormals();
+  const mats=[],ml=ch.find(c=>c[0]==8);
+  if(ml)K(ml[1],ml[1]+ml[2]).filter(c=>c[0]==7).forEach(c=>{
+   const x=c[1]+12,m=new THREE.MeshStandardMaterial({color:new THREE.Color(v.getUint8(x+4)/255,v.getUint8(x+5)/255,v.getUint8(x+6)/255),side:2});
+   const tx=K(c[1],c[1]+c[2]).find(z=>z[0]==6);
+   if(tx){const s=K(tx[1],tx[1]+tx[2]).find(z=>z[0]==2);if(s)m.name=str(s[1],s[2])}mats.push(m)});
+  return[g,mats.length?mats:[new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2})]];
+ }
+ const top=K(0,b.byteLength).find(c=>c[0]==0x10);if(!top)throw Error('Bu DFF fayl emas');
+ const cl=K(top[1],top[1]+top[2]),fl=cl.find(c=>c[0]==0x0E),gl=cl.find(c=>c[0]==0x1A);
+ const fch=K(fl[1],fl[1]+fl[2]),n=v.getUint32(fch[0][1],true),base=fch[0][1]+4;
+ const names=fch.slice(1).map(c=>{const z=K(c[1],c[1]+c[2]).find(y=>y[0]==0x253F2FE);return z?str(z[1],z[2]):''});
+ const F=[],par=[];
+ for(let i=0;i<n;i++){const p=base+i*56,o=new THREE.Object3D(),r=j=>new THREE.Vector3(f4(p+j*12),f4(p+j*12+4),f4(p+j*12+8));
+  o.name=names[i]||'frame'+i;o.applyMatrix4(new THREE.Matrix4().makeBasis(r(0),r(1),r(2)).setPosition(r(3)));F.push(o);par.push(v.getInt32(p+48,true))}
+ const out=new THREE.Group();
+ F.forEach((o,i)=>(par[i]>=0&&F[par[i]]?F[par[i]]:out).add(o));
+ const geos=K(gl[1],gl[1]+gl[2]).filter(c=>c[0]==0xF).map(c=>G(c[1],c[1]+c[2]));
+ cl.filter(c=>c[0]==0x14).forEach(c=>{const s=c[1]+12,fi=v.getUint32(s,true),gi=v.getUint32(s+4,true);
+  if(F[fi]&&geos[gi]){const m=new THREE.Mesh(geos[gi][0],geos[gi][1]);m.name=F[fi].name+'_mesh';F[fi].add(m)}});
+ out.rotation.x=-Math.PI/2;const w=new THREE.Group();w.add(out);return w;
+}
+
+/* ---- yuklash ---- */
+async function load(f){
+ const ext=f.name.split('.').pop().toLowerCase(),buf=await f.arrayBuffer(),M=()=>new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2});let o;
+ if(ext=='glb'||ext=='gltf')o=await new Promise((ok,no)=>new THREE.GLTFLoader().parse(ext=='gltf'?new TextDecoder().decode(buf):buf,'',g=>ok(g.scene),no));
+ else if(ext=='obj')o=new THREE.OBJLoader().parse(new TextDecoder().decode(buf));
+ else if(ext=='stl')o=new THREE.Mesh(new THREE.STLLoader().parse(buf),M());
+ else if(ext=='ply'){const g=new THREE.PLYLoader().parse(buf);g.computeVertexNormals();const m=M();m.vertexColors=!!g.getAttribute('color');o=new THREE.Mesh(g,m)}
+ else if(ext=='dff')o=dff(buf);
+ else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (TXD/YTD/YFT/YDD keyingi bosqichda)');
+ o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);$('#hint').style.display='none';refresh();fit(o);
+}
+async function loadAll(fs){for(const f of fs){try{await load(f)}catch(e){toast(f.name+': '+(e.message||e))}}}
+$('#f').onchange=e=>{loadAll([...e.target.files]);e.target.value=''};
+vp.ondragover=e=>{e.preventDefault();vp.classList.add('drag')};vp.ondragleave=()=>vp.classList.remove('drag');
+vp.ondrop=e=>{e.preventDefault();vp.classList.remove('drag');loadAll([...e.dataTransfer.files])};
+
+/* ---- tanlash va tahrirlash ---- */
+const meshes=()=>{const a=[];root.traverse(o=>o.isMesh&&a.push(o));return a};
+const mats=o=>[].concat(o.material||[]);
+function select(o){sel=o;o?tc.attach(o):tc.detach();$('#prop').hidden=!o;
+ if(o){$('#nm').value=o.name;const m=mats(o)[0];if(m&&m.color)$('#col').value='#'+m.color.getHexString()}refresh()}
+function refresh(){
+ const L=$('#list');L.textContent='';const ms=meshes();let t=0;
+ ms.forEach((m,i)=>{const g=m.geometry,c=g.index?g.index.count:g.getAttribute('position').count;t+=c/3;
+  const b=document.createElement('button');b.textContent=m.name||'mesh '+(i+1);if(m==sel)b.className='on';b.onclick=()=>select(m);L.append(b)});
+ $('#st').textContent=ms.length?ms.length+' ta mesh · '+Math.round(t).toLocaleString()+' uchburchak':'Model ochilmagan.';
+}
+function fit(o){const b=new THREE.Box3().setFromObject(o||root);if(b.isEmpty())return;
+ const c=b.getCenter(new THREE.Vector3()),d=b.getSize(new THREE.Vector3()).length()||1;
+ ctl.target.copy(c);cam.position.copy(c).add(new THREE.Vector3(.8,.6,1).normalize().multiplyScalar(d*1.3));cam.near=d/500;cam.far=d*50;cam.updateProjectionMatrix()}
+$('#fit').onclick=()=>fit();
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{tc.setMode(b.dataset.m);document.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x==b))});
+$('#wf').onclick=e=>{wire=!wire;e.target.classList.toggle('on',wire);meshes().forEach(m=>mats(m).forEach(x=>x.wireframe=wire))};
+$('#nm').oninput=e=>{if(sel){sel.name=e.target.value;refresh()}};
+$('#col').oninput=e=>{if(sel)mats(sel).forEach(m=>m.color&&m.color.set(e.target.value))};
+$('#vis').onclick=()=>{if(sel)sel.visible=!sel.visible};
+$('#del').onclick=()=>{if(sel){const o=sel;select(null);o.parent.remove(o);refresh()}};
+let dn=null;cv.addEventListener('pointerdown',e=>dn=[e.clientX,e.clientY]);
+cv.addEventListener('pointerup',e=>{if(!dn||tc.axis||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>5)return;
+ const r=cv.getBoundingClientRect(),rc=new THREE.Raycaster();rc.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),cam);
+ const h=rc.intersectObjects(root.children,true).find(x=>x.object.isMesh&&x.object.visible);select(h?h.object:null)});
+addEventListener('keydown',e=>{if(/INPUT/.test(e.target.tagName))return;const k=e.key.toLowerCase();
+ const m={w:'translate',e:'rotate',r:'scale'}[k];if(m)document.querySelector('[data-m='+m+']').click();if(k=='delete')$('#del').click()});
+
+/* ---- eksport ---- */
+$('#ex').onclick=()=>{
+ if(!meshes().length)return toast('Avval model oching');
+ const fmt=$('#fmt').value,r0=root.rotation.x;tc.detach();
+ root.rotation.x=$('#zup').checked?Math.PI/2:0;root.updateMatrixWorld(true);
+ const done=(d,mime)=>{root.rotation.x=r0;root.updateMatrixWorld(true);if(sel)tc.attach(sel);
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:mime}));a.download=name+'.'+fmt;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3);toast(fmt.toUpperCase()+' tayyor')};
+ const fail=e=>{root.rotation.x=r0;toast('Xato: '+(e.message||e))};
+ try{
+  if(fmt=='glb'||fmt=='gltf'){const x=new THREE.GLTFExporter(),o={binary:fmt=='glb'},cb=r=>done(fmt=='glb'?r:JSON.stringify(r),'model/gltf');
+   x.parse.length>3?x.parse(root,cb,fail,o):x.parse(root,cb,o)}
+  else if(fmt=='obj')done(new THREE.OBJExporter().parse(root),'text/plain');
+  else if(fmt=='stl')done(new THREE.STLExporter().parse(root,{binary:true}),'model/stl');
+  else new THREE.PLYExporter().parse(root,r=>done(r,'application/octet-stream'),{binary:true});
+ }catch(e){fail(e)}
+};
+</script></body></html>
