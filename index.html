@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3D Studiya — ko’rish, tahrirlash, konvertatsiya</title>
+<link rel="stylesheet" href="css/style.css"></head><body>
+<div id="app">
+<header>
+<b class="logo">3D Studiya</b>
+<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft"></label><button id="rnd">Render (PNG)</button></div></details>
+<details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
+<details class="mn"><summary>Qo’shish</summary><div id="addm"></div></details>
+<details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
+<span class="sp"></span>
+<select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff</select>
+<label class="chk"><input type="checkbox" id="zup">Z-up</label>
+<button id="ex" class="pri">Eksport</button>
+</header>
+<main>
+<nav id="lt">
+<button data-m="translate" class="on" title="Ko’chirish (G)">✥</button><button data-m="rotate" title="Aylantirish (R)">⟳</button><button data-m="scale" title="O’lcham (S)">⤢</button><button id="fit" title="Kamera (F)">⌖</button>
+</nav>
+<div id="vp"><canvas id="c"></canvas>
+<div id="vh">
+<button id="ortho">Ortho</button><button data-v="0,0,1">Old</button><button data-v="1,0,0">O’ng</button><button data-v="0,1,.001">Yuqori</button>
+<button id="edit">Edit (Tab)</button><button id="msel">Ko’p tanlash</button><button id="wf">Karkas</button><button id="grid" class="on">Panjara</button><button id="snap">Magnit</button>
+</div>
+<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish.<br>GLB · GLTF · OBJ · STL · PLY · DFF + TXD + YFT + RPF (GTA)</div>
+</div>
+<aside>
+<div class="ph">Outliner</div><div id="list"></div>
+<div id="prop" hidden>
+<div class="ph">Xossalar</div>
+<label>Nom<input type="text" id="nm"></label>
+<div id="xf"></div>
+<label>Rang<input type="color" id="col"></label>
+<label>G’adir-budurlik<input type="range" id="rg" min="0" max="1" step=".01"></label>
+<label>Metallik<input type="range" id="mt" min="0" max="1" step=".01"></label>
+<label>Shaffoflik<input type="range" id="op" min="0" max="1" step=".01" value="1"></label>
+</div>
+</aside>
+</main>
+<footer><span id="st">Model ochilmagan.</span><span>G ko’chirish · R aylantirish · S o’lcham · Shift+D nusxa · X o’chirish · F kamera · Tab edit mode</span></footer>
+</div>
+<div id="toast"></div>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/TransformControls.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script src="vendor/OBJLoader.js"></script>
+<script src="vendor/STLLoader.js"></script>
+<script src="vendor/PLYLoader.js"></script>
+<script src="vendor/GLTFExporter.js"></script>
+<script src="vendor/OBJExporter.js"></script>
+<script src="vendor/STLExporter.js"></script>
+<script src="vendor/PLYExporter.js"></script>
+<script src="js/core.js"></script>
+<script src="js/dff-read.js"></script>
+<script src="js/txd.js"></script>
+<script src="js/dff-write.js"></script>
+<script src="js/yft.js"></script>
+<script src="js/loader.js"></script>
+<script src="js/rpf.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/export.js"></script>
+<script src="js/features.js"></script>
+<script src="js/edit.js"></script>
+<script>if("serviceWorker" in navigator&&location.protocol!="file:")navigator.serviceWorker.register("sw.js")</script>
+</body></html>
