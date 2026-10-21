@@ -1,8 +1,0 @@
-{
-  "name": "3D Studiya",
-  "description": "3D ko’rish, tahrirlash va konvertatsiya studiyasi: GLB, GLTF, OBJ, STL, PLY, FBX, DAE, WRL, VTK, 3MF, USD, DFF, TXD, YFT, YTD, RPF fayllarini qo'llab-quvvatlaydi.",
-  "permissions": [],
-  "capabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
