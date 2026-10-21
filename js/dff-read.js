@@ -41,5 +41,6 @@ function dff(b){
  const geos=K(gl[1],gl[1]+gl[2]).filter(c=>c[0]==0xF).map(c=>G(c[1],c[1]+c[2]));
  cl.filter(c=>c[0]==0x14).forEach(c=>{const s=c[1]+12,fi=v.getUint32(s,true),gi=v.getUint32(s+4,true);
   if(F[fi]&&geos[gi]){const m=new THREE.Mesh(geos[gi][0],geos[gi][1]);m.name=F[fi].name+'_mesh';F[fi].add(m)}});
+ F.forEach((o,i)=>{if(i&&!o.children.some(c=>c.isMesh))o.add(mkDummy(o.name))});
  out.rotation.x=-Math.PI/2;const w=new THREE.Group();w.add(out);return w;
 }

@@ -6,7 +6,7 @@ function select(o){sel=o;o?tc.attach(o):tc.detach();$('#prop').hidden=!o;
 function refresh(){applyTex();typeof sync=='function'&&sync();
  const L=$('#list');L.textContent='';const ms=meshes();let t=0;
  ms.forEach((m,i)=>{const g=m.geometry,c=g.index?g.index.count:g.getAttribute('position').count;t+=c/3;
-  const b=document.createElement('button');b.textContent=m.name||'mesh '+(i+1);if(m==sel)b.className='on';b.onclick=()=>select(m);L.append(b)});
+  const b=document.createElement('button');b.textContent=m.name||'mesh '+(i+1);if(m==sel||MS.has(m))b.className='on';b.onclick=e=>{if(e.ctrlKey||e.shiftKey||ms){if(!MS.size&&sel)MS.add(sel);MS.has(m)?MS.delete(m):MS.add(m);refresh()}else{MS.clear();select(m)}};L.append(b)});
  $('#st').textContent=ms.length?ms.length+' ta mesh · '+Math.round(t).toLocaleString()+' uchburchak':'Model ochilmagan.';
 }
 function fit(o){const b=new THREE.Box3().setFromObject(o||root);if(b.isEmpty())return;

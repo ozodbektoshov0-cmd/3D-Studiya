@@ -28,7 +28,7 @@ async function rpf(f){
    const r=document.createElement('div'),s=document.createElement('span'),fn=e.path.split('/').pop();
    s.textContent=e.path+' · '+Math.round((e.res?e.sz:(e.sz||e.a))/1024)+' KB';r.append(s);
    r.append(mk('Yuklab olish',async()=>{try{const a=document.createElement('a');a.href=URL.createObjectURL(await get(e));a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)}catch(x){toast(x.message)}}));
-   if(/\.(glb|gltf|obj|stl|ply|dff|txd|yft)$/i.test(fn))r.append(mk('Ochish',async()=>{try{const b=await get(e);d.close();await load(new File([b],fn))}catch(x){toast(x.message)}}));
+   if(/\.(glb|gltf|obj|stl|ply|dff|txd|yft|ytd|ydr)$/i.test(fn))r.append(mk('Ochish',async()=>{try{const b=await get(e);d.close();await load(new File([b],fn))}catch(x){toast(x.message)}}));
    if(/\.rpf$/i.test(fn))r.append(mk('Ichini ochish',async()=>{try{await rpf(new File([await get(e)],fn))}catch(x){toast(x.message)}}));
    l.append(r)});
   if(L.length>300&&!q)l.append(Object.assign(document.createElement('small'),{textContent:'Dastlabki 300 tasi ko’rsatildi — qidiruvdan foydalaning.'}))};

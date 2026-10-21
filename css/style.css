@@ -51,3 +51,10 @@ footer{display:flex;gap:14px;padding:3px 10px;background:var(--hd);border-top:1p
 #rl span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #rl small{display:block;padding:6px;color:var(--mt)}
 #rp::backdrop{background:#000a}
+
+.row{display:flex;gap:6px;align-items:center;padding:3px 6px}
+.row>button{flex:1;text-align:left}
+#dec{width:58px;background:var(--ip);color:var(--tx);border:0;border-radius:3px;padding:4px}
+#tl{max-height:140px;overflow:auto;padding:2px 4px}
+#tl div{display:flex;gap:4px;padding:1px 4px}
+#tl button:first-child{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:none}

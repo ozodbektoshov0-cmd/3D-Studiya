@@ -6,6 +6,16 @@ async function load(f){
  else if(ext=='stl')o=new THREE.Mesh(new THREE.STLLoader().parse(buf),M());
  else if(ext=='ply'){const g=new THREE.PLYLoader().parse(buf);g.computeVertexNormals();const m=M();m.vertexColors=!!g.getAttribute('color');o=new THREE.Mesh(g,m)}
  else if(ext=='rpf'){await rpf(f);return}
+ else if(/^(png|jpe?g|webp)$/.test(ext)){await img(f);return}
+ else if(ext=='fbx')o=new THREE.FBXLoader().parse(buf,'');
+ else if(ext=='dae')o=new THREE.ColladaLoader().parse(new TextDecoder().decode(buf),'').scene;
+ else if(ext=='wrl'||ext=='vrml')o=new THREE.VRMLLoader().parse(new TextDecoder().decode(buf),'');
+ else if(ext=='vtk'){const g=new THREE.VTKLoader().parse(buf);if(!g.getAttribute('normal'))g.computeVertexNormals();o=new THREE.Mesh(g,M())}
+ else if(ext=='3mf')o=new THREE.ThreeMFLoader().parse(buf);
+ else if(/^usd[az]?$/.test(ext))o=usdImp(buf);
+ else if(ext=='max')throw Error('MAX (3ds Max) yopiq format, brauzerda o’qib bo’lmaydi — 3ds Max’dan FBX yoki DAE qilib saqlang');
+ else if(ext=='ytd'){await ytd(f);return}
+ else if(ext=='ydr')o=await yft(f,true);
  else if(ext=='yft')o=await yft(f);
  else if(ext=='dff')o=dff(buf);
  else if(ext=='txd'){txd(buf);return}

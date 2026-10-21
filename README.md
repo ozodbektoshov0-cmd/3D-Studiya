@@ -11,6 +11,10 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/loader.js` — fayl ochish va sudrab tashlash
 - `js/edit.js` — Edit mode: nuqtalarni tanlash, siljitish, bekor qilish
 - `js/yft.js` — GTA V YFT (fragment) geometriyasini o’qish
+- `js/tools.js` — poligon kamaytirish, avto razmer, attach/detach, dummy, material presetlari, teksturalar
+- `js/txd-write.js` — TXD yozish (DXT1/DXT3, mipmap, GTA SA)
+- `js/ytd.js` — GTA V YTD teksturalarini o’qish (DXT1/3/5)
+- `js/formats.js` — FBX, DAE, WRL, VTK, 3MF, USD/USDA/USDZ import va eksport
 - `js/rpf.js` — GTA V RPF7 arxivini (shifrsiz “OPEN”) ochish, fayllarni yuklab olish
 - `js/editor.js` — tanlash, ko’chirish, rang, nom
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render

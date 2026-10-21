@@ -6,14 +6,17 @@
 <div id="app">
 <header>
 <b class="logo">3D Studiya</b>
-<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft"></label><button id="rnd">Render (PNG)</button></div></details>
+<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz</select><label class="chk"><input type="checkbox" id="zup">Z-up</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
-<details class="mn"><summary>Qo’shish</summary><div id="addm"></div></details>
+<details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button></div></details>
 <details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
+<details class="mn"><summary>Material</summary><div><label class="chk row"><input type="checkbox" id="allm">Hamma meshlarga</label><button data-p="chrome">Chrome (yaltiratish)</button><button data-p="paint">Yaltiroq bo’yoq</button><button data-p="glass">Oyna</button><button data-p="matte">Mat</button></div></details>
+<details class="mn"><summary>Asboblar</summary><div>
+<div class="row"><input type="number" id="dec" value="50" min="5" max="95"><button id="decb">Poligon kamaytirish (% qoladi)</button></div>
+<div class="row"><select id="asz"><option value="4.5">Yengil mashina 4.5 m<option value="3.8">Kichik mashina 3.8 m<option value="5.0">Sedan / politsiya 5.0 m<option value="5.2">Jip / furgon 5.2 m<option value="7.5">Yuk mashinasi 7.5 m<option value="11">Avtobus 11 m<option value="2.1">Mototsikl 2.1 m<option value="1.7">Velosiped 1.7 m<option value="h1.8">Odam (bo’yi 1.8 m)</select><button id="asb">Avto razmer</button></div>
+<button id="grd">Yerga qo’yish va markazlash</button><button id="att">Attach (birlashtirish)</button><button id="det">Detach (ajratish)</button><button id="swp">Joyini almashtirish (2 obyekt)</button><button id="mov">Birinchisini ikkinchisiga qo’yish</button>
+</div></details>
 <span class="sp"></span>
-<select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff</select>
-<label class="chk"><input type="checkbox" id="zup">Z-up</label>
-<button id="ex" class="pri">Eksport</button>
 </header>
 <main>
 <nav id="lt">
@@ -24,10 +27,11 @@
 <button id="ortho">Ortho</button><button data-v="0,0,1">Old</button><button data-v="1,0,0">O’ng</button><button data-v="0,1,.001">Yuqori</button>
 <button id="edit">Edit (Tab)</button><button id="msel">Ko’p tanlash</button><button id="wf">Karkas</button><button id="grid" class="on">Panjara</button><button id="snap">Magnit</button>
 </div>
-<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish.<br>GLB · GLTF · OBJ · STL · PLY · DFF + TXD + YFT + RPF (GTA)</div>
+<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · DFF + TXD + YFT / YDR / YTD + RPF (GTA)</div>
 </div>
 <aside>
 <div class="ph">Outliner</div><div id="list"></div>
+<div class="ph">Teksturalar</div><div id="tl"></div>
 <div id="prop" hidden>
 <div class="ph">Xossalar</div>
 <label>Nom<input type="text" id="nm"></label>
@@ -53,16 +57,29 @@
 <script src="vendor/OBJExporter.js"></script>
 <script src="vendor/STLExporter.js"></script>
 <script src="vendor/PLYExporter.js"></script>
+<script src="vendor/fflate.min.js"></script>
+<script src="vendor/chevrotain.min.js"></script>
+<script src="vendor/FBXLoader.js"></script>
+<script src="vendor/ColladaLoader.js"></script>
+<script src="vendor/VRMLLoader.js"></script>
+<script src="vendor/VTKLoader.js"></script>
+<script src="vendor/3MFLoader.js"></script>
+<script src="vendor/ColladaExporter.js"></script>
+<script src="vendor/USDZExporter.js"></script>
 <script src="js/core.js"></script>
 <script src="js/dff-read.js"></script>
 <script src="js/txd.js"></script>
 <script src="js/dff-write.js"></script>
 <script src="js/yft.js"></script>
+<script src="js/ytd.js"></script>
 <script src="js/loader.js"></script>
 <script src="js/rpf.js"></script>
 <script src="js/editor.js"></script>
 <script src="js/export.js"></script>
 <script src="js/features.js"></script>
 <script src="js/edit.js"></script>
+<script src="js/formats.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/txd-write.js"></script>
 <script>if("serviceWorker" in navigator&&location.protocol!="file:")navigator.serviceWorker.register("sw.js")</script>
 </body></html>

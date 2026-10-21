@@ -4,7 +4,7 @@ function dffOut(){
   cat=a=>{let n=0;a.forEach(x=>n+=x.length);const o=new Uint8Array(n);let p=0;a.forEach(x=>{o.set(x,p);p+=x.length});return o},
   ck=(t,...a)=>{const d=cat(a);return cat([U([t,d.length,VER]),d])},
   s4=s=>{const o=new Uint8Array(Math.ceil((s.length+1)/4)*4);for(let i=0;i<s.length;i++)o[i]=s.charCodeAt(i);return o},E=()=>ck(3);
- root.updateMatrixWorld(true);const ms=meshes().filter(m=>m.visible),Z=new THREE.Matrix4().makeRotationX(Math.PI/2);
+ root.updateMatrixWorld(true);const ms=meshes().filter(m=>m.visible&&!m.userData.dummy),Z=new THREE.Matrix4().makeRotationX(Math.PI/2);
  const names=['root'],fr=[cat([f([1,0,0,0,1,0,0,0,1,0,0,0]),U([-1,0x20003])])];
  const geos=ms.map((m,mi)=>{
   names.push(m.name.replace(/_mesh$/,'')||'obj'+mi);
@@ -22,9 +22,10 @@ function dffOut(){
   g.computeBoundingSphere();const bs=g.boundingSphere,fl=0x72|(UV?4|1<<16:0);
   const st=ck(1,U([fl,tris.length/4,n,1]),UV?f(uv):new Uint8Array(0),new Uint8Array(new Uint16Array(tris).buffer),f([bs.center.x,bs.center.y,bs.center.z,bs.radius]),U([1,1]),f(pos),f(nor));
   const ml=ck(8,ck(1,U([ma.length,...ma.map(()=>-1)])),...ma.map(x=>{const t=x.userData.tex||(x.map&&x.map.name)||'',c=x.color||{r:1,g:1,b:1};
-   return ck(7,ck(1,U([0]),new Uint8Array([c.r*255,c.g*255,c.b*255,255]),U([0,t?1:0]),f([1,1,1])),...(t?[ck(6,ck(1,U([0x1106])),ck(2,s4(t)),ck(2,s4('')),E())]:[]),E())}));
+   return ck(7,ck(1,U([0]),new Uint8Array([c.r*255,c.g*255,c.b*255,255]),U([0,t?1:0]),f([1,1,1])),...(t?[ck(6,ck(1,U([0x1106])),ck(2,s4(rwName(t))),ck(2,s4('')),E())]:[]),E())}));
   return ck(0xF,st,ml,ck(3,ck(0x50E,U([0,bins.length,tn]),...bins.map(([k,bi])=>cat([U([bi.length,k]),U(bi)])))));
  });
+ meshes().filter(m=>m.userData.dummy).forEach(m=>{names.push(m.name);const e=new THREE.Matrix4().multiplyMatrices(Z,m.matrixWorld).elements;fr.push(cat([f([e[0],e[1],e[2],e[4],e[5],e[6],e[8],e[9],e[10],e[12],e[13],e[14]]),U([0,0x20003])]))});
  const enc=new TextEncoder();
  return cat([ck(0x10,ck(1,U([ms.length,0,0])),
   ck(0xE,ck(1,U([fr.length]),...fr),...names.map(nm=>ck(3,ck(0x253F2FE,enc.encode(nm))))),

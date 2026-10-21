@@ -33,5 +33,5 @@ function txd(b){
   const t=new THREE.CanvasTexture(z);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.name=name;tex[name.toLowerCase()]=t}
  let p=12,n=0;const end=Math.min(b.byteLength,12+u32(4));
  while(p+12<=end){if(u32(p)==0x15){try{nat(p+24);n++}catch(e){}}p+=12+u32(p+4)}
- applyTex();toast(n+' ta tekstura yuklandi');
+ applyTex();texList();toast(n+' ta tekstura yuklandi');
 }
