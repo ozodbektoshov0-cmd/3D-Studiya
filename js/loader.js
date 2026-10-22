@@ -14,7 +14,8 @@ async function load(f){
  else if(ext=='3mf')o=new THREE.ThreeMFLoader().parse(buf);
  else if(/^usd[az]?$/.test(ext))o=usdImp(buf);
  else if(EXT2.test(ext))o=await imp2(ext,buf);
- else if(/^(max|blend|skp)$/.test(ext))throw Error('.'+ext+' yopiq format, brauzerda o’qib bo’lmaydi — o’z dasturida FBX, DAE yoki OBJ qilib saqlang');
+ else if(ext=='skp')o=await skpImp(buf);
+ else if(/^(max|blend)$/.test(ext))throw Error('.'+ext+' yopiq format, brauzerda o’qib bo’lmaydi — o’z dasturida FBX, DAE yoki OBJ qilib saqlang');
  else if(ext=='ytd'){await ytd(f);return}
  else if(ext=='ydr')o=await yft(f,true);
  else if(ext=='yft')o=await yft(f);

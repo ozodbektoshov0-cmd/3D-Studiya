@@ -21,7 +21,13 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render
 - `js/export.js` — GLB, GLTF, OBJ, STL, PLY, DFF eksporti
 - `vendor/` — Three.js (sayt internetsiz ham ishlaydi)
-- `sw.js` — oflayn kesh (kodni o’zgartirsangiz `v1` ni `v2` ga almashtiring)
+- `sw.js` — oflayn kesh (kodni o’zgartirsangiz versiya nomini oshiring: hozir `v15`)
 
 ## Ishga tushirish
 `python -m http.server 8000` va brauzerda `localhost:8000`. GitHub Pages yoki Vercel’ga shu papkani o’zini yuklash yetarli.
+
+## SKP qo’llab-quvvatlash (SketchUp)
+- `js/skp.js` — `.skp` ni brauzerda o’qiydi ([OpenSKP](https://github.com/iamahsanmehmood/openskp), MIT; SketchUp 2013–2025). Yuklanganda GLB orqali sahnaga qo’shiladi, keyin hamma formatlarga eksport qilinadi.
+- Bir marta bajaring (Node.js 18+): `sh tools/build-openskp.sh` → `vendor/openskp.min.js` hosil bo’ladi va GitHub/Vercel’ga shu bilan birga yuklanadi.
+- Cheklov: katta fayllar (≈100 MB+) brauzer xotirasiga sig’maydi; juda eski (V3–V6, 2019) fayllar o’qilmasligi mumkin.
+- `vendor/license.openskp.txt` (MIT) ni qoldiring.
