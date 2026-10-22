@@ -2,14 +2,15 @@
 $('#ex').onclick=()=>{
  if(!meshes().length)return toast('Avval model oching');
  const fmt=$('#fmt').value,r0=root.rotation.x;tc.detach();const dm=meshes().filter(m=>m.userData.dummy&&fmt!='dff');dm.forEach(m=>m.visible=false);
- root.rotation.x=$('#zup').checked&&fmt!='dff'?Math.PI/2:0;root.updateMatrixWorld(true);
+ root.rotation.x=$('#zup').checked&&fmt!='dff'&&fmt!='skp'?Math.PI/2:0;root.updateMatrixWorld(true);
  const done=(d,mime)=>{dm.forEach(m=>m.visible=true);root.rotation.x=r0;root.updateMatrixWorld(true);if(sel)tc.attach(sel);
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:mime}));a.download=name+'.'+fmt;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3);toast(fmt.toUpperCase()+' tayyor'+(fmt=='dff'&&dffOut.info&&dffOut.info.length?' ('+dffOut.info.join(', ')+')':''))};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:mime}));a.download=name+'.'+fmt;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3);const xi=fmt=='dff'?dffOut.info:fmt=='skp'?skpOut.info:null;toast(fmt.toUpperCase()+' tayyor'+(xi&&xi.length?' ('+xi.join(', ')+')':''))};
  const fail=e=>{dm.forEach(m=>m.visible=true);root.rotation.x=r0;toast('Xato: '+(e.message||e))};
  try{
   if(fmt=='glb'||fmt=='gltf'){const x=new THREE.GLTFExporter(),o={binary:fmt=='glb',animations:window.CLIPS||[]},cb=r=>done(fmt=='glb'?r:JSON.stringify(r),'model/gltf');
    x.parse.length>3?x.parse(root,cb,fail,o):x.parse(root,cb,o)}
   else if(fmt=='dff')done(dffOut(),'application/octet-stream');
+  else if(fmt=='skp')skpOut().then(b=>done(b,'application/octet-stream'),fail);
   else if(fmt=='dae')new THREE.ColladaExporter().parse(root,r=>done(r.data,'model/vnd.collada+xml'));
   else if(fmt=='usdz')new THREE.USDZExporter().parse(root).then(b=>done(b,'model/vnd.usdz+zip'),fail);
   else if(fmt=='fbx')done(fbxOut($('#zup').checked),'application/octet-stream');
