@@ -18,8 +18,8 @@ function dffOut(){
    for(let i=0;i<n;i++){const x=pp[i*3],y=pp[i*3+1],z=pp[i*3+2];mnx=Math.min(mnx,x);mxx=Math.max(mxx,x);mny=Math.min(mny,y);mxy=Math.max(mxy,y);mnz=Math.min(mnz,z);mxz=Math.max(mxz,z)}
    const cx=(mnx+mxx)/2,cy=(mny+mxy)/2,cz=(mnz+mxz)/2;let rr=0;
    for(let i=0;i<n;i++)rr=Math.max(rr,Math.hypot(pp[i*3]-cx,pp[i*3+1]-cy,pp[i*3+2]-cz));
-   const fl=0x72|(UV?4|1<<16:0),tn=pt.bins.reduce((s,x)=>s+x[1].length,0);
-   const st=ck(1,U([fl,pt.tris.length/4,n,1]),UV?f(UV):new Uint8Array(0),new Uint8Array(new Uint16Array(pt.tris).buffer),f([cx,cy,cz,rr]),U([1,1]),f(pt.pos),f(pt.nor));
+   const fl=0x7A|(UV?4|1<<16:0),tn=pt.bins.reduce((s,x)=>s+x[1].length,0);
+   const st=ck(1,U([fl,pt.tris.length/4,n,1]),new Uint8Array(n*4).fill(255),UV?f(UV):new Uint8Array(0),new Uint8Array(new Uint16Array(pt.tris).buffer),f([cx,cy,cz,rr]),U([1,1]),f(pt.pos),f(pt.nor));
    const ml=ck(8,ck(1,U([ma.length,...ma.map(()=>-1)])),...ma.map(x=>{const t=x.userData.tex||(x.map&&x.map.name)||'',c=x.color||{r:1,g:1,b:1};
     return ck(7,ck(1,U([0]),new Uint8Array([c.r*255,c.g*255,c.b*255,255]),U([0,t?1:0]),f([1,1,1])),...(t?[ck(6,ck(1,U([0x1106])),ck(2,s4(rwName(t))),ck(2,s4('')),E())]:[]),E())}));
    atoms.push([fr.length-1,geos.length]);
