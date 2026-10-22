@@ -17,6 +17,13 @@ $('#ex').onclick=()=>{
   else if(fmt=='wrl')done(wrlOut(),'model/vrml');
   else if(fmt=='usda'||fmt=='usd')done(usdaOut($('#zup').checked),'text/plain');
   else if(fmt=='3mf')done(x3mfOut(),'model/3mf');
+  else if(fmt=='off')done(offOut(),'text/plain');
+  else if(fmt=='x3d')done(x3dOut(),'model/x3d+xml');
+  else if(fmt=='xyz')done(xyzOut(),'text/plain');
+  else if(fmt=='pcd')done(pcdOut(),'text/plain');
+  else if(fmt=='amf')done(amfOut(),'application/xml');
+  else if(fmt=='vtp')done(vtpOut(),'application/xml');
+  else if(fmt=='3dm')dmOut().then(b=>done(b,'application/octet-stream'),fail);
   else if(fmt=='obj')done(new THREE.OBJExporter().parse(root),'text/plain');
   else if(fmt=='stl')done(new THREE.STLExporter().parse(root,{binary:true}),'model/stl');
   else new THREE.PLYExporter().parse(root,r=>done(r,'application/octet-stream'),{binary:true});

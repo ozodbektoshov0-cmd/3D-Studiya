@@ -15,6 +15,7 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/txd-write.js` — TXD yozish (DXT1/DXT3, mipmap, GTA SA)
 - `js/ytd.js` — GTA V YTD teksturalarini o’qish (DXT1/3/5)
 - `js/formats.js` — FBX, DAE, WRL, VTK, 3MF, USD/USDA/USDZ import va eksport
+- `js/formats2.js` — STEP/IGES/BREP (OpenCascade), 3DM (rhino3dm), 3DS, AMF, LWO, PCD, XYZ, PTX, VOX, PMD/PMX, OFF, X3D, X, VTP
 - `js/rpf.js` — GTA V RPF7 arxivini (shifrsiz “OPEN”) ochish, fayllarni yuklab olish
 - `js/editor.js` — tanlash, ko’chirish, rang, nom
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render

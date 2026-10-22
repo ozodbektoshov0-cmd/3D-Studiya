@@ -13,14 +13,15 @@ async function load(f){
  else if(ext=='vtk'){const g=new THREE.VTKLoader().parse(buf);if(!g.getAttribute('normal'))g.computeVertexNormals();o=new THREE.Mesh(g,M())}
  else if(ext=='3mf')o=new THREE.ThreeMFLoader().parse(buf);
  else if(/^usd[az]?$/.test(ext))o=usdImp(buf);
- else if(ext=='max')throw Error('MAX (3ds Max) yopiq format, brauzerda o’qib bo’lmaydi — 3ds Max’dan FBX yoki DAE qilib saqlang');
+ else if(EXT2.test(ext))o=await imp2(ext,buf);
+ else if(/^(max|blend|skp)$/.test(ext))throw Error('.'+ext+' yopiq format, brauzerda o’qib bo’lmaydi — o’z dasturida FBX, DAE yoki OBJ qilib saqlang');
  else if(ext=='ytd'){await ytd(f);return}
  else if(ext=='ydr')o=await yft(f,true);
  else if(ext=='yft')o=await yft(f);
  else if(ext=='dff')o=dff(buf);
  else if(ext=='txd'){txd(buf);return}
  else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YTD/YFT/YDD hozircha yo’q)');
- o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);$('#hint').style.display='none';refresh();fit(o);
+ o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);$('#hint').style.display='none';refresh();fit(o);if(/^(yft|ydr)$/.test(ext))missTex();
 }
 async function loadAll(fs){for(const f of fs){try{await load(f)}catch(e){toast(f.name+': '+(e.message||e))}}}
 $('#f').onchange=e=>{loadAll([...e.target.files]);e.target.value=''};

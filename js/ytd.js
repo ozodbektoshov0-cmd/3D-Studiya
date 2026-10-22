@@ -10,6 +10,7 @@ function dxtDec(a,q,w,h,t){const o=new Uint8ClampedArray(w*h*4),bs=t==1?8:16,c5=
    else{const s=i<10?lo>>>(3*i)&7:i==10?(lo>>>30|(hi&1)<<2)&7:hi>>>(3*i-32)&7;al=s==0?a0:s==1?a1:a0>a1?((8-s)*a0+(s-1)*a1)/7:s<6?((6-s)*a0+(s-1)*a1)/5:s==6?0:255}
    o[k]=c[0];o[k+1]=c[1];o[k+2]=c[2];o[k+3]=al}}
  return o}
+const bcn=()=>bcn.p||(bcn.p=import('../vendor/t2d/index.mjs').then(m=>m.Texture2DDecoder));
 const bgra=(a,q,w,h)=>{const o=new Uint8ClampedArray(w*h*4);for(let i=0;i<w*h;i++){o[i*4]=a[q+i*4+2];o[i*4+1]=a[q+i*4+1];o[i*4+2]=a[q+i*4];o[i*4+3]=a[q+i*4+3]}return o};
 async function ytd(blob){
  const hd=new DataView(await blob.slice(0,16).arrayBuffer());
@@ -23,12 +24,15 @@ async function ytd(blob){
  for(let i=0;i<cnt;i++){await new Promise(r=>setTimeout(r));
   const t=ptr(L+i*8),np=t<0?-1:ptr(t+0x28);if(np<0)continue;
   let name='';for(let o=np;raw[o]&&name.length<64;o++)name+=String.fromCharCode(raw[o]);
-  let w=u16(t+0x50),h=u16(t+0x52),dp=ptr(t+0x70);const f=u32(t+0x58),lv=raw[t+0x5d]||1,bs=f==0x31545844?8:(f==0x33545844||f==0x35545844)?16:0;
+  let w=u16(t+0x50),h=u16(t+0x52),dp=ptr(t+0x70);const f=u32(t+0x58),lv=raw[t+0x5d]||1,K={0x31545844:['d',8],0x33545844:['d',16],0x35545844:['d',16],0x31495441:['Bc4',8],0x32495441:['Bc5',16],0x20374342:['Bc7',16]}[f],bs=K?K[1]:0;
   if((!bs&&f!=21)||dp<0||dp>=raw.length){skip++;continue}
   const siz=(a,b)=>bs?Math.max(1,a+3>>2)*Math.max(1,b+3>>2)*bs:a*b*4;
   for(let l=0;w>1024&&l<lv-1;l++){dp+=siz(w,h);w>>=1;h>>=1}
-  const px=bs?dxtDec(raw,dp,w,h,(f>>>24)&15):bgra(raw,dp,w,h),c=document.createElement('canvas');
+  let px;try{if(!bs)px=bgra(raw,dp,w,h);else if(K[0]=='d')px=dxtDec(raw,dp,w,h,(f>>>24)&15);else px=bgra(await(await bcn())['decode'+K[0]](raw.subarray(dp,dp+siz(w,h)),w,h),0,w,h)}catch(e){skip++;continue}
+  const c=document.createElement('canvas');
   c.width=w;c.height=h;c.getContext('2d').putImageData(new ImageData(px,w,h),0,0);
   const T=new THREE.CanvasTexture(c);T.wrapS=T.wrapT=THREE.RepeatWrapping;T.name=name;tex[name.toLowerCase()]=T;ok++}
- applyTex();texList();toast(ok+' ta tekstura yuklandi'+(skip?' · '+skip+' tasi qo’llanmaydigan format (BC7 va b.)':''));
+ applyTex();texList();toast(ok+' ta tekstura yuklandi'+(skip?' · '+skip+' tasi qo’llanmaydigan format':''));
 }
+function missTex(){const m=new Set();meshes().forEach(o=>mats(o).forEach(x=>{const n=x.userData.tex;if(n&&!tex[n.toLowerCase()])m.add(n)}));
+ if(m.size)toast(m.size+' ta tekstura topilmadi ('+[...m].slice(0,3).join(', ')+(m.size>3?'…':'')+') — mos .ytd (masalan vehshare.ytd) ni ham oching')}
