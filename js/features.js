@@ -11,7 +11,7 @@ function add(o,par=root){par.add(o);hist(()=>{if(sel===o)select(null);par.remove
 $('#del').onclick=()=>{if(!sel)return;const o=sel,p=o.parent;select(null);p.remove(o);hist(()=>p.add(o),()=>p.remove(o));refresh()};
 const PR={Kub:()=>new THREE.BoxGeometry(1,1,1),Shar:()=>new THREE.SphereGeometry(.6,32,16),Silindr:()=>new THREE.CylinderGeometry(.5,.5,1,32),Konus:()=>new THREE.ConeGeometry(.5,1,32),Halqa:()=>new THREE.TorusGeometry(.5,.2,16,48),Tekislik:()=>new THREE.PlaneGeometry(2,2).rotateX(-Math.PI/2)};
 Object.entries(PR).forEach(([n,g])=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>{const m=new THREE.Mesh(g(),new THREE.MeshStandardMaterial({color:0xcccccc,side:2}));m.name=n;add(m)};$('#addm').append(b)});
-$('#dup').onclick=()=>{if(!sel)return;const d=sel.clone(),M=sel.material;d.material=Array.isArray(M)?M.map(x=>x.clone()):M.clone();d.name=sel.name+'.001';d.position.x+=.3;add(d,sel.parent)};
+$('#dup').onclick=()=>{if(!sel)return;const d=sel.clone(),M=sel.material;d.material=Array.isArray(M)?M.map(x=>x.clone()):M.clone();d.geometry=sel.geometry.clone();d.name=sel.name+'.001';d.position.x+=.3;add(d,sel.parent)};
 document.addEventListener('click',e=>document.querySelectorAll('details.mn[open]').forEach(d=>{if(!d.contains(e.target)||e.target.closest('button,label.it'))d.open=false}));
 const X=$('#xf'),I={};
 [['Joy','p'],['Burilish','r'],['O’lcham','s']].forEach(([l,k])=>{const s=document.createElement('span');s.textContent=l;X.append(s);

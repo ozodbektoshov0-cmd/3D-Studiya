@@ -31,3 +31,9 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - Bir marta bajaring (Node.js 18+): `sh tools/build-openskp.sh` → `vendor/openskp.min.js` hosil bo’ladi va GitHub/Vercel’ga shu bilan birga yuklanadi.
 - Cheklov: katta fayllar (≈100 MB+) brauzer xotirasiga sig’maydi; juda eski (V3–V6, 2019) fayllar o’qilmasligi mumkin.
 - `vendor/license.openskp.txt` (MIT) ni qoldiring.
+
+## Mesh asboblari (`js/mesh.js`)
+- **Tuzilma:** ota/bola (Parent/Unparent), Boolean birlashtirish / ayirish / kesishma (BSP-CSG, 6000 uchburchakgacha, yopiq meshlar uchun).
+- **Yuza:** yuza rejimi (tekis yuzani bosib tanlash), Extrude, Inset, o’chirish, Subdivide; UV avto (quti) va UV ×2, ÷2, 90°, aks.
+- **Skelet:** skelet ko’rsatish, suyakni tanlab burish (poza), klip tanlash, tezlik.
+- Hali yo’q: Bevel, keyframe yozish, vazn (skin weight) bo’yash.

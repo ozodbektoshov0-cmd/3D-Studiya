@@ -4,10 +4,10 @@ const mats=o=>[].concat(o.material||[]);
 function select(o){sel=o;o?tc.attach(o):tc.detach();$('#prop').hidden=!o;
  if(o){$('#nm').value=o.name;const m=mats(o)[0];if(m&&m.color)$('#col').value='#'+m.color.getHexString()}refresh()}
 function refresh(){applyTex();typeof sync=='function'&&sync();
- const L=$('#list');L.textContent='';const ms=meshes();let t=0;
- ms.forEach((m,i)=>{const g=m.geometry,c=g.index?g.index.count:g.getAttribute('position').count;t+=c/3;
+ const L=$('#list');L.textContent='';const ml=meshes();let t=0;
+ ml.forEach((m,i)=>{const g=m.geometry,c=g.index?g.index.count:g.getAttribute('position').count;t+=c/3;
   const b=document.createElement('button');b.textContent=m.name||'mesh '+(i+1);if(m==sel||MS.has(m))b.className='on';b.onclick=e=>{if(e.ctrlKey||e.shiftKey||ms){if(!MS.size&&sel)MS.add(sel);MS.has(m)?MS.delete(m):MS.add(m);refresh()}else{MS.clear();select(m)}};L.append(b)});
- $('#st').textContent=ms.length?ms.length+' ta mesh · '+Math.round(t).toLocaleString()+' uchburchak':'Model ochilmagan.';
+ $('#st').textContent=ml.length?ml.length+' ta mesh · '+Math.round(t).toLocaleString()+' uchburchak':'Model ochilmagan.';
 }
 function fit(o){const b=new THREE.Box3().setFromObject(o||root);if(b.isEmpty())return;
  const c=b.getCenter(new THREE.Vector3()),d=b.getSize(new THREE.Vector3()).length()||1;
@@ -22,6 +22,6 @@ $('#del').onclick=()=>{if(sel){const o=sel;select(null);o.parent.remove(o);refre
 let dn=null;cv.addEventListener('pointerdown',e=>dn=[e.clientX,e.clientY]);
 cv.addEventListener('pointerup',e=>{if(!dn||tc.axis||window.em||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>5)return;
  const r=cv.getBoundingClientRect(),rc=new THREE.Raycaster();rc.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),cam);
- const h=rc.intersectObjects(root.children,true).find(x=>x.object.isMesh&&x.object.visible);select(h?h.object:null)});
+ const h=rc.intersectObjects(root.children,true).find(x=>x.object.isMesh&&x.object.visible);if(!e.shiftKey&&!e.ctrlKey)MS.clear();select(h?h.object:null)});
 addEventListener('keydown',e=>{if(/INPUT/.test(e.target.tagName))return;const k=e.key.toLowerCase();
  const m={g:'translate',w:'translate',r:'rotate',e:'rotate',s:'scale'}[k];if(m)document.querySelector('[data-m='+m+']').click();if(k=='delete')$('#del').click()});
