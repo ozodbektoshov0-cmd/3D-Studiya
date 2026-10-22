@@ -60,6 +60,7 @@ function shell(T,S,D,flip){const B=bnd(T,S),mv=v=>v.clone().add(D.get(wk(v))||ne
  B.forEach(e=>{const a2=mv(e.a),b2=mv(e.b);out.push({p:flip?[e.a,b2,e.b]:[e.a,e.b,b2],u:null,m:e.m},{p:flip?[e.a,a2,b2]:[e.a,b2,a2],u:null,m:e.m})});return out}
 const dExt=d=>(T,S)=>{const D=new Map();S.forEach(i=>{const n=nrm(T[i]);T[i].p.forEach(v=>{const k=wk(v);(D.get(k)||D.set(k,new THREE.Vector3()).get(k)).add(n)})});D.forEach(v=>v.normalize().multiplyScalar(d));return D};
 const dIns=f=>(T,S)=>{const P=new Map();S.forEach(i=>T[i].p.forEach(v=>P.set(wk(v),v)));const c=new THREE.Vector3();P.forEach(v=>c.add(v));c.divideScalar(P.size);const D=new Map();P.forEach((v,k)=>D.set(k,c.clone().sub(v).multiplyScalar(f)));return D};
+const dCh=(f,d)=>(T,S)=>{const a=dIns(f)(T,S),b=dExt(d)(T,S);b.forEach((v,k)=>v.add(a.get(k)||new THREE.Vector3()));return b};
 function subdiv(T,S){const out=[],h=(x,y)=>x.clone().add(y).multiplyScalar(.5);T.forEach((t,i)=>{if(S.size&&!S.has(i)){out.push(t);return}
  const[a,b,c]=t.p,ab=h(a,b),bc=h(b,c),ca=h(c,a);let u=null;
  if(t.u){const q=(x,y)=>[(t.u[x][0]+t.u[y][0])/2,(t.u[x][1]+t.u[y][1])/2],uab=q(0,1),ubc=q(1,2),uca=q(2,0);u=[[t.u[0],uab,uca],[uab,t.u[1],ubc],[uca,ubc,t.u[2]],[uab,ubc,uca]]}
@@ -101,6 +102,7 @@ menu('Yuza',[
  ['fex','Extrude (tortish)',()=>{if(!fm||!FS.size)return toast('Yuza rejimida yuza tanlang');const d=ask('Extrude masofasi (model birligida)',+(gsz()*.1).toFixed(3));if(!d)return;faceOp((T,S)=>shell(T,S,dExt(d)(T,S),false))}],
  ['fin','Inset (ichkariga kichraytirish)',()=>{if(!fm||!FS.size)return toast('Yuza rejimida yuza tanlang');const f=ask('Inset (0.05–0.9)',0.2);if(!f||f<=0||f>=1)return;faceOp((T,S)=>shell(T,S,dIns(f)(T,S),false))}],
  ['fdl','Yuzani o’chirish',()=>{if(!fm||!FS.size)return toast('Yuza tanlang');faceOp((T,S)=>T.filter((_,i)=>!S.has(i)))}],
+ ['fch','Chamfer (qirrani qiyalatish)',()=>{if(!fm||!FS.size)return toast('Yuza rejimida yuza tanlang');const f=ask('Chamfer: inset (0.05–0.9)',0.2);if(!f||f<=0||f>=1)return;const d=ask('Chamfer: balandlik',+(gsz()*.05).toFixed(3));if(!d)return;faceOp((T,S)=>shell(T,S,dCh(f,d)(T,S),false))}],
  ['fsb','Bo’lish (subdivide: tanlangan yoki hammasi)',()=>faceOp((T,S)=>subdiv(T,S))],
  ['fcl','Tanlovni bekor qilish',()=>{FS.clear();hlU()}],
  ['uva','UV avto (quti proyeksiya)',uvAuto],['uv2','UV ×2',uvT((u,v)=>[u*2,v*2])],['uvh','UV ÷2',uvT((u,v)=>[u/2,v/2])],
@@ -111,3 +113,16 @@ menu('Skelet',[
  ['clp','Klip: keyingisi / hammasi',()=>{if(!CL.length)return toast('Animatsiya klipi yo’q');ci=(ci+1)%(CL.length+1);const ms=new Set(CL.map(x=>x.m));ms.forEach(m=>m.stopAllAction());
   CL.forEach((x,i)=>{if(ci==CL.length||ci==i)x.m.clipAction(x.c).reset().play()});toast(ci==CL.length?'Hamma klip':'Klip: '+(CL[ci].c.name||ci+1))}],
  ['spd','Animatsiya tezligi',()=>{const v=ask('Tezlik (1 = oddiy)',1);if(v==null||isNaN(v))return;AN.forEach(m=>m.timeScale=v)}]]);
+/* --- keyframe yozish --- */
+const KF=[];let kfn=0;
+function mkClip(K,name){const ks=K.slice().sort((a,b)=>a.t-b.t),ts=ks.map(k=>k.t),tr=[];
+ ks[0].items.forEach((it,i)=>{const P=[],Q=[];ks.forEach(k=>{P.push(...k.items[i][1].toArray());Q.push(...k.items[i][2].toArray())});
+  tr.push(new THREE.VectorKeyframeTrack(it[0].uuid+'.position',ts,P),new THREE.QuaternionKeyframeTrack(it[0].uuid+'.quaternion',ts,Q))});
+ return new THREE.AnimationClip(name,ts[ts.length-1],tr)}
+function addKey(){const tg=bones().length?bones():(sel?[sel]:[]);if(!tg.length)return toast('Suyak topilmadi — obyektni tanlang');
+ if(KF.length&&KF[0].items.length!=tg.length)return toast('Kalitlar boshqa to’plamga tegishli — avval “Kalitlarni tozalash”');
+ const t=ask('Kalit vaqti (soniya)',kfn);if(t==null||isNaN(t)||t<0)return;
+ const k={t,items:tg.map(o=>[o,o.position.clone(),o.quaternion.clone()])},i=KF.findIndex(x=>Math.abs(x.t-t)<1e-6);i>=0?KF[i]=k:KF.push(k);kfn=t+.5;toast('Kalit '+t+' s · jami '+KF.length)}
+function buildClip(){if(KF.length<2)return toast('Kamida 2 ta kalit kerak');const c=mkClip(KF,'Klip'+(CL.length+1)),m=new THREE.AnimationMixer(root);
+ AN.push(m);CL.push({c,m});window.CLIPS=(window.CLIPS||[]).concat(c);m.clipAction(c).play();play=true;$('#anb').textContent='Animatsiya ⏸';toast('Klip tayyor ('+c.duration+' s) — GLB/GLTF eksportga qo’shiladi')}
+menu('Klip',[['kfa','Kalit qo’shish (hozirgi poza)',addKey],['kfb','Klip yaratish',buildClip],['kfc','Kalitlarni tozalash',()=>{KF.length=0;kfn=0;toast('Kalitlar tozalandi')}]]);

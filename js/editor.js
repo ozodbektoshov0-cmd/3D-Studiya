@@ -23,5 +23,5 @@ let dn=null;cv.addEventListener('pointerdown',e=>dn=[e.clientX,e.clientY]);
 cv.addEventListener('pointerup',e=>{if(!dn||tc.axis||window.em||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>5)return;
  const r=cv.getBoundingClientRect(),rc=new THREE.Raycaster();rc.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),cam);
  const h=rc.intersectObjects(root.children,true).find(x=>x.object.isMesh&&x.object.visible);if(!e.shiftKey&&!e.ctrlKey)MS.clear();select(h?h.object:null)});
-addEventListener('keydown',e=>{if(/INPUT/.test(e.target.tagName))return;const k=e.key.toLowerCase();
+addEventListener('keydown',e=>{if(/INPUT/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key.toLowerCase();
  const m={g:'translate',w:'translate',r:'rotate',e:'rotate',s:'scale'}[k];if(m)document.querySelector('[data-m='+m+']').click();if(k=='delete')$('#del').click()});

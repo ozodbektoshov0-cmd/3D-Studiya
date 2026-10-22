@@ -35,7 +35,7 @@ $('#snap').onclick=e=>{const b=e.target.classList.toggle('on');tc.setTranslation
 $('#rnd').onclick=()=>{const v=[grid.visible,axs.visible];grid.visible=axs.visible=bh.visible=tc.visible=false;R.render(S,cam);
  cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)});
  grid.visible=v[0];axs.visible=v[1];tc.visible=true;toast('Render (PNG) tayyor')};
-addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName))return;const k=e.key.toLowerCase();
- if(e.ctrlKey&&k=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(e.ctrlKey&&k=='y'){e.preventDefault();redo()}
- else if(e.shiftKey&&k=='d'){e.preventDefault();$('#dup').click()}else if(k=='x')$('#del').click();else if(k=='f')fit(sel||undefined);
+addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName))return;const k=e.key.toLowerCase(),c=e.ctrlKey||e.metaKey;
+ if(c&&k=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(c&&k=='y'){e.preventDefault();redo()}
+ else if(e.shiftKey&&k=='d'){e.preventDefault();$('#dup').click()}else if(k=='x'&&!c)$('#del').click();else if(k=='f'&&!c)fit(sel||undefined);
  else{const v={1:'0,0,1',3:'1,0,0',7:'0,1,.001'}[e.key];if(v&&e.code.startsWith('Numpad'))document.querySelector('[data-v="'+v+'"]').click()}});

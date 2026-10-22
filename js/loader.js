@@ -1,6 +1,8 @@
 /* ---- yuklash ---- */
+const LZ={"fbx":["FBXLoader.js"],"dae":["ColladaLoader.js"],"wrl":["chevrotain.min.js","VRMLLoader.js"],"vrml":["chevrotain.min.js","VRMLLoader.js"],"vtk":["VTKLoader.js"],"vtp":["VTKLoader.js"],"3mf":["3MFLoader.js"],"3ds":["TDSLoader.js"],"amf":["AMFLoader.js"],"lwo":["IFFParser.js","LWO2Parser.js","LWO3Parser.js","LWOLoader.js"],"pcd":["PCDLoader.js"],"vox":["VOXLoader.js"],"pmx":["mmdparser.min.js","MMDLoader.js"],"pmd":["mmdparser.min.js","MMDLoader.js"]};
 async function load(f){
  const ext=f.name.split('.').pop().toLowerCase(),buf=ext=='rpf'?null:await f.arrayBuffer(),M=()=>new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2});let o;
+ for(const n of LZ[ext]||[])await lazy('vendor/'+n);
  if(ext=='glb'||ext=='gltf')o=await new Promise((ok,no)=>new THREE.GLTFLoader().parse(ext=='gltf'?new TextDecoder().decode(buf):buf,'',g=>{g.scene.animations=g.animations;ok(g.scene)},no));
  else if(ext=='obj')o=new THREE.OBJLoader().parse(new TextDecoder().decode(buf));
  else if(ext=='stl')o=new THREE.Mesh(new THREE.STLLoader().parse(buf),M());
