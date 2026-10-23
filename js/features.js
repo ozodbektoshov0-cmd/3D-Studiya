@@ -4,7 +4,7 @@ const H=[],Y=[],hist=(u,r)=>{H.push({u,r});Y.length=0};
 const undo=()=>{const a=H.pop();if(a){a.u();Y.push(a);refresh()}},redo=()=>{const a=Y.pop();if(a){a.r();H.push(a);refresh()}};
 $('#undo').onclick=undo;$('#redo').onclick=redo;
 const pose=o=>({o,p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone()}),put=a=>{a.o.position.copy(a.p);a.o.quaternion.copy(a.q);a.o.scale.copy(a.s);sync()};
-let p0=null;tc.addEventListener('mouseDown',()=>p0=!window.em&&sel&&pose(sel));
+let p0=null;tc.addEventListener('mouseDown',()=>p0=!window.em&&!(tc.object&&tc.object.userData&&tc.object.userData.grp)&&sel&&pose(sel));
 tc.addEventListener('mouseUp',()=>{if(p0&&sel===p0.o){const a=p0,b=pose(sel);hist(()=>put(a),()=>put(b))}});
 tc.addEventListener('objectChange',()=>sync());
 function add(o,par=root){par.add(o);hist(()=>{if(sel===o)select(null);par.remove(o)},()=>par.add(o));select(o);$('#hint').style.display='none'}

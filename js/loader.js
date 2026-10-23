@@ -28,7 +28,8 @@ async function load(f){
  else if(/^usd[az]?$/.test(ext))o=usdImp(buf);
  else if(EXT2.test(ext))o=await imp2(ext,buf);
  else if(ext=='skp')o=await skpImp(buf);
- else if(/^(max|blend)$/.test(ext))throw Error('.'+ext+' yopiq format, brauzerda o’qib bo’lmaydi — o’z dasturida FBX, DAE yoki OBJ qilib saqlang');
+ else if(ext=='max')o=maxImp(buf);
+ else if(ext=='blend')throw Error('.blend yopiq format, brauzerda o’qib bo’lmaydi — Blender’da GLB yoki FBX qilib saqlang');
  else if(ext=='ytd'){await ytd(f);return}
  else if(ext=='ydr')o=await yft(f,true);
  else if(ext=='yft')o=await yft(f);
@@ -37,6 +38,7 @@ async function load(f){
  else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YTD/YFT/YDD hozircha yo’q)');
  texNames(o);
  o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);o.animations&&o.animations.length&&anim(o);$('#hint').style.display='none';refresh();fit(o);if(/^(yft|ydr)$/.test(ext))missTex();
+ if(ext=='max')toast('MAX: '+Math.round(maxImp.tris)+' uchburchak'+(maxImp.info.length?' ('+maxImp.info.join('; ')+')':''));
 }
 async function loadAll(fs){for(const f of fs){try{await load(f)}catch(e){toast(f.name+': '+(e.message||e))}}}
 $('#f').onchange=e=>{loadAll([...e.target.files]);e.target.value=''};

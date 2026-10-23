@@ -21,22 +21,29 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render
 - `js/export.js` — GLB, GLTF, OBJ, STL, PLY, DFF eksporti
 - `vendor/` — Three.js (sayt internetsiz ham ishlaydi)
-- `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v19`
+- `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v21`
 
 ## Ishga tushirish
 `python -m http.server 8000` va brauzerda `localhost:8000`. GitHub Pages yoki Vercel’ga shu papkani o’zini yuklash yetarli.
 
 ## SKP qo’llab-quvvatlash (SketchUp)
-- `js/skp.js` — `.skp` ni brauzerda o’qiydi ([OpenSKP](https://github.com/iamahsanmehmood/openskp), MIT; SketchUp 2013–2025). Yuklanganda GLB orqali sahnaga qo’shiladi, keyin hamma formatlarga eksport qilinadi.
-- Bir marta bajaring (Node.js 18+): `sh tools/build-openskp.sh` → `vendor/openskp.min.js` hosil bo’ladi va GitHub/Vercel’ga shu bilan birga yuklanadi.
-- Cheklov: katta fayllar (≈100 MB+) brauzer xotirasiga sig’maydi; juda eski (V3–V6, 2019) fayllar o’qilmasligi mumkin.
-- `vendor/license.openskp.txt` (MIT) ni qoldiring.
+- `js/skp.js` — `.skp` import va eksport ([OpenSKP](https://github.com/iamahsanmehmood/openskp), MIT). Kutubxona avval `vendor/openskp.min.js` dan, bo’lmasa CDN’dan (jsDelivr, internet kerak) yuklanadi.
+- **Import:** SketchUp 2013–2025. Yuklanganda GLB orqali sahnaga qo’shiladi.
+- **Eksport:** Format ro’yxatidan `skp` tanlang. SketchUp 2013–2020 formatida yoziladi (yangi SketchUp ham ochadi). 1 birlik = 1 metr, Y-up → dyuym, Z-up. Uchburchaklar yuza bo’ladi, ranglar saqlanadi, teksturalar saqlanmaydi. Chegara: 250 000 uchburchak.
+- Ixtiyoriy (CDN’siz ishlatish): Node.js 18+ bilan `sh tools/build-openskp.sh` → `vendor/openskp.min.js`. `vendor/license.openskp.txt` (MIT) ni qoldiring.
+- Cheklov: katta fayllar (≈100 MB+) brauzer xotirasiga sig’maydi; juda eski (V3–V6) fayllar o’qilmasligi mumkin.
 
 ## Mesh asboblari (`js/mesh.js`)
 - **Tuzilma:** ota/bola (Parent/Unparent), Boolean birlashtirish / ayirish / kesishma (BSP-CSG, 6000 uchburchakgacha, yopiq meshlar uchun).
 - **Yuza:** yuza rejimi (tekis yuzani bosib tanlash), Extrude, Inset, o’chirish, Subdivide; UV avto (quti) va UV ×2, ÷2, 90°, aks.
 - **Skelet:** skelet ko’rsatish, suyakni tanlab burish (poza), klip tanlash, tezlik.
 - Hali yo’q: Bevel, keyframe yozish, vazn (skin weight) bo’yash.
+
+## v21 qo’shimchalari
+- DFF eksport: 65535 dan ko’p uchli meshlar avtomatik birlashtiriladi va qismlarga bo’linadi; materiallar birlashtiriladi, ishlatilmagani yozilmaydi; frame nomlari noyob; vertex ranglar (prelit).
+- Boshqa formatdan importda tekstura nomi saqlanadi (rasm topilmasa ham) va DFF/TXD ga o’tadi.
+- SKP import va eksport (OpenSKP).
+- `.max` import (`js/maxread.js`): Editable Mesh/Poly, joylashuv/aylanish/o’lcham, pivot, ota-bola, instance, UV, smoothing group, Multi/Sub material (nom, rang, tekstura nomi). Parametrik obyektlar (Box, Sphere…) va modifikatorlar o’qilmaydi.
 
 ## v18 qo’shimchalari
 - Chamfer (yuza), Klip menyusi (keyframe yozish → GLB/GLTF eksportga qo’shiladi).
