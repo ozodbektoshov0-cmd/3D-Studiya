@@ -13,11 +13,11 @@ function dxtDec(a,q,w,h,t){const o=new Uint8ClampedArray(w*h*4),bs=t==1?8:16,c5=
 const bcn=()=>bcn.p||(bcn.p=import('../vendor/t2d/index.mjs').then(m=>m.Texture2DDecoder));
 const bgra=(a,q,w,h)=>{const o=new Uint8ClampedArray(w*h*4);for(let i=0;i<w*h;i++){o[i*4]=a[q+i*4+2];o[i*4+1]=a[q+i*4+1];o[i*4+2]=a[q+i*4];o[i*4+3]=a[q+i*4+3]}return o};
 async function ytd(blob){
- const hd=new DataView(await blob.slice(0,16).arrayBuffer());
+ const hd=new DataView(await blob.slice(0,32).arrayBuffer()),skip=hd.getUint32(16,true)==0x37435352?32:16;
  if(hd.getUint32(0,true)!=0x37435352)throw Error('Bu RSC7 resurs emas');
  const sz=rsz(hd.getUint32(8,true));
  if(typeof DecompressionStream=='undefined')throw Error('Brauzer siqilgan faylni ocholmaydi');
- const raw=new Uint8Array(await new Response(blob.slice(16).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer()),v=new DataView(raw.buffer);
+ const raw=new Uint8Array(await new Response(blob.slice(skip).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer()),v=new DataView(raw.buffer);
  const u32=o=>v.getUint32(o,true),u16=o=>v.getUint16(o,true),X=p=>{const k=p>>>28;return k==5?p-0x50000000:k==6?sz+p-0x60000000:-1},ptr=o=>X(u32(o));
  const L=ptr(0x30),cnt=u16(0x38);if(L<0||!cnt)throw Error('YTD tuzilmasi tanilmadi');
  let ok=0,skip=0;
