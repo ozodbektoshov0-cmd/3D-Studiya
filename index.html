@@ -11,8 +11,8 @@
 <link rel="stylesheet" href="css/style.css"></head><body>
 <div id="app">
 <header>
-<b class="logo">3D Studiya <small style="font-weight:400;opacity:.6;font-size:10px">v21</small></b>
-<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
+<b class="logo">3D Studiya <small style="font-weight:400;opacity:.6;font-size:10px">v23</small></b>
+<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
 <details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button></div></details>
 <details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
@@ -20,8 +20,8 @@
 <details class="mn"><summary>Asboblar</summary><div>
 <div class="row"><input type="number" id="dec" value="50" min="5" max="95"><button id="decb">Poligon kamaytirish (% qoladi)</button></div>
 <div class="row"><select id="asz"><option value="4.5">Yengil mashina 4.5 m<option value="3.8">Kichik mashina 3.8 m<option value="5.0">Sedan / politsiya 5.0 m<option value="5.2">Jip / furgon 5.2 m<option value="7.5">Yuk mashinasi 7.5 m<option value="11">Avtobus 11 m<option value="2.1">Mototsikl 2.1 m<option value="1.7">Velosiped 1.7 m<option value="h1.8">Odam (bo’yi 1.8 m)</select><button id="asb">Avto razmer</button></div>
-<button id="grd">Yerga qo’yish va markazlash</button><button id="att">Attach (birlashtirish)</button><button id="det">Detach (ajratish)</button><button id="swp">Joyini almashtirish (2 obyekt)</button><button id="mov">Birinchisini ikkinchisiga qo’yish</button><button id="rtp">Reset to parent (o’qlarni tekislash)</button>
-</div></details>
+<button id="grd">Yerga qo’yish va markazlash</button><button id="att">Attach (birlashtirish)</button><button id="det">Detach (ajratish)</button><button id="swp">Joyini almashtirish (2 obyekt)</button><button id="mov">Birinchisini ikkinchisiga qo’yish</button><button id="rtp">Reset to parent (o’qlarni tekislash)</button><button id="invsel">Teskari tanlash</button><button id="clrsel">Tanlovni tozalash</button><button id="showall">Hammasini ko’rsatish</button><button id="hideall">Hammasini yashirish</button><button id="onlysel2">Faqat tanlanganni ko’rsatish</button><button id="weld">Uchlarni birlashtirish (weld)</button><button id="flip">Normallarni teskari qilish</button><button id="rnorm">Normallarni qayta hisoblash (burchak)</button><button id="sepisl">Ajratish: bog’langan qismlar</button><button id="sepmat">Ajratish: material bo’yicha</button><button id="cen">Tayanch nuqtani markazlash</button><button id="lod">LOD nusxalar yaratish</button><button id="mirx">Ko’zgu nusxa X</button><button id="miry">Ko’zgu nusxa Y</button><button id="mirz">Ko’zgu nusxa Z</button><button id="selmat">Material bo’yicha tanlash</button>
+</div></details><details class="mn"><summary>GTA</summary><div><button id="vchk">Avtomobil ierarxiyasini tekshirish</button><button id="vmk">Yetishmagan dummylarni yaratish</button><button id="vpair">Yetishmagan _ok/_dam juftlarini yaratish</button><pre id="gtainfo" style="white-space:pre-wrap;font-size:11px;opacity:.8;margin:6px 8px;max-width:260px"></pre></div></details>
 <span class="sp"></span>
 </header>
 <main>
@@ -31,7 +31,7 @@
 <div id="vp"><canvas id="c"></canvas>
 <div id="vh">
 <button id="ortho">Ortho</button><button data-v="0,0,1">Old</button><button data-v="1,0,0">O’ng</button><button data-v="0,1,.001">Yuqori</button>
-<button id="edit">Edit (Tab)</button><button id="msel">Ko’p tanlash</button><button id="selall">Hammasi (Ctrl+A)</button><button id="wf">Karkas</button><button id="grid" class="on">Panjara</button><button id="snap">Magnit</button>
+<button id="edit">Edit (Tab)</button><button id="msel">Ko’p tanlash</button><button id="selall">Hammasi (Ctrl+A)</button><button id="bsel">Ramka</button><button id="xray">X-ray</button><button id="wf">Karkas</button><button id="grid" class="on">Panjara</button><button id="snap">Magnit</button>
 </div>
 <div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · 3DM · SKP · 3DS · AMF · LWO · PCD · PLY · PMD/PMX · PTX · STEP/STP · VOX · VTP · X · X3D · XYZ · OFF · DFF + TXD + YFT / YDR / YTD + RPF (GTA)</div>
 </div>
@@ -88,6 +88,8 @@
 <script src="js/mesh.js"></script>
 <script src="js/tools.js"></script>
 <script src="js/group.js"></script>
+<script src="js/gta.js"></script>
+<script src="js/extra.js"></script>
 <script src="js/txd-write.js"></script>
 <script>if("serviceWorker" in navigator&&location.protocol!="file:")navigator.serviceWorker.register("sw.js")</script>
 </body></html>

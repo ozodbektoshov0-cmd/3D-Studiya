@@ -21,7 +21,7 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render
 - `js/export.js` — GLB, GLTF, OBJ, STL, PLY, DFF eksporti
 - `vendor/` — Three.js (sayt internetsiz ham ishlaydi)
-- `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v21`
+- `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v23`
 
 ## Ishga tushirish
 `python -m http.server 8000` va brauzerda `localhost:8000`. GitHub Pages yoki Vercel’ga shu papkani o’zini yuklash yetarli.
@@ -39,7 +39,10 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - **Skelet:** skelet ko’rsatish, suyakni tanlab burish (poza), klip tanlash, tezlik.
 - Hali yo’q: Bevel, keyframe yozish, vazn (skin weight) bo’yash.
 
-## v21 qo’shimchalari
+## v23 qo’shimchalari
+- LOD nusxalar, ko’zgu nusxa (X/Y/Z, chap/o’ng nomlari almashadi), X-ray, ramka bilan tanlash, material bo’yicha tanlash.
+- Asboblar: teskari tanlash, tozalash, hammasini ko’rsatish/yashirish, faqat tanlanganni ko’rsatish, uchlarni birlashtirish (weld), normallarni teskari qilish / burchak bo’yicha qayta hisoblash, ajratish (bog’langan qismlar / material), tayanch nuqtani markazlash. Eksport: “Faqat tanlanganlar”.
+- GTA menyusi: avtomobil ierarxiyasini tekshirish, yetishmagan dummy va _ok/_dam juftlarini yaratish.
 - DFF eksport: 65535 dan ko’p uchli meshlar avtomatik birlashtiriladi va qismlarga bo’linadi; materiallar birlashtiriladi, ishlatilmagani yozilmaydi; frame nomlari noyob; vertex ranglar (prelit).
 - Boshqa formatdan importda tekstura nomi saqlanadi (rasm topilmasa ham) va DFF/TXD ga o’tadi.
 - SKP import va eksport (OpenSKP).
