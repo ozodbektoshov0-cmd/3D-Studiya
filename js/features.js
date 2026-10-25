@@ -33,7 +33,7 @@ $('#ortho').onclick=()=>setOrtho(!ortho);
 $('#grid').onclick=e=>{grid.visible=axs.visible=e.target.classList.toggle('on')};
 $('#snap').onclick=e=>{const b=e.target.classList.toggle('on');tc.setTranslationSnap(b?.5:null);tc.setRotationSnap(b?Math.PI/12:null);tc.setScaleSnap(b?.1:null)};
 $('#rnd').onclick=()=>{const v=[grid.visible,axs.visible];grid.visible=axs.visible=bh.visible=tc.visible=false;R.render(S,cam);
- cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)});
+ cv.toBlob(b=>saveBlob(b,name+'.png'));
  grid.visible=v[0];axs.visible=v[1];tc.visible=true;toast('Render (PNG) tayyor')};
 addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName))return;const k=e.key.toLowerCase(),c=e.ctrlKey||e.metaKey;
  if(c&&k=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(c&&k=='y'){e.preventDefault();redo()}

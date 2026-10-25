@@ -1,13 +1,11 @@
 /* ---- SKP (SketchUp) import va eksport: OpenSKP (MIT) orqali, brauzerda, serversiz ---- */
 const SKP_VER='1.3.0';
-/* Kutubxona: avval vendor/openskp.min.js, bo'lmasa CDN (internet kerak) */
+/* Kutubxona faqat lokal: vendor/openskp.min.js (internet kerak emas) */
 async function skpLib(){
  if(window.openskp&&window.openskp.buildScene)return window.openskp;
  try{await lazy('vendor/openskp.min.js')}catch(e){}
  if(window.openskp&&window.openskp.buildScene)return window.openskp;
- for(const u of['https://cdn.jsdelivr.net/npm/openskp@'+SKP_VER+'/+esm','https://esm.sh/openskp@'+SKP_VER]){
-  try{const m=await import(u);const O=m.default&&!m.buildScene?m.default:m;if(O&&O.buildScene){window.openskp=O;return O}}catch(e){}}
- throw Error('SKP moduli yuklanmadi. Internetni tekshiring yoki vendor/openskp.min.js qo’ying (README → “SKP qo’llab-quvvatlash”)')}
+ throw Error('SKP moduli yuklanmadi: vendor/openskp.min.js topilmadi')}
 async function skpImp(buf){
  const mb=buf.byteLength/1048576;
  if(mb>80)toast('Katta SKP ('+Math.round(mb)+' MB): brauzerda xotira yetmasligi mumkin');

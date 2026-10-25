@@ -84,6 +84,6 @@ function applyT(t){const L=real();if(!L.length)return toast('Avval mesh tanlang'
  L.forEach(o=>{if(!o.geometry.getAttribute('uv'))toast(o.name+': UV yo’q');mats(o).forEach(m=>{m.map=t;m.color.set(0xffffff);m.userData.tex=t.name;m.needsUpdate=true})})}
 function texList(){const L=$('#tl');L.textContent='';Object.values(tex).forEach(t=>{const r=document.createElement('div'),b=document.createElement('button'),d=document.createElement('button');
  b.textContent=t.name+' ('+t.image.width+'×'+t.image.height+')';b.onclick=()=>applyT(t);d.textContent='⬇';d.title='PNG saqlash';
- d.onclick=()=>t.image.toBlob(x=>{const a=document.createElement('a');a.href=URL.createObjectURL(x);a.download=t.name+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)});r.append(b,d);L.append(r)})}
+ d.onclick=()=>t.image.toBlob(x=>saveBlob(x,t.name+'.png'));r.append(b,d);L.append(r)})}
 async function img(f){const b=await createImageBitmap(f),c=document.createElement('canvas');c.width=b.width;c.height=b.height;c.getContext('2d').drawImage(b,0,0);
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.name=f.name.replace(/\.[^.]+$/,'');tex[t.name.toLowerCase()]=t;texList();toast('Tekstura qo’shildi: '+t.name+' — meshni tanlab, ro’yxatdan bosing')}

@@ -12,7 +12,7 @@ function texNames(o){o.traverse(m=>{if(!m.isMesh)return;[].concat(m.material).fo
 /*TN-end*/
 const LZ={"fbx":["FBXLoader.js"],"dae":["ColladaLoader.js"],"wrl":["chevrotain.min.js","VRMLLoader.js"],"vrml":["chevrotain.min.js","VRMLLoader.js"],"vtk":["VTKLoader.js"],"vtp":["VTKLoader.js"],"3mf":["3MFLoader.js"],"3ds":["TDSLoader.js"],"amf":["AMFLoader.js"],"lwo":["IFFParser.js","LWO2Parser.js","LWO3Parser.js","LWOLoader.js"],"pcd":["PCDLoader.js"],"vox":["VOXLoader.js"],"pmx":["mmdparser.min.js","MMDLoader.js"],"pmd":["mmdparser.min.js","MMDLoader.js"]};
 async function load(f){
- const ext=f.name.split('.').pop().toLowerCase(),buf=ext=='rpf'?null:await f.arrayBuffer(),M=()=>new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2});let o;
+ const ext=f.name.split('.').pop().toLowerCase(),buf=/^(rpf|yft|ydr|ytd)$/.test(ext)?null:await f.arrayBuffer(),M=()=>new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2});let o;
  for(const n of LZ[ext]||[])await lazy('vendor/'+n);
  if(ext=='glb'||ext=='gltf')o=await new Promise((ok,no)=>new THREE.GLTFLoader().parse(ext=='gltf'?new TextDecoder().decode(buf):buf,'',g=>{g.scene.animations=g.animations;gltfTexNames(g);ok(g.scene)},no));
  else if(ext=='obj')o=new THREE.OBJLoader().parse(new TextDecoder().decode(buf));
@@ -30,9 +30,9 @@ async function load(f){
  else if(ext=='skp')o=await skpImp(buf);
  else if(ext=='max')o=maxImp(buf);
  else if(ext=='blend')throw Error('.blend yopiq format, brauzerda o’qib bo’lmaydi — Blender’da GLB yoki FBX qilib saqlang');
- else if(ext=='ytd'){await ytd(f);return}
- else if(ext=='ydr')o=await yft(f,true);
- else if(ext=='yft')o=await yft(f);
+ else if(ext=='ytd'){toast(f.name+': teksturalar ochilmoqda…');await ytd(f);return}
+ else if(ext=='ydr'){toast(f.name+': GTA V modeli ochilmoqda…');o=await yft(f,true)}
+ else if(ext=='yft'){toast(f.name+': GTA V modeli ochilmoqda…');o=await yft(f)}
  else if(ext=='dff')o=dff(buf);
  else if(ext=='txd'){txd(buf);return}
  else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YTD/YFT/YDD hozircha yo’q)');
@@ -44,3 +44,6 @@ async function loadAll(fs){for(const f of fs){try{await load(f)}catch(e){toast(f
 $('#f').onchange=e=>{loadAll([...e.target.files]);e.target.value=''};
 vp.ondragover=e=>{e.preventDefault();vp.classList.add('drag')};vp.ondragleave=()=>vp.classList.remove('drag');
 vp.ondrop=e=>{e.preventDefault();vp.classList.remove('drag');loadAll([...e.dataTransfer.files])};
+
+/* kutilmagan xatolarni ham ekranda ko'rsatish (ilovada konsol yo'q) */
+addEventListener('unhandledrejection',e=>{try{toast('Xato: '+((e.reason&&e.reason.message)||e.reason))}catch(x){}});

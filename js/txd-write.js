@@ -29,4 +29,4 @@ async function txdOut(){
   for(let i=0;i<nm.length;i++)n32[i]=nm.charCodeAt(i);
   nat.push(ck(0x15,ck(1,U([8,0x1106]),n32,new Uint8Array(32),U([al?0x8300:0x8200,al?1:0]),new Uint8Array([W&255,W>>8,H&255,H>>8,16,lv,4,al?3:1]),...parts),E()))}
  return ck(0x16,ck(1,new Uint8Array([nat.length&255,nat.length>>8,0,0])),...nat,E())}
-$('#txe').onclick=async()=>{try{const b=await txdOut(),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([b],{type:'application/octet-stream'}));a.download=name+'.txd';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3);toast('TXD tayyor')}catch(e){toast(e.message)}};
+$('#txe').onclick=async()=>{try{const b=await txdOut();saveBlob(new Blob([b],{type:'application/octet-stream'}),name+'.txd');toast('TXD tayyor')}catch(e){toast(e.message)}};

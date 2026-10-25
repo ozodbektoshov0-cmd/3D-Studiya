@@ -1,11 +1,19 @@
 /* ---- YFT / YDR (GTA V, RSC7) o’qish: kuzov + skelet bo’yicha joylangan bo’laklar ---- */
 function rsz(f){const s=(f>>27&1)+((f>>26&1)<<1)+((f>>25&1)<<2)+((f>>24&1)<<3)+((f>>17&127)<<4)+((f>>11&63)<<5)+((f>>7&15)<<6)+((f>>5&3)<<7)+((f>>4&1)<<8);return(0x200<<(f&15))*s}
+/* RSC7 ichidagi raw-deflate ni ochish: avval brauzerning DecompressionStream i, bo'lmasa (eski Android WebView) fflate */
+async function rawInflate(blob){
+ if(typeof DecompressionStream!='undefined'&&blob.stream){try{return await new Response(blob.stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer()}catch(e){}}
+ if(typeof fflate=='undefined'&&typeof lazy=='function')await lazy('vendor/fflate.min.js');
+ if(typeof fflate=='undefined')throw Error('Siqilgan faylni ochib bo’lmadi (fflate yo’q)');
+ const src=new Uint8Array(await blob.arrayBuffer());let u;
+ for(const fn of[fflate.inflateSync,fflate.unzlibSync]){try{u=fn(src);break}catch(e){}}
+ if(!u)throw Error('Siqilgan ma’lumot buzuq yoki qo’llanmaydigan format (RSC7 deflate emas)');
+ return u.byteOffset==0&&u.length==u.buffer.byteLength?u.buffer:u.slice().buffer}
 async function yft(blob,ydr){
  const hd=new DataView(await blob.slice(0,32).arrayBuffer()),skip=hd.getUint32(16,true)==0x37435352?32:16; /* ba'zi fayllarda RSC7 sarlavha ikki marta yozilgan */
  if(hd.getUint32(0,true)!=0x37435352)throw Error('Bu RSC7 resurs emas');
  const sz=rsz(hd.getUint32(8,true));
- if(typeof DecompressionStream=='undefined')throw Error('Brauzer siqilgan faylni ocholmaydi');
- const raw=await new Response(blob.slice(skip).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer(),v=new DataView(raw);
+ const raw=await rawInflate(blob.slice(skip)),v=new DataView(raw);
  const u32=o=>v.getUint32(o,true),u16=o=>v.getUint16(o,true),f4=o=>v.getFloat32(o,true);
  const X=p=>{const k=p>>>28;return k==5?p-0x50000000:k==6?sz+p-0x60000000:-1};
  const ptr=o=>X(u32(o)),ok=(o,n)=>o>=0&&o+n<=raw.byteLength;

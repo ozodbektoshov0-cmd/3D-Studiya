@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="css/style.css"></head><body>
 <div id="app">
 <header>
-<b class="logo">3D Studiya <small style="font-weight:400;opacity:.6;font-size:10px">v24</small></b>
+<b class="logo">3D STUDIYA <small style="font-weight:400;opacity:.6;font-size:10px">v26</small></b>
 <details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
 <details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button></div></details>
@@ -67,6 +67,7 @@
 <script src="vendor/ColladaExporter.js"></script>
 <script src="vendor/USDZExporter.js"></script>
 <script src="vendor/XYZLoader.js"></script>
+<script src="js/native.js"></script>
 <script src="js/core.js"></script>
 <script src="js/dff-read.js"></script>
 <script src="js/txd.js"></script>
@@ -83,7 +84,6 @@
 <script src="js/formats2.js"></script>
 <script src="js/skp.js"></script>
 <script src="js/maxread.js"></script>
-<script src="js/maxread.js"></script>
 <script src="js/more.js"></script>
 <script src="js/mesh.js"></script>
 <script src="js/tools.js"></script>
@@ -91,5 +91,5 @@
 <script src="js/gta.js"></script>
 <script src="js/extra.js"></script>
 <script src="js/txd-write.js"></script>
-<script>if("serviceWorker" in navigator&&location.protocol!="file:")navigator.serviceWorker.register("sw.js")</script>
+<script>if("serviceWorker" in navigator&&location.protocol!="file:"&&!window.APP_SHELL)navigator.serviceWorker.register("sw.js")</script>
 </body></html>

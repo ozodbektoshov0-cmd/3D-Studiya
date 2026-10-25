@@ -18,8 +18,7 @@ async function rpfRead(f){
    return new Blob([hd,f.slice(e.off,e.off+e.sz)])}
   if(e.b)throw Error('Bu fayl shifrlangan');
   const raw=f.slice(e.off,e.off+(e.sz||e.a));if(!e.sz)return raw;
-  if(typeof DecompressionStream=='undefined')throw Error('Brauzer siqilgan faylni ocholmaydi');
-  return new Response(raw.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob()};
+  return new Blob([await rawInflate(raw)])};
  return{L,get}}
 function pairYtd(L,p){const base=p.replace(/\.(yft|ydr)$/i,''),lc=s=>s.toLowerCase();for(const k of[base+'.ytd',base.replace(/_hi$/i,'')+'.ytd']){const e=L.find(x=>lc(x.path)==lc(k));if(e)return e}return null}
 async function rpf(f){const{L,get}=await rpfRead(f);
@@ -31,7 +30,7 @@ async function rpf(f){const{L,get}=await rpfRead(f);
   L.filter(e=>e.path.toLowerCase().includes(q)).slice(0,300).forEach(e=>{
    const r=document.createElement('div'),s=document.createElement('span'),fn=e.path.split('/').pop();
    s.textContent=e.path+' · '+Math.round((e.res?e.sz:(e.sz||e.a))/1024)+' KB';r.append(s);
-   r.append(mk('Yuklab olish',async()=>{try{const a=document.createElement('a');a.href=URL.createObjectURL(await get(e));a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)}catch(x){toast(x.message)}}));
+   r.append(mk('Yuklab olish',async()=>{try{saveBlob(await get(e),fn)}catch(x){toast(x.message)}}));
    if(/\.(glb|gltf|obj|stl|ply|dff|txd|yft|ytd|ydr)$/i.test(fn))r.append(mk('Ochish',async()=>{try{const b=await get(e);d.close();const y=/\.(yft|ydr)$/i.test(fn)?pairYtd(L,e.path):null;if(y)try{await ytd(await get(y))}catch(z){toast('YTD: '+z.message)}await load(new File([b],fn))}catch(x){toast(x.message)}}));
    if(/\.rpf$/i.test(fn))r.append(mk('Ichini ochish',async()=>{try{await rpf(new File([await get(e)],fn))}catch(x){toast(x.message)}}));
    l.append(r)});

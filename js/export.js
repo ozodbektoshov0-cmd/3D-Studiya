@@ -6,7 +6,7 @@ $('#ex').onclick=()=>{
  let hid=[];if($('#onlysel')&&$('#onlysel').checked){const ps=new Set(pick());hid=meshes().filter(m=>m.visible&&!ps.has(m)&&!(m.userData.dummy&&fmt=='dff'));hid.forEach(m=>m.visible=false)}
  root.rotation.x=$('#zup').checked&&fmt!='dff'&&fmt!='skp'?Math.PI/2:0;root.updateMatrixWorld(true);
  const done=(d,mime)=>{if(window.xrayResume)xrayResume();hid.forEach(m=>m.visible=true);dm.forEach(m=>m.visible=true);root.rotation.x=r0;root.updateMatrixWorld(true);if(sel)tc.attach(sel);
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:mime}));a.download=name+'.'+fmt;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3);const xi=fmt=='dff'?dffOut.info:fmt=='skp'?skpOut.info:null;toast(fmt.toUpperCase()+' tayyor'+(xi&&xi.length?' ('+xi.join(', ')+')':''))};
+  saveBlob(new Blob([d],{type:mime}),name+'.'+fmt);const xi=fmt=='dff'?dffOut.info:fmt=='skp'?skpOut.info:null;toast(fmt.toUpperCase()+' tayyor'+(xi&&xi.length?' ('+xi.join(', ')+')':''))};
  const fail=e=>{if(window.xrayResume)xrayResume();hid.forEach(m=>m.visible=true);dm.forEach(m=>m.visible=true);root.rotation.x=r0;toast('Xato: '+(e.message||e))};
  try{
   if(fmt=='glb'||fmt=='gltf'){const x=new THREE.GLTFExporter(),o={binary:fmt=='glb',animations:window.CLIPS||[]},cb=r=>done(fmt=='glb'?r:JSON.stringify(r),'model/gltf');
