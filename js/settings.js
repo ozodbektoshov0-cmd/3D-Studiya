@@ -108,6 +108,7 @@ const sec=[
  {k:'snS',t:'rng',l:'Magnit: o’lcham qadami',mn:.01,mx:1,st:.01,v:.1,ap:snapAp},
  {k:'hl',t:'rng',l:'Bekor qilish tarixi',h:'Eng ko’p saqlanadigan amallar soni.',mn:10,mx:500,st:10,v:200}]],
 ['Interfeys va asboblar',[
+ {k:'lang',t:'sel',l:'Dastur tili',o:[['uz','O’zbekcha'],['en','English'],['ru','Русский']],v:'uz',ap:v=>window.I18N&&I18N.set(v)},
  {k:'ui',t:'sel',l:'Interfeys o’lchami',o:[[11,'Kichik'],[12,'Oddiy'],[14,'Katta'],[16,'Juda katta']],v:12,ap:v=>document.body.style.fontSize=v+'px'},
  {k:'acc',t:'col',l:'Asosiy rang',v:'#4772b3',ap:v=>document.documentElement.style.setProperty('--ac',v),sw:['#4772b3','#2e8b57','#8a5cc2','#c0392b','#d98a1f']},
  {k:'tLt',t:'chk',l:'Chap asboblar paneli',v:true,ap:v=>vis('#lt',v)},
@@ -163,7 +164,7 @@ function sync(){I.forEach(i=>{if(i.set)i.set(i.g?i.g():C[i.k])})}
 const ab=E('dialog',{id:'ab'});
 ab.innerHTML=`<div class="ph"><b>Ilova haqida</b><span class="sp"></span><button title="Yopish">✕</button></div>
 <div class="db ab-body">
-<h2>3D STUDIYA <small>v32</small></h2>
+<h2>3D STUDIYA <small>v33</small></h2>
 <p>3D Studiya — brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya dasturi. Fayllar serverga yuklanmaydi: hammasi qurilmangizning o’zida bajariladi. Ilovani telefon yoki kompyuterga o’rnatib, internetsiz ham ishlatish mumkin.</p>
 <h3>Imkoniyatlar</h3>
 <ul>
