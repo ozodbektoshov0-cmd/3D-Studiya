@@ -2,7 +2,7 @@
 <html lang="uz"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>3D Studiya — ko’rish, tahrirlash, konvertatsiya</title>
-<meta name="description" content="3D Studiya — brauzerda 3D modellarni ko’rish, tahrirlash va konvertatsiya qilish (GLB, OBJ, FBX, DFF, TXD, SKP va boshqalar). Server kerak emas.">
+<meta name="description" content="3D Studiya — brauzerda 3D modellarni ko’rish, tahrirlash va konvertatsiya qilish (GLB, OBJ, FBX, DFF, TXD, SKP, Z3D va boshqalar). Server kerak emas.">
 <meta name="theme-color" content="#1d1d1d">
 <meta property="og:type" content="website"><meta property="og:site_name" content="3D Studiya"><meta property="og:title" content="3D Studiya — 3D ko’rish, tahrirlash, konvertatsiya"><meta property="og:description" content="Brauzerda ishlaydigan 3D muharrir va konverter: GLB, OBJ, FBX, DFF, TXD, SKP va ko’p formatlar.">
 <meta property="og:image" content="https://3d-studiya.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://3d-studiya.vercel.app/">
@@ -11,8 +11,8 @@
 <link rel="stylesheet" href="css/style.css"></head><body>
 <div id="app">
 <header>
-<b class="logo">3D STUDIYA <small style="font-weight:400;opacity:.6;font-size:10px">v33</small></b>
-<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
+<b class="logo">3D STUDIYA <small style="font-weight:400;opacity:.6;font-size:10px">v34</small></b>
+<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.z3d,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>z3d<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
 <details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button></div></details>
 <details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
@@ -34,7 +34,7 @@
 <button id="ortho">Ortho</button><button data-v="0,0,1">Old</button><button data-v="1,0,0">O’ng</button><button data-v="0,1,.001">Yuqori</button>
 <button id="edit">Edit (Tab)</button><button id="msel">Ko’p tanlash</button><button id="selall">Hammasi (Ctrl+A)</button><button id="bsel">Ramka</button><button id="xray">X-ray</button><button id="wf">Karkas</button><button id="grid" class="on">Panjara</button><button id="snap">Magnit</button>
 </div>
-<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · 3DM · SKP · 3DS · AMF · LWO · PCD · PLY · PMD/PMX · PTX · STEP/STP · VOX · VTP · X · X3D · XYZ · OFF · DFF + TXD + YFT / YDR / YTD + RPF (GTA)</div>
+<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · 3DM · SKP · Z3D · 3DS · AMF · LWO · PCD · PLY · PMD/PMX · PTX · STEP/STP · VOX · VTP · X · X3D · XYZ · OFF · DFF + TXD + YFT / YDR / YTD + RPF (GTA)</div>
 </div>
 <aside>
 <div class="ph">Outliner</div><div id="list"></div>
@@ -85,6 +85,7 @@
 <script src="js/formats2.js"></script>
 <script src="js/skp.js"></script>
 <script src="js/maxread.js"></script>
+<script src="js/z3d.js"></script>
 <script src="js/more.js"></script>
 <script src="js/mesh.js"></script>
 <script src="js/tools.js"></script>

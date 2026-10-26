@@ -35,6 +35,11 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - Ixtiyoriy (CDN’siz ishlatish): Node.js 18+ bilan `sh tools/build-openskp.sh` → `vendor/openskp.min.js`. `vendor/license.openskp.txt` (MIT) ni qoldiring.
 - Cheklov: katta fayllar (≈100 MB+) brauzer xotirasiga sig’maydi; juda eski (V3–V6) fayllar o’qilmasligi mumkin.
 
+## Z3D qo’llab-quvvatlash (ZModeler 3)
+- `js/z3d.js` — `.z3d` import va eksport. Fayl: `Z3DM` sarlavha + zlib + chunklar. Import: meshlar (dunyo koordinatasida, Y-up), yuzalar, normallar, burchak bo’yicha UV, materiallar (rang, yaltiroqlik, shaffoflik), pivot. Har bir mesh o’z materialiga ega.
+- Eksport: Format ro’yxatidan `z3d`. Ko’p materialli mesh materiallar bo’yicha ajratiladi; 65535 dan ko’p uchli mesh bo’laklanadi. Teksturalar yozilmaydi (rang saqlanadi).
+- Cheklov: tekstura chunklari o’rganilmagan (namuna faylda yo’q edi), shuning uchun teksturalar o’qilmaydi; ierarxiya/animatsiya yo’q.
+
 ## Mesh asboblari (`js/mesh.js`)
 - **Tuzilma:** ota/bola (Parent/Unparent), Boolean birlashtirish / ayirish / kesishma (BSP-CSG, 6000 uchburchakgacha, yopiq meshlar uchun).
 - **Yuza:** yuza rejimi (tekis yuzani bosib tanlash), Extrude, Inset, o’chirish, Subdivide; UV avto (quti) va UV ×2, ÷2, 90°, aks.

@@ -1,11 +1,11 @@
 /* Oflayn kesh — barcha fayllar ilova bilan birga keladi, internet kerak emas.
    Yangilash: V ni oshiring (v25 → v26) va barcha fayllarni bu ro'yxatga qo'shing. */
-const V='3d-studiya-v33';
+const V='3d-studiya-v34';
 const ASSETS=[
  ".","index.html","manifest.webmanifest","css/style.css","icon-192.png","icon-512.png",
  "js/native.js","js/core.js","js/dff-read.js","js/txd.js","js/dff-write.js","js/yft.js","js/ytd.js",
  "js/loader.js","js/rpf.js","js/editor.js","js/export.js","js/features.js","js/edit.js","js/formats.js",
- "js/formats2.js","js/tools.js","js/txd-write.js","js/skp.js","js/maxread.js","js/group.js","js/gta.js",
+ "js/formats2.js","js/tools.js","js/txd-write.js","js/skp.js","js/maxread.js","js/z3d.js","js/group.js","js/gta.js",
  "js/extra.js","js/more.js","js/mesh.js","js/settings.js","js/i18n.js",
  "vendor/three.min.js","vendor/OrbitControls.js","vendor/TransformControls.js","vendor/GLTFLoader.js",
  "vendor/OBJLoader.js","vendor/STLLoader.js","vendor/PLYLoader.js","vendor/GLTFExporter.js",

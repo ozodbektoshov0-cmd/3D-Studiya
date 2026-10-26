@@ -29,6 +29,7 @@ async function load(f){
  else if(EXT2.test(ext))o=await imp2(ext,buf);
  else if(ext=='skp')o=await skpImp(buf);
  else if(ext=='max')o=maxImp(buf);
+ else if(ext=='z3d')o=z3dImp(buf);
  else if(ext=='blend')throw Error('.blend yopiq format, brauzerda o’qib bo’lmaydi — Blender’da GLB yoki FBX qilib saqlang');
  else if(ext=='ytd'){toast(f.name+': teksturalar ochilmoqda…');await ytd(f);return}
  else if(ext=='ydr'){toast(f.name+': GTA V modeli ochilmoqda…');o=await yft(f,true)}
@@ -38,6 +39,7 @@ async function load(f){
  else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YTD/YFT/YDD hozircha yo’q)');
  texNames(o);
  o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);o.animations&&o.animations.length&&anim(o);$('#hint').style.display='none';refresh();fit(o);if(/^(yft|ydr)$/.test(ext))missTex();
+ if(ext=='z3d')toast('Z3D: '+z3dImp.count+' obyekt, '+z3dImp.tris+' uchburchak'+(z3dImp.info.length?' ('+z3dImp.info.join('; ')+')':''));
  if(ext=='max')toast('MAX: '+Math.round(maxImp.tris)+' uchburchak'+(maxImp.info.length?' ('+maxImp.info.join('; ')+')':''));
 }
 async function loadAll(fs){for(const f of fs){try{await load(f)}catch(e){toast(f.name+': '+(e.message||e))}}}

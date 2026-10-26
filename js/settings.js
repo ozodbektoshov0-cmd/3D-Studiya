@@ -164,11 +164,11 @@ function sync(){I.forEach(i=>{if(i.set)i.set(i.g?i.g():C[i.k])})}
 const ab=E('dialog',{id:'ab'});
 ab.innerHTML=`<div class="ph"><b>Ilova haqida</b><span class="sp"></span><button title="Yopish">✕</button></div>
 <div class="db ab-body">
-<h2>3D STUDIYA <small>v33</small></h2>
+<h2>3D STUDIYA <small>v34</small></h2>
 <p>3D Studiya — brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya dasturi. Fayllar serverga yuklanmaydi: hammasi qurilmangizning o’zida bajariladi. Ilovani telefon yoki kompyuterga o’rnatib, internetsiz ham ishlatish mumkin.</p>
 <h3>Imkoniyatlar</h3>
 <ul>
-<li>GLB, GLTF, OBJ, FBX, STL, PLY, DAE, 3MF, USD, SKP, STEP va boshqa ko’plab formatlarni ochish va eksport qilish.</li>
+<li>GLB, GLTF, OBJ, FBX, STL, PLY, DAE, 3MF, USD, SKP, Z3D, STEP va boshqa ko’plab formatlarni ochish va eksport qilish.</li>
 <li>GTA modlari uchun: DFF, TXD, YFT, YDR, YTD va RPF fayllari, avto razmer, dummy va _ok/_dam vositalari.</li>
 <li>Tahrirlash: ko’chirish, aylantirish, o’lcham, Edit mode, Boolean, poligon kamaytirish, material presetlari.</li>
 <li>Soya, o’lchash, animatsiya, X-ray, Render (PNG) va ko’rinish sifati sozlamalari.</li>
