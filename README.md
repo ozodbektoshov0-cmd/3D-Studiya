@@ -20,6 +20,7 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/editor.js` — tanlash, ko’chirish, rang, nom
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render
 - `js/export.js` — GLB, GLTF, OBJ, STL, PLY, DFF eksporti
+- `js/settings.js` — **Sozlamalar** (sifat, FPS, FXAA, soya, yoritish, kamera, interfeys, fayllar) va **Ilova haqida** oynalari; sozlamalar `localStorage` da saqlanadi
 - `vendor/` — Three.js (sayt internetsiz ham ishlaydi)
 - `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v24`
 
