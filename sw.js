@@ -1,6 +1,6 @@
 /* Oflayn kesh — barcha fayllar ilova bilan birga keladi, internet kerak emas.
    Yangilash: V ni oshiring (v25 → v26) va barcha fayllarni bu ro'yxatga qo'shing. */
-const V='3d-studiya-v26';
+const V='3d-studiya-v31';
 const ASSETS=[
  ".","index.html","manifest.webmanifest","css/style.css","icon-192.png","icon-512.png",
  "js/native.js","js/core.js","js/dff-read.js","js/txd.js","js/dff-write.js","js/yft.js","js/ytd.js",

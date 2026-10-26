@@ -294,6 +294,7 @@
 			const texture = this.loadTexture( textureNode, images );
 			texture.ID = textureNode.id;
 			texture.name = textureNode.attrName;
+			if ( textureNode.RelativeFilename || textureNode.FileName ) texture.userData.src = String( textureNode.RelativeFilename || textureNode.FileName );
 			const wrapModeU = textureNode.WrapModeU;
 			const wrapModeV = textureNode.WrapModeV;
 			const valueU = wrapModeU !== undefined ? wrapModeU.value : 0;

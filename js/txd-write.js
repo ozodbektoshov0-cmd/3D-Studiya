@@ -13,12 +13,22 @@ function dxtEnc(d,w,h,al){
   if(a!=b)K.forEach((k,i)=>{let bi=0,bd=1e9;for(let j=0;j<4;j++){const q=pl[j],dd=(q[0]-d[k])**2+(q[1]-d[k+1])**2+(q[2]-d[k+2])**2;if(dd<bd){bd=dd;bi=j}}bits|=bi<<2*i});
   dv.setUint16(p,a,true);dv.setUint16(p+2,b,true);dv.setUint32(p+4,bits>>>0,true);p+=8}
  return o}
+/* Nomsiz teksturali (FBX/GLB ichiga joylangan) materiallarga tekstura nomi beradi — DFF va TXD bir xil nomni ishlatadi */
+function ensureTexNames(){
+ const used=new Set(),byMap=new Map();
+ meshes().forEach(o=>mats(o).forEach(m=>{if(m.userData.tex)used.add(rwName(m.userData.tex).toLowerCase())}));
+ meshes().forEach(o=>mats(o).forEach(m=>{if(!m.map||m.userData.tex)return;let n=byMap.get(m.map);
+  if(!n){const b=(rwName(String(m.map.name||'').replace(/^Texture::?/i,'')||m.name||'tex').replace(/^_+|_+$/g,'')||'tex').slice(0,28);n=b;let i=2;while(used.has(n.toLowerCase()))n=b+'_'+i++;used.add(n.toLowerCase());byMap.set(m.map,n)}
+  m.userData.tex=n}))}
 async function txdOut(){
+ ensureTexNames();
  const VER=0x1803FFFF,U=a=>new Uint8Array(new Uint32Array(a).buffer),
   cat=a=>{let n=0;a.forEach(x=>n+=x.length);const o=new Uint8Array(n);let p=0;a.forEach(x=>{o.set(x,p);p+=x.length});return o},
   ck=(t,...a)=>{const d=cat(a);return cat([U([t,d.length,VER]),d])},E=()=>ck(3);
  const used=new Set();meshes().forEach(o=>mats(o).forEach(m=>{const n=m.userData.tex||(m.map&&m.map.name);if(n)used.add(rwName(n).toLowerCase())}));
- let L=Object.values(tex).filter(t=>used.has(rwName(t.name).toLowerCase()));if(!L.length)L=Object.values(tex);
+ const okImg=t=>t&&t.image&&t.image.width>0,cand=new Map();Object.values(tex).forEach(t=>{if(okImg(t))cand.set(rwName(t.name).toLowerCase(),t)});
+ meshes().forEach(o=>mats(o).forEach(m=>{const n=m.userData.tex;if(n&&okImg(m.map)&&!cand.has(rwName(n).toLowerCase()))cand.set(rwName(n).toLowerCase(),{name:n,image:m.map.image})}));
+ let L=[...cand.entries()].filter(([k])=>used.has(k)).map(e=>e[1]);if(!L.length)L=[...cand.values()];
  if(!L.length)throw Error('Tekstura yo’q: avval TXD yoki PNG oching');
  const mxs=+$('#txm').value||1024,p2=n=>Math.max(4,Math.min(mxs,2**Math.round(Math.log2(n)))),nat=[];
  for(const t of L){toast('TXD: '+t.name+'…');await new Promise(r=>setTimeout(r,0));

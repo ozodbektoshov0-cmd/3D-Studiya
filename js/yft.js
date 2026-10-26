@@ -40,14 +40,14 @@ async function yft(blob,ydr){
     const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.BufferAttribute(P,3));
     if(Nn)G.setAttribute('normal',new THREE.BufferAttribute(Nn,3));if(UV)G.setAttribute('uv',new THREE.BufferAttribute(UV,2));
     G.setIndex(new THREE.BufferAttribute(I,1));if(!Nn)G.computeVertexNormals();
-    const sh=sm>=0?u16(sm+j*2):j,mt=new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL((sh*0.137)%1,.3,.62),side:2});
+    const sh=sm>=0?u16(sm+j*2):j,mt=new THREE.MeshStandardMaterial({color:0xd0d3d8,side:2});
     const tn=dif(sh);if(tn){mt.userData.tex=mt.name=tn;if(/glass|tint/i.test(tn)){mt.transparent=true;mt.opacity=.5}}
     const me=new THREE.Mesh(G,mt);me.name='geom'+(n++)+'_'+(tn||'shader'+sh);grp.add(me)}catch(e){}}}
   return n-n0}
  drw(Dr,out);
  let placed=0;
  if(!ydr){try{
-  const S=ptr(Dr+0x18),nb=u16(S+0x1A),bk=u16(S+0x18),tr=ptr(S+0x28),pr=ptr(S+0x38),ar=ptr(S+0x10),Bn=ptr(S+0x20),tags=new Map();
+  const S=ptr(Dr+0x18),nb=u16(S+0x1A),bk=u16(S+0x18),tr=ptr(S+0x30),pr=ptr(S+0x38),ar=ptr(S+0x10),Bn=ptr(S+0x20),tags=new Map();
   const bn=i=>{const p=Bn>=0?ptr(Bn+i*0x50+0x38):-1;return p>0?str(p):''};
   for(let i=0;i<bk;i++){let p=u32(ar+i*8);for(let k=0;p>>>28==5&&k<64;k++){const o=X(p);tags.set(u32(o),u32(o+4));p=u32(o+8)}}
   const W=[],world=i=>W[i]||(W[i]=(()=>{const m=new THREE.Matrix4().fromArray(Array.from({length:16},(_,k)=>f4(tr+i*64+k*4))),p=v.getInt16(pr+i*2,true);return p>=0&&p<nb&&p!=i?new THREE.Matrix4().multiplyMatrices(world(p),m):m})());
@@ -56,14 +56,14 @@ async function yft(blob,ydr){
    const dp=ptr(o+0xa0);if(dp<0||u32(dp)!=0x52465244)continue;
    const idx=tags.get(u16(o+0x12));if(idx===undefined||idx>=nb)continue;
    try{const g=new THREE.Group();g.name=bn(idx)||'bone'+idx;if(drw(dp,g)){tpl[g.name]=g.clone();g.applyMatrix4(world(idx));out.add(g);placed++;done.add(idx)}}catch(e){}}
-  /* GTA V: g'ildirak modeli ko'pincha faqat bitta (wheel_lf) saqlanadi — qolgan g'ildirak bo'g'imlariga nusxa qo'yiladi (o'ng tomon ko'zgu) */
-  const mirrorGrp=g=>{const c=g.clone();c.traverse(m=>{if(!m.isMesh)return;const G=m.geometry.clone();G.applyMatrix4(new THREE.Matrix4().makeScale(-1,1,1));
-   const ix=G.index.array;for(let i=0;i+2<ix.length;i+=3){const t=ix[i+1];ix[i+1]=ix[i+2];ix[i+2]=t}G.index.needsUpdate=true;m.geometry=G});return c};
+  /* GTA V: g'ildirak modeli ko'pincha faqat bitta (wheel_lf) saqlanadi — qolgan g'ildirak bo'g'imlariga nusxa qo'yiladi */
   const pickTpl=nm=>{const k=nm.slice(7),c=['wheel_l'+k,'wheel_r'+k];if(k[0]=='r')c.push('wheel_lr','wheel_lf');else if(k[0]=='m')c.push('wheel_lm1','wheel_lr','wheel_lf');else c.push('wheel_lf');
    for(const t of c)if(tpl[t])return t;return null};
   for(let i=0;i<nb;i++){const nm=bn(i);if(!/^wheel_[lr][fmr]\d*$/.test(nm)||done.has(i))continue;const t=pickTpl(nm);if(!t)continue;
-   let g=nm[6]!=t[6]?mirrorGrp(tpl[t]):tpl[t].clone();g.name=nm;g.applyMatrix4(world(i));out.add(g);placed++;done.add(i)}
+   /* Qarama-qarshi tomondagi g'ildirak: model vertikal o'q atrofida 180° buriladi (bone markazi atrofida), nusxa/siljitish yo'q */
+   const flip=t[6]!=nm[6],g=tpl[t].clone();g.name=nm;
+   g.applyMatrix4(flip?new THREE.Matrix4().multiplyMatrices(world(i),new THREE.Matrix4().makeRotationZ(Math.PI)):world(i));out.add(g);placed++;done.add(i)}
  }catch(e){}}
  if(!n)throw Error('YFT ichida geometriya topilmadi');
- out.userData.parts=placed;out.rotation.x=-Math.PI/2;const w=new THREE.Group();w.add(out);return w;
+ out.userData.parts=placed;out.rotation.set(-Math.PI/2,0,0); /* faqat Z-up → Y-up (DFF bilan bir xil): fayldagi haqiqiy koordinatalar o'zgarmaydi, old = -Z */const w=new THREE.Group();w.add(out);return w;
 }

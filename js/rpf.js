@@ -1,5 +1,6 @@
 /* ---- RPF7 (GTA V arxivi, shifrsiz “OPEN”) ---- */
-async function rpfRead(f){
+async function rpfRead(f,depth){
+ depth=depth||0;
  const rd=async(a,n)=>new DataView(await f.slice(a,a+n).arrayBuffer()),h=await rd(0,16);
  if(h.getUint32(0,true)!=0x52504637)throw Error('Bu RPF7 emas (GTA V arxivi kerak)');
  const n=h.getUint32(4,true),nl=h.getUint32(8,true),enc=h.getUint32(12,true);
@@ -12,6 +13,7 @@ async function rpfRead(f){
   else{const o=b3(p+5);L.push({path:pre+name,sz:b3(p+2),off:(o&0x7FFFFF)*512,res:!!(o&0x800000),a:E.getUint32(p+8,true),b:E.getUint32(p+12,true)})}};
  walk(0,'',0);
  const get=async e=>{
+  if(e.src)return e.src.get(e.orig);
   if(e.res){if(e.sz==0xFFFFFF)throw Error('Juda katta resurs qo’llanmaydi');
    if(new DataView(await f.slice(e.off,e.off+4).arrayBuffer()).getUint32(0,true)==0x37435352)return f.slice(e.off,e.off+e.sz);
    const hd=new Uint8Array(new Uint32Array([0x37435352,(e.a>>>28&15)<<4|(e.b>>>28&15),e.a,e.b]).buffer);
@@ -19,9 +21,13 @@ async function rpfRead(f){
   if(e.b)throw Error('Bu fayl shifrlangan');
   const raw=f.slice(e.off,e.off+(e.sz||e.a));if(!e.sz)return raw;
   return new Blob([await rawInflate(raw)])};
+ /* ichma-ich arxivlar (masalan dlc.rpf → x64/vehicles.rpf) avtomatik ochiladi */
+ if(depth<3)for(const e of L.slice()){if(!/\.rpf$/i.test(e.path)||e.res||(e.sz||e.a)<64)continue;
+  try{const sub=await rpfRead(await get(e),depth+1);sub.L.forEach(x=>L.push({path:e.path+'/'+x.path,sz:x.sz,off:x.off,res:x.res,a:x.a,b:x.b,src:sub,orig:x}))}catch(x){}}
  return{L,get}}
 function pairYtd(L,p){const base=p.replace(/\.(yft|ydr)$/i,''),lc=s=>s.toLowerCase();for(const k of[base+'.ytd',base.replace(/_hi$/i,'')+'.ytd']){const e=L.find(x=>lc(x.path)==lc(k));if(e)return e}return null}
 async function rpf(f){const{L,get}=await rpfRead(f);
+ const pri=e=>/\.(yft|ydr|ytd|dff|txd|glb|gltf|obj|stl|ply)$/i.test(e.path)?0:/\.rpf$/i.test(e.path)?2:1;L.sort((a,b)=>pri(a)-pri(b));
  let d=$('#rp');
  if(!d){d=document.createElement('dialog');d.id='rp';d.innerHTML='<div class="ph"><b id="rt"></b><input id="rq" placeholder="Qidirish…"><button id="rc">Yopish</button></div><div id="rl"></div>';document.body.append(d);$('#rc').onclick=()=>d.close()}
  $('#rt').textContent=f.name+' · '+L.length+' fayl';$('#rq').value='';
