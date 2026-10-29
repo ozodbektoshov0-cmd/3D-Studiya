@@ -115,12 +115,17 @@ function viewLabel(){const d=new THREE.Vector3();cam.getWorldDirection(d);let k=
  q('#gzo').classList.toggle('on',o)}
 
 /* ---------- outliner ---------- */
+/* indekssiz geometriyada (OBJ, STL…) har uchburchak o’z uchlariga ega — “Uchlar” sonini Blender kabi noyob nuqtalar bo’yicha hisoblaymiz (kesh bilan) */
+const UQ=new WeakMap();
+function uniq(g,p){if(g.index)return p.count;const c=UQ.get(g);if(c&&c.n==p.count&&c.v==p.version)return c.u;
+ let u=p.count;if(p.count<=600000){const s=new Set(),a=p.array,k=p.itemSize;for(let i=0;i<p.count;i++)s.add(Math.round(a[i*k]*1e4)+','+Math.round(a[i*k+1]*1e4)+','+Math.round(a[i*k+2]*1e4));u=s.size}
+ UQ.set(g,{n:p.count,v:p.version,u});return u}
 let CN={v:0,t:0,o:0};
 const rf0=refresh;
 refresh=function(){rf0.apply(this,arguments);try{deco()}catch(e){console.warn(e)}};
 function deco(){
  const ml=meshes(),L0=q('#list');let v=0,t=0;
- ml.forEach(m=>{const p=m.geometry&&m.geometry.getAttribute('position');if(p){v+=p.count;t+=m.geometry.index?m.geometry.index.count/3:p.count/3}});
+ ml.forEach(m=>{const p=m.geometry&&m.geometry.getAttribute('position');if(p){v+=uniq(m.geometry,p);t+=m.geometry.index?m.geometry.index.count/3:p.count/3}});
  CN={v,t:Math.round(t),o:ml.length};
  q('#ocnt').textContent=ml.length?ml.length:'';
  qa(':scope>button',L0).forEach((b,i)=>{const m=ml[i];if(!m)return;

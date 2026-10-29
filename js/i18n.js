@@ -310,11 +310,37 @@ Yaqinlashtirish (sudrang) · bosish: modelga moslash|Zoom (drag) · click: fit t
 Siljitish (sudrang)|Pan (drag)|Сдвиг (тяните)
 Perspektiva / Ortho|Perspective / Ortho|Перспектива / Ortho
 Ko’rsatish / yashirish|Show / hide|Показать / скрыть
+Tuzilma|Structure|Структура
+Ota qilish (aktiv → ikkinchisiga bola)|Parent (active → child of the other)|Назначить родителя (активный → дочерний)
+Ildizga ajratish (Unparent)|Unparent (move to root)|Отвязать (в корень)
+Boolean: birlashtirish|Boolean: union|Булево: объединение
+Boolean: A − B (ayirish)|Boolean: A − B (difference)|Булево: A − B (разность)
+Boolean: kesishma|Boolean: intersect|Булево: пересечение
+Yuza rejimi (tanlash)|Face mode (select)|Режим граней (выбор)
+Extrude (tortish)|Extrude|Выдавливание
+Inset (ichkariga kichraytirish)|Inset (shrink inward)|Вставка (уменьшение внутрь)
+Yuzani o’chirish|Delete face|Удалить грань
+Chamfer (qirrani qiyalatish)|Chamfer (bevel the edge)|Фаска (скос ребра)
+Bo’lish (subdivide: tanlangan yoki hammasi)|Subdivide (selected or all)|Подразделить (выбранное или всё)
+Tanlovni bekor qilish|Deselect|Снять выделение
+UV 90° burish|Rotate UV 90°|Повернуть UV на 90°
+Skelet ko’rsatish|Show skeleton|Показать скелет
+Suyak tanlash / burish|Select / rotate bone|Выбор / поворот кости
+Kalit qo’shish (hozirgi poza)|Add key (current pose)|Добавить ключ (текущая поза)
+Klip yaratish|Create clip|Создать клип
+Kalitlarni tozalash|Clear keys|Очистить ключи
+Qirqish zaxirasi:|Trim margin:|Запас обрезки:
+Yopishtirish masofasi:|Snap distance:|Расстояние привязки:
+1) Olinadigan detalni (donor) tanlang va tugmani bosing. 2) O‘rniga qo‘yiladigan detalni (maqsad) tanlang va tugmani bosing. 3) Moslashtirish.|1) Select the part to take (donor) and press the button. 2) Select the part it replaces (target) and press the button. 3) Fit.|1) Выберите берущуюся деталь (донор) и нажмите кнопку. 2) Выберите заменяемую деталь (цель) и нажмите кнопку. 3) Подогнать.
+Yuza|Face|Грань
+Skelet|Skeleton|Скелет
+Klip|Clip|Клип
 `;
 const D={en:{},ru:{}};
 raw.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1].replace(/\\n/g,'\n');D.ru[k]=a[2].replace(/\\n/g,'\n')}});
 /* o’zgaruvchan sonli matnlar */
 const P=[
+ [/^SKP: (\d+) ta orqa yuza mesh’i olib tashlandi.*$/,'SKP: $1 back-face meshes removed (faces are double-sided)','SKP: удалено мешей обратных граней: $1 (грани двусторонние)'],
  [/^(\d+) ta mesh · (.+) uchburchak$/,'$1 meshes · $2 triangles','$1 мешей · $2 треугольников'],
  [/^Razmer: (.+)$/,'Size: $1','Размер: $1'],
  [/^Masofa: (.+)$/,'Distance: $1','Расстояние: $1'],

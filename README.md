@@ -2,6 +2,12 @@
 
 Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server kerak emas.
 
+## v37 tuzatishlari
+- **USDZ eksport bo’sh fayl chiqarardi** (OBJ/STL/PLY/FBX kabi Phong/Lambert materialli modellarda): eksport vaqtida vaqtincha Standard materialga almashtiriladi.
+- **SKP import:** har bir yuzaning orqa tomoni alohida (qizil) mesh bo’lib kelib, uchburchaklarni ikki baravar qilardi — endi olib tashlanadi, yuzalar ikki tomonlama.
+- **Service worker** eski kodni ko’rsatib turardi (avval kesh) — endi HTML/JS/CSS avval tarmoqdan olinadi.
+- Ingliz/rus tilida tarjimasiz qolgan menyu matnlari (Tuzilma, Yuza, Skelet, Klip va ularning bandlari) qo’shildi; `og.png` oflayn keshga qo’shildi.
+
 ## Blender uslubidagi interfeys (v37)
 - **Workspace tablari:** Maket · Modellash (Edit rejimiga o’tadi) · Materiallar (Material tabini ochadi) · Animatsiya (kadr chizg’ichi chiqadi).
 - **Viewport sarlavhasi:** rejim tanlagich (Obyekt/Edit) va ko’rinish tugmalari; ko’rinish yorlig’i (masalan “Old · Perspektiva”).
@@ -54,7 +60,7 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `css/blender.css` — Blender uslubidagi dizayn (style.css ustiga)
 - `js/i18n.js` — dastur tili (O’zbekcha / English / Русский): lug’at shu faylning boshida, yangi matn qo’shish oson
 - `vendor/` — Three.js (sayt internetsiz ham ishlaydi)
-- `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v24`
+- `sw.js` — oflayn kesh: kod va HTML avval tarmoqdan olinadi (yangilanish darrov ko’rinadi), internet bo’lmasa keshdan; `vendor/` keshdan. Versiya nomi `v37`
 
 ## Ishga tushirish
 `python -m http.server 8000` va brauzerda `localhost:8000`. GitHub Pages yoki Vercel’ga shu papkani o’zini yuklash yetarli.

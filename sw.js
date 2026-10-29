@@ -2,7 +2,7 @@
    Yangilash: V ni oshiring (v25 → v26) va barcha fayllarni bu ro'yxatga qo'shing. */
 const V='3d-studiya-v37';
 const ASSETS=[
- ".","index.html","manifest.webmanifest","css/style.css","css/blender.css","icon-192.png","icon-512.png",
+ ".","index.html","manifest.webmanifest","css/style.css","css/blender.css","icon-192.png","icon-512.png","og.png",
  "js/native.js","js/core.js","js/dff-read.js","js/txd.js","js/dff-write.js","js/yft.js","js/ytd.js",
  "js/loader.js","js/rpf.js","js/editor.js","js/export.js","js/features.js","js/edit.js","js/formats.js",
  "js/formats2.js","js/tools.js","js/txd-write.js","js/skp.js","js/maxread.js","js/z3d.js","js/group.js","js/gta.js",
@@ -30,12 +30,14 @@ self.addEventListener('fetch',e=>{
  if(r.method!='GET')return;
  const u=new URL(r.url);
  if(u.origin!=location.origin)return;              // tashqi so'rovlar keshlanmaydi
- if(r.mode=='navigate'){
-  e.respondWith(caches.match('index.html').then(m=>m||fetch(r)).catch(()=>caches.match('index.html')));
+ const code=r.mode=='navigate'||/\.(html|js|css|webmanifest)$/.test(u.pathname)&&!u.pathname.includes('/vendor/');
+ if(code){  // kod va HTML: avval tarmoq (yangilanish darrov ko'rinadi), internet yo'q bo'lsa kesh
+  e.respondWith(fetch(r).then(x=>{if(x&&x.ok){const y=x.clone();caches.open(V).then(c=>c.put(r.mode=='navigate'?'index.html':r,y))}return x})
+   .catch(()=>caches.match(r.mode=='navigate'?'index.html':r).then(m=>m||caches.match('index.html'))));
   return;
  }
  e.respondWith(caches.match(r).then(m=>{
-  const net=fetch(r).then(x=>{if(x&&x.ok){const y=x.clone();caches.open(V).then(c=>c.put(r,y))}return x}).catch(()=>null);
-  return m||net;   // keshda yo'q va tarmoq yo'q — brauzer xato qaytaradi (HTML almashtirilmaydi)
+  if(m)return m;   // vendor/ va rasmlar: keshdan
+  return fetch(r).then(x=>{if(x&&x.ok){const y=x.clone();caches.open(V).then(c=>c.put(r,y))}return x});
  }));
 });

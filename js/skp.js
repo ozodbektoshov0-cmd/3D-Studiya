@@ -18,7 +18,21 @@ async function skpImp(buf){
  const r=O.toGLB(sc),ab=r instanceof ArrayBuffer?r:r.buffer.slice(r.byteOffset,r.byteOffset+r.byteLength);
  const g=await new Promise((ok,no)=>new THREE.GLTFLoader().parse(ab,'',x=>ok(x.scene),no));
  let n=0;g.traverse(o=>o.isMesh&&n++);if(!n)throw Error('SKP ichida mesh topilmadi');
+ skpBackDedupe(g);
  return g}
+/* openskp har bir yuzaning orqa tomonini ham alohida mesh (teskari tartibli, qizil) qilib beradi — uchburchaklar ikki baravar bo’ladi.
+   Boshqa meshning aynan o’sha uchburchaklaridan iborat mesh orqa tomon hisoblanadi: o’chiramiz, qolgan meshni ikki tomonlama qilamiz. */
+function skpBackDedupe(g){
+ const ms=[];g.updateMatrixWorld(true);g.traverse(o=>o.isMesh&&ms.push(o));
+ const v=new THREE.Vector3(),keys=m=>{const P=m.geometry.getAttribute('position'),I=m.geometry.index,n=Math.floor((I?I.count:P.count)/3),s=new Set();
+  const q=i=>{v.fromBufferAttribute(P,I?I.getX(i):i).applyMatrix4(m.matrixWorld);return Math.round(v.x*1e4)+','+Math.round(v.y*1e4)+','+Math.round(v.z*1e4)};
+  for(let t=0;t<n;t++)s.add([q(t*3),q(t*3+1),q(t*3+2)].sort().join('|'));return s};
+ const seen=[];let drop=0;
+ ms.forEach(m=>{const k=keys(m);if(!k.size)return;
+  const d=seen.find(s=>s.size>=k.size&&[...k].every(x=>s.has(x)));
+  if(d){[].concat(d.m.material).forEach(x=>{x.side=THREE.DoubleSide;x.needsUpdate=true});m.parent.remove(m);drop++}
+  else{k.m=m;seen.push(k)}});
+ if(drop)toast('SKP: '+drop+' ta orqa yuza mesh’i olib tashlandi (yuzalar ikki tomonlama)')}
 /* SKP eksport: SketchUp 2013–2020 formati (yangi SketchUp ham ochadi). Sahna: 1 birlik = 1 metr, Y-up → SketchUp: dyuym, Z-up.
    Uchburchaklar SketchUp yuzalari bo'ladi; ranglar saqlanadi, teksturalar saqlanmaydi. */
 async function skpOut(){

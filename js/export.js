@@ -1,3 +1,9 @@
+/* USDZ eksporti faqat MeshStandardMaterial’ni yozadi (OBJ/STL/PLY/FBX kabi Phong/Lambert/Basic materiallar tashlab ketilib, bo’sh fayl chiqardi).
+   Eksport vaqtida vaqtincha Standard materialga almashtiramiz, so’ng qaytaramiz. */
+function usdzMats(){const bk=[];
+ const cv=m=>{if(!m||m.isMeshStandardMaterial)return m;const s=new THREE.MeshStandardMaterial({color:m.color?m.color.clone():new THREE.Color(0xcccccc),map:m.map||null,opacity:m.opacity==null?1:m.opacity,transparent:!!m.transparent,roughness:.8,metalness:0,side:m.side});s.name=m.name||'';return s};
+ root.traverse(o=>{if(!o.isMesh)return;bk.push([o,o.material]);o.material=Array.isArray(o.material)?o.material.map(cv):cv(o.material)});
+ return()=>bk.forEach(([o,m])=>o.material=m)}
 /* ---- eksport ---- */
 $('#ex').onclick=()=>{
  if(!meshes().length)return toast('Avval model oching');
@@ -17,7 +23,7 @@ $('#ex').onclick=()=>{
   else if(fmt=='skp')skpOut().then(b=>done(b,'application/octet-stream'),fail);
   else if(fmt=='z3d')done(z3dOut(),'application/octet-stream');
   else if(fmt=='dae')new THREE.ColladaExporter().parse(root,r=>done(r.data,'model/vnd.collada+xml'));
-  else if(fmt=='usdz')new THREE.USDZExporter().parse(root).then(b=>done(b,'model/vnd.usdz+zip'),fail);
+  else if(fmt=='usdz'){const rs=usdzMats();new THREE.USDZExporter().parse(root).then(b=>{rs();done(b,'model/vnd.usdz+zip')},e=>{rs();fail(e)})}
   else if(fmt=='fbx')done(fbxOut($('#zup').checked),'application/octet-stream');
   else if(fmt=='vtk')done(vtkOut(),'text/plain');
   else if(fmt=='wrl')done(wrlOut(),'model/vrml');
