@@ -2,6 +2,35 @@
 
 Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server kerak emas.
 
+## Blender uslubidagi interfeys (v37)
+- **Workspace tablari:** Maket · Modellash (Edit rejimiga o’tadi) · Materiallar (Material tabini ochadi) · Animatsiya (kadr chizg’ichi chiqadi).
+- **Viewport sarlavhasi:** rejim tanlagich (Obyekt/Edit) va ko’rinish tugmalari; ko’rinish yorlig’i (masalan “Old · Perspektiva”).
+- **Navigatsiya gizmosi** (o’ng yuqorida): X/Y/Z doirasini bosing — shu tomondan ko’rinish; lupa (sudrang: yaqinlashtirish, bosish: modelga moslash), qo’l (siljitish), perspektiva/ortho.
+- **Outliner:** Sahna to’plami → To’plam daraxti, ko’z belgisi bilan ko’rsatish/yashirish.
+- **Properties:** vertikal tablar — Obyekt (nom, transformatsiya), Material, Teksturalar; yig’iladigan panellar.
+- **Timeline:** ijro/pauza (Probel), kadrga qadam (← →), boshiga/oxiriga (Shift+← →), kadr, boshi/oxiri, tezlik; Animatsiya workspace’ida kalitlar (Klip menyusi) ko’rinadigan chizg’ich va sudrab o’tish.
+- **Holat paneli:** obyekt/uch/uchburchak soni, rejim, asbob, ko’rinish, magnit, bekor/qaytarish, kadr, ijro, animatsiya, tanlangan nom.
+- Yangi fayllar: `css/blender.css`, `js/blender-ui.js` (ikonkalar shu yerda, hammasi o’zimiz chizgan SVG). Mavjud funksiyalar (GTA, SKP, Z3D, Detalni moslashtirish va h.k.) o’zgarmagan.
+- Til: O’zbekcha / English / Русский (yangi matnlar lug’atga qo’shilgan). SEO: keywords, Twitter teglari, JSON-LD.
+
+## Detalni moslashtirish (v36)
+`Asboblar → Detalni moslashtirish (donor → maqsad)…` — bir mashinaning detalini (masalan BMW old bamperi) boshqa mashinaga (masalan Nexia 2) avtomatik moslab qo’yadi (`js/fitpart.js`).
+1. Donor detalni tanlab “Tanlanganni donor qil”, maqsad (o’rniga qo’yiladigan eski detal) ni tanlab “Tanlanganni maqsad qil” ni bosing.
+2. **O’lcham va yo’nalish:** donor maqsadning chegara qutisiga X/Y/Z bo’yicha cho’zilib yoki qisqarib joylashadi; Y o’qi atrofida 0/90/180/270° dan eng kam cho’zilishi avtomatik tanlanadi (yoki qo’lda). “Nisbatni saqlash” — bir xil masshtab.
+3. **Qirqish:** maqsad qutisidan (zaxira bilan) chiqib ketgan qism tekislik bo’yicha kesiladi (UV, normal, material guruhlari saqlanadi).
+4. **Yopishtirish:** kuzovga yaqin uchlar (masofa % da) kuzov sirtiga tortiladi: oraliq yopiladi, chekkalari silliq o’tadi.
+5. Eski detal yashiriladi / o’chiriladi / qoldiriladi. Hammasi bitta Undo bilan qaytariladi.
+- Ogohlantirish: masshtab ×3 dan ortiq (yoki 1/3 dan kam) bo’lsa, detallar bir-biriga mos emasligi haqida xabar chiqadi.
+- Cheklov: bu qutilar va sirt masofasiga asoslangan moslash. Murakkab shaklni (masalan panjara ichidagi tafsilotlar) o’zgartirmaydi va uni qo’lda sozlash kerak bo’lishi mumkin.
+
+## Rasmdan 3D (v35)
+`Qo’shish → Rasmdan 3D…` — PNG/JPG/WEBP rasmdan 3D model yasaydi (`js/img3d.js`). Hammasi brauzerda bajariladi.
+- **Relyef:** yorqinlik balandlikka aylanadi (yengil piksel — baland). Shaffof (PNG) joylar kesib tashlanadi.
+- **Siluet:** rasm konturi bo’yicha bir xil qalinlikda cho’zadi (qorong’i obyekt — och fonda, yoki shaffof fon). “Teskari” — aksi.
+- Sozlamalar: kenglik, balandlik/qalinlik, asos qalinligi, aniqlik (32–256 panjara), yumshatish, siluet chegarasi, teskari, rasmni tekstura qilish.
+- Natija yopiq (suv o’tkazmaydigan) jism: yuqori sirt + tekis tag + devorlar, shuning uchun STL (3D bosib chiqarish) ga yaraydi. Tekstura nomi saqlanadi va DFF eksportda TXD ga o’tadi.
+- Cheklov: bu chuqurlikni “taxmin qiluvchi” sun’iy intellekt emas — balandlik rasm yorqinligidan olinadi. Odam yuzi yoki manzara fotosida haqiqiy hajm chiqmaydi; eng yaxshi natija: logotip, chizma, qora-oq rasm, belgi va lithophane uchun.
+
 ## Tuzilma
 - `index.html` — sahifa
 - `css/style.css` — dizayn (yorug’ va qorong’i rejim)
@@ -21,6 +50,8 @@ Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server ke
 - `js/features.js` — Blender uslubidagi qo’shimchalar: primitivlar, nusxa, bekor qilish, raqamli joylashtirish, ko’rinishlar, render
 - `js/export.js` — GLB, GLTF, OBJ, STL, PLY, DFF eksporti
 - `js/settings.js` — **Sozlamalar** (sifat, FPS, FXAA, soya, yoritish, kamera, interfeys, fayllar) va **Ilova haqida** oynalari; sozlamalar `localStorage` da saqlanadi
+- `js/blender-ui.js` — Blender uslubidagi interfeys qatlami (workspace, gizmo, outliner, timeline, holat paneli)
+- `css/blender.css` — Blender uslubidagi dizayn (style.css ustiga)
 - `js/i18n.js` — dastur tili (O’zbekcha / English / Русский): lug’at shu faylning boshida, yangi matn qo’shish oson
 - `vendor/` — Three.js (sayt internetsiz ham ishlaydi)
 - `sw.js` — oflayn kesh: kod va HTML tarmoqdan olinadi (yangilanadi), `vendor/` keshdan. Versiya nomi `v24`

@@ -240,6 +240,76 @@ Sayt — 3d-studiya.vercel.app|Website — 3d-studiya.vercel.app|Сайт — 3d
 Texnologiyalar|Technologies|Технологии
 Three.js r147 · OpenCascade (STEP/IGES) · rhino3dm · OpenSKP (MIT) · fflate. Uchinchi tomon litsenziyalari: THIRD_PARTY_LICENSES.md.|Three.js r147 · OpenCascade (STEP/IGES) · rhino3dm · OpenSKP (MIT) · fflate. Third-party licenses: THIRD_PARTY_LICENSES.md.|Three.js r147 · OpenCascade (STEP/IGES) · rhino3dm · OpenSKP (MIT) · fflate. Лицензии сторонних компонентов: THIRD_PARTY_LICENSES.md.
 3D Studiya — ko’rish, tahrirlash, konvertatsiya|3D Studiya — view, edit, convert|3D Studiya — просмотр, редактирование, конвертация
+Rasmdan 3D…|Image to 3D…|Из изображения в 3D…
+Rasmdan 3D|Image to 3D|Из изображения в 3D
+Rasm tanlash (PNG, JPG, WEBP)…|Choose image (PNG, JPG, WEBP)…|Выбрать изображение (PNG, JPG, WEBP)…
+Rasm tanlanmagan|No image selected|Изображение не выбрано
+Rejim|Mode|Режим
+Relyef — yorqinlik balandlikka aylanadi|Relief — brightness becomes height|Рельеф — яркость становится высотой
+Siluet — kontur bo’yicha cho’zish|Silhouette — extrude along the outline|Силуэт — выдавливание по контуру
+Kenglik|Width|Ширина
+Balandlik / qalinlik|Height / thickness|Высота / толщина
+Asos qalinligi|Base thickness|Толщина основания
+Aniqlik (panjara):|Detail (grid):|Детализация (сетка):
+Yumshatish:|Smoothing:|Сглаживание:
+Siluet chegarasi:|Silhouette threshold:|Порог силуэта:
+Teskari (yorug’ ↔ qorong’i)|Invert (light ↔ dark)|Инверсия (светлое ↔ тёмное)
+Rasmni tekstura qilib qo’llash|Apply image as texture|Применить изображение как текстуру
+Yaratish|Create|Создать
+Yopish|Close|Закрыть
+Avval rasm tanlang|Choose an image first|Сначала выберите изображение
+Detalni moslashtirish (donor → maqsad)…|Fit part (donor → target)…|Подгонка детали (донор → цель)…
+Detalni moslashtirish|Fit part|Подгонка детали
+Tanlanganni donor qil|Set selection as donor|Выбранное — донор
+Tanlanganni maqsad qil|Set selection as target|Выбранное — цель
+Yo’nalish|Orientation|Ориентация
+Avtomatik (eng kam cho’zilish)|Automatic (least stretching)|Авто (наименьшее растяжение)
+Eni (X)|Width (X)|Ширина (X)
+Bo’yi (Y)|Height (Y)|Высота (Y)
+Uzunligi (Z)|Length (Z)|Длина (Z)
+Nisbatni saqlash (bir xil masshtab)|Keep proportions (uniform scale)|Сохранять пропорции (равный масштаб)
+Maqsad chegarasidan chiqqanini qirqish|Trim parts outside the target bounds|Обрезать выходящее за границы цели
+Kuzovga yopishtirish (oraliqni yopish)|Snap to body (close gaps)|Привязка к кузову (закрыть зазоры)
+Eski detal|Old part|Старая деталь
+Yashirish|Hide|Скрыть
+O’chirish|Delete|Удалить
+Qoldirish|Keep|Оставить
+Moslashtirish|Fit|Подогнать
+Donor va maqsadni belgilang|Set donor and target|Укажите донор и цель
+Avval donor detalni tanlang|Select the donor part first|Сначала выберите деталь-донор
+Avval maqsad detalni tanlang|Select the target part first|Сначала выберите целевую деталь
+Maket|Layout|Макет
+Modellash|Modeling|Моделирование
+Materiallar|Materials|Материалы
+Animatsiya|Animation|Анимация
+3D Studiya — brauzerda, serversiz|3D Studiya — in your browser, no server|3D Studiya — в браузере, без сервера
+Obyekt rejimi|Object Mode|Режим объекта
+Edit rejimi|Edit Mode|Режим правки
+Rejim|Mode|Режим
+Sahna to’plami|Scene Collection|Коллекция сцены
+To’plam|Collection|Коллекция
+Obyekt tanlanmagan.|No object selected.|Объект не выбран.
+Modelni sahnadan yoki Outliner’dan tanlang.|Select a model in the scene or the Outliner.|Выберите модель в сцене или в Outliner.
+Transformatsiya|Transform|Трансформация
+Sirt|Surface|Поверхность
+Pleybek ×1|Playback ×1|Воспроизведение ×1
+Pleybek ×0.5|Playback ×0.5|Воспроизведение ×0.5
+Pleybek ×2|Playback ×2|Воспроизведение ×2
+Pleybek ×0.25|Playback ×0.25|Воспроизведение ×0.25
+Boshi|Start|Начало
+Oxiri|End|Конец
+Kadr|Frame|Кадр
+Boshiga|Jump to start|В начало
+Bir kadr orqaga|Previous frame|Предыдущий кадр
+Ijro / to’xtatish (Probel)|Play / pause (Space)|Пуск / пауза (Пробел)
+Bir kadr oldinga|Next frame|Следующий кадр
+Oxiriga|Jump to end|В конец
+O’lchash (2 nuqta)|Measure (2 points)|Измерение (2 точки)
+Kub qo’shish|Add cube|Добавить куб
+Yaqinlashtirish (sudrang) · bosish: modelga moslash|Zoom (drag) · click: fit to model|Масштаб (тяните) · клик: вписать модель
+Siljitish (sudrang)|Pan (drag)|Сдвиг (тяните)
+Perspektiva / Ortho|Perspective / Ortho|Перспектива / Ortho
+Ko’rsatish / yashirish|Show / hide|Показать / скрыть
 `;
 const D={en:{},ru:{}};
 raw.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1].replace(/\\n/g,'\n');D.ru[k]=a[2].replace(/\\n/g,'\n')}});

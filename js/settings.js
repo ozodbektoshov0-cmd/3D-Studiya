@@ -164,7 +164,7 @@ function sync(){I.forEach(i=>{if(i.set)i.set(i.g?i.g():C[i.k])})}
 const ab=E('dialog',{id:'ab'});
 ab.innerHTML=`<div class="ph"><b>Ilova haqida</b><span class="sp"></span><button title="Yopish">✕</button></div>
 <div class="db ab-body">
-<h2>3D STUDIYA <small>v34</small></h2>
+<h2>3D STUDIYA <small>v36</small></h2>
 <p>3D Studiya — brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya dasturi. Fayllar serverga yuklanmaydi: hammasi qurilmangizning o’zida bajariladi. Ilovani telefon yoki kompyuterga o’rnatib, internetsiz ham ishlatish mumkin.</p>
 <h3>Imkoniyatlar</h3>
 <ul>

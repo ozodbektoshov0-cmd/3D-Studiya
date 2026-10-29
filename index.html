@@ -3,54 +3,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>3D Studiya — ko’rish, tahrirlash, konvertatsiya</title>
 <meta name="description" content="3D Studiya — brauzerda 3D modellarni ko’rish, tahrirlash va konvertatsiya qilish (GLB, OBJ, FBX, DFF, TXD, SKP, Z3D va boshqalar). Server kerak emas.">
-<meta name="theme-color" content="#1d1d1d">
+<meta name="theme-color" content="#1d1d1d"><meta name="keywords" content="3D muharrir, onlayn 3D editor, GLB, GLTF, OBJ, STL, FBX, USDZ, DFF, TXD, SKP, 3D konverter, brauzerda 3D, Blender uslubi">
+<meta name="robots" content="index,follow"><meta name="twitter:title" content="3D Studiya — onlayn 3D muharrir va konverter"><meta name="twitter:description" content="Brauzerda 3D modellarni ko’rish, tahrirlash, animatsiya va konvertatsiya. Server va ro’yxatdan o’tish kerak emas.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"3D Studiya","url":"https://3d-studiya.vercel.app/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (WebGL browser)","inLanguage":["uz","en","ru"],"description":"Brauzerda ishlaydigan 3D muharrir va konverter: GLB, GLTF, OBJ, STL, FBX, DFF, TXD, SKP, USDZ va boshqa formatlar.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <meta property="og:type" content="website"><meta property="og:site_name" content="3D Studiya"><meta property="og:title" content="3D Studiya — 3D ko’rish, tahrirlash, konvertatsiya"><meta property="og:description" content="Brauzerda ishlaydigan 3D muharrir va konverter: GLB, OBJ, FBX, DFF, TXD, SKP va ko’p formatlar.">
 <meta property="og:image" content="https://3d-studiya.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://3d-studiya.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="css/style.css"></head><body>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/blender.css"></head><body>
 <div id="app">
 <header>
-<b class="logo">3D STUDIYA <small style="font-weight:400;opacity:.6;font-size:10px">v34</small></b>
+<b class="logo">3D STUDIYA <small>v37</small></b>
 <details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.z3d,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>z3d<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
-<details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button></div></details>
+<details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button><button id="img3d">Rasmdan 3D…</button></div></details>
 <details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
 <details class="mn"><summary>Material</summary><div><label class="chk row"><input type="checkbox" id="allm">Hamma meshlarga</label><button data-p="chrome">Chrome (yaltiratish)</button><button data-p="paint">Yaltiroq bo’yoq</button><button data-p="glass">Oyna</button><button data-p="matte">Mat</button></div></details>
 <details class="mn"><summary>Asboblar</summary><div>
 <div class="row"><input type="number" id="dec" value="50" min="5" max="95"><button id="decb">Poligon kamaytirish (% qoladi)</button></div>
 <div class="row"><select id="asz"><option value="4.5">Yengil mashina 4.5 m<option value="3.8">Kichik mashina 3.8 m<option value="5.0">Sedan / politsiya 5.0 m<option value="5.2">Jip / furgon 5.2 m<option value="7.5">Yuk mashinasi 7.5 m<option value="11">Avtobus 11 m<option value="2.1">Mototsikl 2.1 m<option value="1.7">Velosiped 1.7 m<option value="h1.8">Odam (bo’yi 1.8 m)</select><button id="asb">Avto razmer</button></div>
-<button id="grd">Yerga qo’yish va markazlash</button><button id="att">Attach (birlashtirish)</button><button id="det">Detach (ajratish)</button><button id="swp">Joyini almashtirish (2 obyekt)</button><button id="mov">Birinchisini ikkinchisiga qo’yish</button><button id="rtp">Reset to parent (o’qlarni tekislash)</button><button id="invsel">Teskari tanlash</button><button id="clrsel">Tanlovni tozalash</button><button id="showall">Hammasini ko’rsatish</button><button id="hideall">Hammasini yashirish</button><button id="onlysel2">Faqat tanlanganni ko’rsatish</button><button id="weld">Uchlarni birlashtirish (weld)</button><button id="flip">Normallarni teskari qilish</button><button id="rnorm">Normallarni qayta hisoblash (burchak)</button><button id="sepisl">Ajratish: bog’langan qismlar</button><button id="sepmat">Ajratish: material bo’yicha</button><button id="cen">Tayanch nuqtani markazlash</button><button id="lod">LOD nusxalar yaratish</button><button id="mirx">Ko’zgu nusxa X</button><button id="miry">Ko’zgu nusxa Y</button><button id="mirz">Ko’zgu nusxa Z</button><button id="selmat">Material bo’yicha tanlash</button>
+<button id="grd">Yerga qo’yish va markazlash</button><button id="att">Attach (birlashtirish)</button><button id="det">Detach (ajratish)</button><button id="swp">Joyini almashtirish (2 obyekt)</button><button id="mov">Birinchisini ikkinchisiga qo’yish</button><button id="rtp">Reset to parent (o’qlarni tekislash)</button><button id="invsel">Teskari tanlash</button><button id="clrsel">Tanlovni tozalash</button><button id="showall">Hammasini ko’rsatish</button><button id="hideall">Hammasini yashirish</button><button id="onlysel2">Faqat tanlanganni ko’rsatish</button><button id="weld">Uchlarni birlashtirish (weld)</button><button id="flip">Normallarni teskari qilish</button><button id="rnorm">Normallarni qayta hisoblash (burchak)</button><button id="sepisl">Ajratish: bog’langan qismlar</button><button id="sepmat">Ajratish: material bo’yicha</button><button id="cen">Tayanch nuqtani markazlash</button><button id="fitp">Detalni moslashtirish (donor → maqsad)…</button><button id="lod">LOD nusxalar yaratish</button><button id="mirx">Ko’zgu nusxa X</button><button id="miry">Ko’zgu nusxa Y</button><button id="mirz">Ko’zgu nusxa Z</button><button id="selmat">Material bo’yicha tanlash</button>
 </div></details><details class="mn"><summary>GTA</summary><div><button id="vchk">Avtomobil ierarxiyasini tekshirish</button><button id="vmk">Yetishmagan dummylarni yaratish</button><button id="vpair">Yetishmagan _ok/_dam juftlarini yaratish</button><pre id="gtainfo" style="white-space:pre-wrap;font-size:11px;opacity:.8;margin:6px 8px;max-width:260px"></pre></div></details>
 <span class="sp"></span>
 <button class="hb" id="bset" title="Sozlamalar">⚙ Sozlamalar</button><button class="hb" id="bab" title="Ilova haqida">ⓘ Ilova haqida</button>
 </header>
+<nav id="ws" aria-label="Workspace"><button data-ws="layout" class="on">Maket</button><button data-ws="modeling">Modellash</button><button data-ws="shading">Materiallar</button><button data-ws="animation">Animatsiya</button><span class="sp"></span><span id="wsn">3D Studiya — brauzerda, serversiz</span></nav>
 <main>
 <nav id="lt">
-<button data-m="translate" class="on" title="Ko’chirish (G)">✥</button><button data-m="rotate" title="Aylantirish (R)">⟳</button><button data-m="scale" title="O’lcham (S)">⤢</button><button id="fit" title="Kamera (F)">⌖</button>
+<button data-m="translate" class="on" title="Ko’chirish (G)"></button><button data-m="rotate" title="Aylantirish (R)"></button><button data-m="scale" title="O’lcham (S)"></button><i class="ts"></i><button id="tmsr" title="O’lchash (2 nuqta)"></button><button id="tadd" title="Kub qo’shish"></button><i class="ts"></i><button id="fit" title="Kamera (F)"></button>
 </nav>
 <div id="vp"><canvas id="c"></canvas>
+<div id="vhd"><select id="modesel" aria-label="Rejim"><option value="obj">Obyekt rejimi<option value="edit">Edit rejimi</select>
 <div id="vh">
 <button id="ortho">Ortho</button><button data-v="0,0,1">Old</button><button data-v="1,0,0">O’ng</button><button data-v="0,1,.001">Yuqori</button>
 <button id="edit">Edit (Tab)</button><button id="msel">Ko’p tanlash</button><button id="selall">Hammasi (Ctrl+A)</button><button id="bsel">Ramka</button><button id="xray">X-ray</button><button id="wf">Karkas</button><button id="grid" class="on">Panjara</button><button id="snap">Magnit</button>
-</div>
+</div></div>
+<div id="vlb"></div>
+<div id="gz"><canvas id="gzc" width="132" height="132"></canvas><div class="gzb"><button id="gzz" title="Yaqinlashtirish (sudrang) · bosish: modelga moslash"></button><button id="gzp" title="Siljitish (sudrang)"></button><button id="gzo" title="Perspektiva / Ortho"></button></div></div>
 <div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · 3DM · SKP · Z3D · 3DS · AMF · LWO · PCD · PLY · PMD/PMX · PTX · STEP/STP · VOX · VTP · X · X3D · XYZ · OFF · DFF + TXD + YFT / YDR / YTD + RPF (GTA)</div>
 </div>
 <aside>
-<div class="ph">Outliner</div><div id="list"></div>
-<div class="ph">Teksturalar</div><div id="tl"></div>
+<section id="ol"><div class="ph">Outliner<span class="sp"></span><span id="ocnt"></span></div>
+<div class="oh"><i class="chev"></i><span class="ico" data-ic="folder"></span>Sahna to’plami</div><div class="oh o2"><i class="chev"></i><span class="ico" data-ic="folder"></span>To’plam</div>
+<div id="list"></div></section>
+<section id="pp"><div id="ptabs"><button data-pt="obj" class="on" title="Obyekt"></button><button data-pt="mat" title="Material"></button><button data-pt="tex" title="Teksturalar"></button></div>
+<div id="pbody">
+<div id="noprop">Obyekt tanlanmagan.<br><small>Modelni sahnadan yoki Outliner’dan tanlang.</small></div>
 <div id="prop" hidden>
-<div class="ph">Xossalar</div>
-<label>Nom<input type="text" id="nm"></label>
-<div id="xf"></div>
+<div class="pt on" data-p="obj"><label class="nmr"><span class="ico" data-ic="obj"></span><input type="text" id="nm" aria-label="Nom"></label>
+<details class="pn" open><summary>Transformatsiya</summary><div id="xf"></div></details></div>
+<div class="pt" data-p="mat"><details class="pn" open><summary>Sirt</summary>
 <label>Rang<input type="color" id="col"></label>
 <label>G’adir-budurlik<input type="range" id="rg" min="0" max="1" step=".01"></label>
 <label>Metallik<input type="range" id="mt" min="0" max="1" step=".01"></label>
-<label>Shaffoflik<input type="range" id="op" min="0" max="1" step=".01" value="1"></label>
+<label>Shaffoflik<input type="range" id="op" min="0" max="1" step=".01" value="1"></label></details></div>
 </div>
+<div class="pt" data-p="tex"><details class="pn" open><summary>Teksturalar</summary><div id="tl"></div></details></div>
+</div></section>
 </aside>
 </main>
-<footer><span id="st">Model ochilmagan.</span><span>G ko’chirish · R aylantirish · S o’lcham · Shift+D nusxa · X o’chirish · F kamera · Tab edit mode</span></footer>
+<section id="tlb"><div id="tlh">
+<select id="pbs" aria-label="Playback"><option value="1">Pleybek ×1<option value=".5">Pleybek ×0.5<option value="2">Pleybek ×2<option value=".25">Pleybek ×0.25</select>
+<span class="tc"><button id="tj0" title="Boshiga"></button><button id="tp1" title="Bir kadr orqaga"></button><button id="tpl" title="Ijro / to’xtatish (Probel)"></button><button id="tn1" title="Bir kadr oldinga"></button><button id="tj1" title="Oxiriga"></button></span>
+<span class="sp"></span>
+<label class="fr"><input type="number" id="cf" value="1" min="0" aria-label="Kadr"></label>
+<label class="fr">Boshi<input type="number" id="sf" value="1" min="0"></label><label class="fr">Oxiri<input type="number" id="ef" value="250" min="1"></label>
+</div><canvas id="tlr" height="44"></canvas></section>
+<footer><span id="chips"></span><span class="sp"></span><span id="st">Model ochilmagan.</span></footer>
 </div>
 <div id="toast"></div>
 <script src="vendor/three.min.js"></script>
@@ -92,8 +111,11 @@
 <script src="js/group.js"></script>
 <script src="js/gta.js"></script>
 <script src="js/extra.js"></script>
+<script src="js/img3d.js"></script>
+<script src="js/fitpart.js"></script>
 <script src="js/txd-write.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/settings.js"></script>
+<script src="js/blender-ui.js"></script>
 <script>if("serviceWorker" in navigator&&location.protocol!="file:"&&!window.APP_SHELL)navigator.serviceWorker.register("sw.js")</script>
 </body></html>
