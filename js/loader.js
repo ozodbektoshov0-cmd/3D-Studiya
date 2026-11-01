@@ -12,7 +12,7 @@ function texNames(o){o.traverse(m=>{if(!m.isMesh)return;[].concat(m.material).fo
 /*TN-end*/
 const LZ={"fbx":["FBXLoader.js"],"dae":["ColladaLoader.js"],"wrl":["chevrotain.min.js","VRMLLoader.js"],"vrml":["chevrotain.min.js","VRMLLoader.js"],"vtk":["VTKLoader.js"],"vtp":["VTKLoader.js"],"3mf":["3MFLoader.js"],"3ds":["TDSLoader.js"],"amf":["AMFLoader.js"],"lwo":["IFFParser.js","LWO2Parser.js","LWO3Parser.js","LWOLoader.js"],"pcd":["PCDLoader.js"],"vox":["VOXLoader.js"],"pmx":["mmdparser.min.js","MMDLoader.js"],"pmd":["mmdparser.min.js","MMDLoader.js"]};
 async function load(f){
- const ext=f.name.split('.').pop().toLowerCase(),buf=/^(rpf|yft|ydr|ytd)$/.test(ext)?null:await f.arrayBuffer(),M=()=>new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2});let o;
+ const ext=f.name.split('.').pop().toLowerCase(),buf=/^(rpf|yft|ydr|ytd|wft|wdr|wtd)$/.test(ext)?null:await f.arrayBuffer(),M=()=>new THREE.MeshStandardMaterial({color:0xb0b8c4,side:2});let o;
  for(const n of LZ[ext]||[])await lazy('vendor/'+n);
  if(ext=='glb'||ext=='gltf')o=await new Promise((ok,no)=>new THREE.GLTFLoader().parse(ext=='gltf'?new TextDecoder().decode(buf):buf,'',g=>{g.scene.animations=g.animations;gltfTexNames(g);ok(g.scene)},no));
  else if(ext=='obj')o=new THREE.OBJLoader().parse(new TextDecoder().decode(buf));
@@ -31,14 +31,17 @@ async function load(f){
  else if(ext=='max')o=maxImp(buf);
  else if(ext=='z3d')o=z3dImp(buf);
  else if(ext=='blend')throw Error('.blend yopiq format, brauzerda o’qib bo’lmaydi — Blender’da GLB yoki FBX qilib saqlang');
+ else if(ext=='wtd'){toast(f.name+': GTA IV teksturalari ochilmoqda…');await wtd(f);return}
+ else if(ext=='wft'){toast(f.name+': GTA IV modeli ochilmoqda…');o=await wft(f)}
+ else if(ext=='wdr'){toast(f.name+': GTA IV modeli ochilmoqda…');o=await wft(f,true)}
  else if(ext=='ytd'){toast(f.name+': teksturalar ochilmoqda…');await ytd(f);return}
  else if(ext=='ydr'){toast(f.name+': GTA V modeli ochilmoqda…');o=await yft(f,true)}
  else if(ext=='yft'){toast(f.name+': GTA V modeli ochilmoqda…');o=await yft(f)}
  else if(ext=='dff')o=dff(buf);
  else if(ext=='txd'){txd(buf);return}
- else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YTD/YFT/YDD hozircha yo’q)');
+ else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YDD hozircha yo’q)');
  texNames(o);
- o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);o.animations&&o.animations.length&&anim(o);$('#hint').style.display='none';refresh();fit(o);if(/^(yft|ydr)$/.test(ext))missTex();
+ o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);o.animations&&o.animations.length&&anim(o);$('#hint').style.display='none';refresh();fit(o);if(/^(yft|ydr|wft|wdr)$/.test(ext))missTex();
  if(ext=='z3d')toast('Z3D: '+z3dImp.count+' obyekt, '+z3dImp.tris+' uchburchak'+(z3dImp.info.length?' ('+z3dImp.info.join('; ')+')':''));
  if(ext=='max')toast('MAX: '+Math.round(maxImp.tris)+' uchburchak'+(maxImp.info.length?' ('+maxImp.info.join('; ')+')':''));
 }

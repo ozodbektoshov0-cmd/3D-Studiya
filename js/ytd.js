@@ -34,4 +34,4 @@ async function ytd(blob){
  applyTex();texList();toast(ok+' ta tekstura yuklandi'+(bad?' · '+bad+' tasi qo’llanmaydigan format':''));
 }
 function missTex(){const m=new Set();meshes().forEach(o=>mats(o).forEach(x=>{const n=x.userData.tex;if(n&&!tex[n.toLowerCase()])m.add(n)}));
- if(m.size)toast(m.size+' ta tekstura topilmadi ('+[...m].slice(0,3).join(', ')+(m.size>3?'…':'')+') — mos .ytd (masalan vehshare.ytd) ni ham oching')}
+ if(m.size)toast(m.size+' ta tekstura topilmadi ('+[...m].slice(0,3).join(', ')+(m.size>3?'…':'')+') — mos .ytd/.wtd (masalan vehshare) ni ham oching')}

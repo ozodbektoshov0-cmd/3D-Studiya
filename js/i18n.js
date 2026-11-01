@@ -247,17 +247,25 @@ Rasm tanlanmagan|No image selected|Изображение не выбрано
 Rejim|Mode|Режим
 Relyef — yorqinlik balandlikka aylanadi|Relief — brightness becomes height|Рельеф — яркость становится высотой
 Siluet — kontur bo’yicha cho’zish|Silhouette — extrude along the outline|Силуэт — выдавливание по контуру
+Siluet / Logo — kontur bo’yicha (tavsiya)|Silhouette / Logo — along outline (recommended)|Силуэт / Логотип — по контуру (рекомендуется)
+Relyef — yorqinlik balandlikka|Relief — brightness to height|Рельеф — яркость в высоту
+Logo optimallashtirish (Otsu + tozalash)|Logo optimization (Otsu + cleanup)|Оптимизация логотипа (Otsu + очистка)
 Kenglik|Width|Ширина
 Balandlik / qalinlik|Height / thickness|Высота / толщина
 Asos qalinligi|Base thickness|Толщина основания
 Aniqlik (panjara):|Detail (grid):|Детализация (сетка):
 Yumshatish:|Smoothing:|Сглаживание:
+Yumshatish (faqat relyef):|Smoothing (relief only):|Сглаживание (только рельеф):
 Siluet chegarasi:|Silhouette threshold:|Порог силуэта:
 Teskari (yorug’ ↔ qorong’i)|Invert (light ↔ dark)|Инверсия (светлое ↔ тёмное)
 Rasmni tekstura qilib qo’llash|Apply image as texture|Применить изображение как текстуру
 Yaratish|Create|Создать
 Yopish|Close|Закрыть
 Avval rasm tanlang|Choose an image first|Сначала выберите изображение
+logo aniqlandi|logo detected|логотип обнаружен
+Hech narsa yaratilmadi: “Teskari”ni yoqing yoki chegarani o’zgartiring|Nothing created: enable Invert or change the threshold|Ничего не создано: включите «Инверсия» или измените порог
+(aniqlikni kamaytiring)|(reduce detail)|(уменьшите детализацию)
+Logo uchun: Siluet + Logo optimallashtirish yoqilgan holda eng yaxshi natija. Aniqlikni 64–112 orasida saqlang — poligon kam, sifat yaxshi.|For logos: Silhouette + Logo optimization gives the best result. Keep detail 64–112 — fewer polygons, better quality.|Для логотипов: Силуэт + Оптимизация логотипа даёт лучший результат. Держите детализацию 64–112 — меньше полигонов, лучше качество.
 Detalni moslashtirish (donor → maqsad)…|Fit part (donor → target)…|Подгонка детали (донор → цель)…
 Detalni moslashtirish|Fit part|Подгонка детали
 Tanlanganni donor qil|Set selection as donor|Выбранное — донор
@@ -340,6 +348,8 @@ const D={en:{},ru:{}};
 raw.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1].replace(/\\n/g,'\n');D.ru[k]=a[2].replace(/\\n/g,'\n')}});
 /* o’zgaruvchan sonli matnlar */
 const P=[
+ [/^(.+): PS2 native DFF \(GTA PS2 versiyasi\) qo’llanmaydi.*$/,'$1: PS2 native DFF (GTA PS2 version) is not supported — a PC DFF (San Andreas / Vice City / III) is needed','$1: PS2 native DFF (версия GTA для PS2) не поддерживается — нужен DFF для ПК (San Andreas / Vice City / III)'],
+ [/^(.+): DFF buzuq yoki to’liq emas.*$/,'$1: DFF is corrupt or incomplete (the file may be truncated) — copy the file again','$1: DFF повреждён или неполон (файл мог быть обрезан) — скопируйте файл заново'],
  [/^SKP: (\d+) ta orqa yuza mesh’i olib tashlandi.*$/,'SKP: $1 back-face meshes removed (faces are double-sided)','SKP: удалено мешей обратных граней: $1 (грани двусторонние)'],
  [/^(\d+) ta mesh · (.+) uchburchak$/,'$1 meshes · $2 triangles','$1 мешей · $2 треугольников'],
  [/^Razmer: (.+)$/,'Size: $1','Размер: $1'],
@@ -378,6 +388,7 @@ new MutationObserver(ms=>{if(lang=='uz'){ms.forEach(m=>m.addedNodes.forEach(n=>0
  ms.forEach(m=>{if(m.type=='characterData')fix(m.target);else if(m.type=='attributes')fixA(m.target,m.attributeName);else m.addedNodes.forEach(walk)})
 }).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:AT});
 const T0=document.title;
-window.I18N={set(l){if(!['uz','en','ru'].includes(l))l='uz';lang=l;document.documentElement.lang=l;walk(document.body);
+function addRaw(r){r.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1];D.ru[k]=a[2]}})}
+window.I18N={add(r){addRaw(r);if(lang!='uz')walk(document.body)},set(l){if(!['uz','en','ru'].includes(l))l='uz';lang=l;document.documentElement.lang=l;walk(document.body);
  const t=lang=='uz'?null:D[lang][T0];document.title=t||T0}};
 })();

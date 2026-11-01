@@ -83,7 +83,7 @@ aside section{display:flex;min-height:0}
 #ptabs button.on{background:var(--ac);color:#fff}
 #pbody{flex:1;min-width:0;overflow:auto}
 #noprop{padding:18px 14px;color:var(--mt);text-align:center;line-height:1.5}
-#pbody:has(#prop:not([hidden])) #noprop,#pbody:has(.pt[data-p=tex].on) #noprop{display:none}
+#pbody:has(#prop:not([hidden])) #noprop,#pbody:has(.pt[data-pp=tex].on) #noprop,#pbody:has(.pt[data-pp=car].on) #noprop{display:none}
 #prop .pt,#pbody>.pt{display:none}
 #prop .pt.on,#pbody>.pt.on{display:block}
 .nmr{display:flex!important;align-items:center;gap:8px;margin:8px 10px!important;grid-template-columns:none!important}
@@ -148,3 +148,28 @@ footer{background:#212121;padding:3px 6px;gap:6px;flex-wrap:nowrap;overflow:hidd
 }
 #tlh .fr input{width:64px}
 #tlh{justify-content:flex-start}
+
+/* ---- Mashina paneli ---- */
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:6px 10px}
+.cb{text-align:left;padding:5px 8px;border-radius:4px;background:var(--ip);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb.on{background:var(--ac);color:#fff}
+.cb.pri{background:var(--ac)}
+label.cs,div.cs{display:grid;grid-template-columns:96px 1fr 44px;gap:6px;align-items:center;margin:6px 10px}
+div.cs{grid-template-columns:1fr auto}
+label.cs>select{grid-column:2/4}
+label.cs output{text-align:right;color:var(--mt);font-size:11px}
+#carl{padding:0 10px 8px}
+#carl .ch{color:var(--mt);line-height:1.5;padding:4px 0}
+#carl .cr{padding:4px 0;border-bottom:1px solid #00000033}
+#carl .cr b{display:block;font-weight:600;color:#ddd}
+#carl .cr span{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+#carl .cr i{font-style:normal;background:#3a3a3a;border-radius:3px;padding:1px 6px;cursor:pointer;color:#bbb;font-size:11px}
+#carl .cr i:hover{background:#6a3030;color:#fff}
+
+#app.ws-car #ol{flex:0 0 24%}
+#carp .cs.rr{grid-template-columns:1fr}
+#carp .cs.rr .cb{text-align:center}
+.cb{white-space:normal;line-height:1.25;min-height:26px}
+label.cs{grid-template-columns:92px minmax(0,1fr) 54px}
+label.cs input[type=range]{width:100%;min-width:0;margin:0}
+label.cs output{white-space:nowrap}

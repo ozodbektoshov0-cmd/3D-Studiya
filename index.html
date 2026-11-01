@@ -13,8 +13,8 @@
 <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/blender.css"></head><body>
 <div id="app">
 <header>
-<b class="logo">3D STUDIYA <small>v37</small></b>
-<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.z3d,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>z3d<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
+<b class="logo">3D STUDIYA <small>v41</small></b>
+<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.wft,.wtd,.wdr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.z3d,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>z3d<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
 <details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button><button id="img3d">Rasmdan 3D…</button></div></details>
 <details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
@@ -27,7 +27,7 @@
 <span class="sp"></span>
 <button class="hb" id="bset" title="Sozlamalar">⚙ Sozlamalar</button><button class="hb" id="bab" title="Ilova haqida">ⓘ Ilova haqida</button>
 </header>
-<nav id="ws" aria-label="Workspace"><button data-ws="layout" class="on">Maket</button><button data-ws="modeling">Modellash</button><button data-ws="shading">Materiallar</button><button data-ws="animation">Animatsiya</button><span class="sp"></span><span id="wsn">3D Studiya — brauzerda, serversiz</span></nav>
+<nav id="ws" aria-label="Workspace"><button data-ws="layout" class="on">Maket</button><button data-ws="modeling">Modellash</button><button data-ws="shading">Materiallar</button><button data-ws="animation">Animatsiya</button><button data-ws="car">Mashina</button><span class="sp"></span><span id="wsn">3D Studiya — brauzerda, serversiz</span></nav>
 <main>
 <nav id="lt">
 <button data-m="translate" class="on" title="Ko’chirish (G)"></button><button data-m="rotate" title="Aylantirish (R)"></button><button data-m="scale" title="O’lcham (S)"></button><i class="ts"></i><button id="tmsr" title="O’lchash (2 nuqta)"></button><button id="tadd" title="Kub qo’shish"></button><i class="ts"></i><button id="fit" title="Kamera (F)"></button>
@@ -46,19 +46,20 @@
 <section id="ol"><div class="ph">Outliner<span class="sp"></span><span id="ocnt"></span></div>
 <div class="oh"><i class="chev"></i><span class="ico" data-ic="folder"></span>Sahna to’plami</div><div class="oh o2"><i class="chev"></i><span class="ico" data-ic="folder"></span>To’plam</div>
 <div id="list"></div></section>
-<section id="pp"><div id="ptabs"><button data-pt="obj" class="on" title="Obyekt"></button><button data-pt="mat" title="Material"></button><button data-pt="tex" title="Teksturalar"></button></div>
+<section id="pp"><div id="ptabs"><button data-pt="obj" class="on" title="Obyekt"></button><button data-pt="mat" title="Material"></button><button data-pt="tex" title="Teksturalar"></button><button data-pt="car" title="Mashina"></button></div>
 <div id="pbody">
 <div id="noprop">Obyekt tanlanmagan.<br><small>Modelni sahnadan yoki Outliner’dan tanlang.</small></div>
 <div id="prop" hidden>
-<div class="pt on" data-p="obj"><label class="nmr"><span class="ico" data-ic="obj"></span><input type="text" id="nm" aria-label="Nom"></label>
+<div class="pt on" data-pp="obj"><label class="nmr"><span class="ico" data-ic="obj"></span><input type="text" id="nm" aria-label="Nom"></label>
 <details class="pn" open><summary>Transformatsiya</summary><div id="xf"></div></details></div>
-<div class="pt" data-p="mat"><details class="pn" open><summary>Sirt</summary>
+<div class="pt" data-pp="mat"><details class="pn" open><summary>Sirt</summary>
 <label>Rang<input type="color" id="col"></label>
 <label>G’adir-budurlik<input type="range" id="rg" min="0" max="1" step=".01"></label>
 <label>Metallik<input type="range" id="mt" min="0" max="1" step=".01"></label>
 <label>Shaffoflik<input type="range" id="op" min="0" max="1" step=".01" value="1"></label></details></div>
 </div>
-<div class="pt" data-p="tex"><details class="pn" open><summary>Teksturalar</summary><div id="tl"></div></details></div>
+<div class="pt" data-pp="car" id="carp"></div>
+<div class="pt" data-pp="tex"><details class="pn" open><summary>Teksturalar</summary><div id="tl"></div></details></div>
 </div></section>
 </aside>
 </main>
@@ -94,6 +95,7 @@
 <script src="js/dff-write.js"></script>
 <script src="js/yft.js"></script>
 <script src="js/ytd.js"></script>
+<script src="js/wft.js"></script>
 <script src="js/loader.js"></script>
 <script src="js/rpf.js"></script>
 <script src="js/editor.js"></script>
@@ -116,6 +118,7 @@
 <script src="js/txd-write.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/settings.js"></script>
+<script src="js/carfx.js"></script>
 <script src="js/blender-ui.js"></script>
 <script>if("serviceWorker" in navigator&&location.protocol!="file:"&&!window.APP_SHELL)navigator.serviceWorker.register("sw.js")</script>
 </body></html>

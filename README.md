@@ -2,10 +2,44 @@
 
 Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server kerak emas.
 
+## v41 — GTA IV (WFT / WDR / WTD) qo’llab-quvvatlash
+- **Yangi fayl: `js/wft.js`.** GTA IV resurslari (RSC5: 12 bayt sarlavha + zlib) ochiladi:
+  - **`.wft`** (mashina fragmenti) va **`.wdr`** (oddiy drawable): yuqori LOD, barcha geometriyalar, normal va UV, material → tekstura nomi (shaderning diffuse parametridan).
+  - **`.wtd`** (tekstura lug’ati): DXT1/DXT3/DXT5 (va 32-bit A8R8G8B8) teksturalar dekodlanib, nom bo’yicha materiallarga avtomatik qo’llanadi.
+- Foydalanish: `Fayl → Ochish` yoki sudrab tashlang: `admiral.wft` + `admiral.wtd` (+ umumiy `vehshare.wtd` — `windows`, `vehicle_generic_*` kabi teksturalar shu yerda bo’ladi). Tartibi muhim emas.
+- Koordinatalar GTA V bilan bir xil: Z-up → Y-up, mashina old tomoni −Z.
+- Cheklovlar: skelet/fragment bo’laklari (eshiklar, g’ildiraklar harakati) hali o’qilmaydi, faqat statik model; LOD faqat eng yuqori; WTD ichidagi DXT dan boshqa siqilgan formatlar o’tkazib yuboriladi (xabarda soni chiqadi).
+- Service Worker `v41`.
+
+## v40 tuzatishlari
+- **Rasmdan 3D** butunlay qayta yozildi (`js/img3d.js`):
+  - **Logo / Siluet** endi panjara emas — **kontur izlash + Ramer–Douglas–Peucker soddalashtirish + ear-clip triangulyatsiya**.
+  - Natija: silliq, aniq chegara, juda kam poligon (odatda 200–2000 uchburchak).
+  - Otsu + morfologik tozalash saqlanib qoldi.
+  - «Kontur silliqligi» slayderi qo‘shildi (1.0–2.0 tavsiya).
+  - Relyef rejimi eski panjara usulida qoldi (heightmap uchun).
+- Service Worker `v40`.
+
+## v39 tuzatishlari
+- Rasmdan 3D dastlabki yaxshilanishlar (Otsu, morfologiya, logo aniqlash).
+
+## Mashina funksiyalari (v38)
+`Mashina` workspace’i / Properties’dagi mashina tabi / yuqoridagi `Mashina` menyusi (`js/carfx.js`).
+- **Qismlarni topish:** “Avto-aniqlash” nomlar bo’yicha (door_lf, bonnet, boot, headlight, taillight, indicator, wiper, steering, speedo… GTA nomlari ham) topadi; chap/o’ng va old/orqa joylashuv geometriyadan olinadi. Topilmaganini qo’lda belgilang: modelda qismni tanlang → rolni tanlang → “Tanlanganni belgilash”. Old tomon avtomatik yoki qo’lda (±X/±Z).
+- **Ochiladigan qismlar:** 4 ta eshik, old kapot, bagaj kapoti (sharnir chekkasi va yo’nalish geometriyadan hisoblanadi), tom lyuki (orqaga suriladi), 4 ta oyna (tushadi), 2 ta bakavoy (qayriladi).
+- **Rul** (burchak slayderi), **artgich** (sekin/tez, o’chirilsa joyiga qaytadi), **spidometr va tahometr** strelkalari (tezlik slayderi, “Demo haydash”, strelka yo’li va yo’nalishi sozlanadi).
+- **Chiroqlar:** fara (yaqin/uzoq, nur va yaltirash), gabarit, stop-signal (alohida qism bo’lmasa orqa chiroq yonadi), orqaga yurish, tuman, povorotniklar (chap/o’ng/avariya, panel strelkalari ham miltillaydi), salon plafoni va panel chiroqchalari (dvigatel yoqilganda).
+- Ierarxiya o’zgarmaydi: qism o’z position/quaternion’i bilan harakatlanadi; **eksport paytida hammasi yopiq holatda yoziladi**. Yaltirash materialning emissive’i, nur esa sahnada (root’dan tashqarida) — eksportga kirmaydi.
+- Cheklov: rul/artgich/strelka alohida mesh bo’lishi kerak (kuzovga qo’shilib ketgan bo’lsa harakatlanmaydi). Oyna eshik ichiga kirib ketadi (kesish yo’q). Harakatlar GLB klipiga yozilmaydi (hozircha faqat ko’rish va tekshirish uchun).
+
+## v38 tuzatishlari
+- **DFF import:** kesilgan yoki PS2 (konsol) DFF’larda “Offset is outside the bounds of the DataView” deb tushunarsiz xato chiqardi. Endi chunk o’qish fayl uzunligidan chiqmaydi va xabar aniq: “PS2 native DFF qo’llanmaydi (PC versiyadagi DFF kerak)” yoki “fayl to’liq emas”. PS2 native geometriyasi (flags 0x01000000) hali o’qilmaydi.
+
 ## v37 tuzatishlari
 - **USDZ eksport bo’sh fayl chiqarardi** (OBJ/STL/PLY/FBX kabi Phong/Lambert materialli modellarda): eksport vaqtida vaqtincha Standard materialga almashtiriladi.
 - **SKP import:** har bir yuzaning orqa tomoni alohida (qizil) mesh bo’lib kelib, uchburchaklarni ikki baravar qilardi — endi olib tashlanadi, yuzalar ikki tomonlama.
 - **Service worker** eski kodni ko’rsatib turardi (avval kesh) — endi HTML/JS/CSS avval tarmoqdan olinadi.
+- **Properties bo’limlari `data-p` atributi** `tools.js` dagi material-preset tugmalari bilan to’qnashib, panel ichida bosganda “Mesh tanlang” xabari chiqarardi — `data-pp` ga o’zgartirildi.
 - Ingliz/rus tilida tarjimasiz qolgan menyu matnlari (Tuzilma, Yuza, Skelet, Klip va ularning bandlari) qo’shildi; `og.png` oflayn keshga qo’shildi.
 
 ## Blender uslubidagi interfeys (v37)

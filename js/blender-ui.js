@@ -32,22 +32,23 @@ const P={
  p1:'<path class="f" d="M11 3v10L4 8z"/>',
  n1:'<path class="f" d="M5 3v10l7-5z"/>',
  j1:'<path class="f" d="M3 3v10l8-5z"/><path d="M13 3v10"/>',
- clip:'<path d="M2 3h12v10H2zM2 6h12"/>'
+ clip:'<path d="M2 3h12v10H2zM2 6h12"/>',
+ car:'<path d="M2 10.5V8l1.4-3.2A1.5 1.5 0 0 1 4.8 4h6.4a1.5 1.5 0 0 1 1.4.8L14 8v2.5zM2 8h12"/><circle cx="4.8" cy="11" r="1.4"/><circle cx="11.2" cy="11" r="1.4"/>'
 };
 const ic=n=>'<svg class="ic" viewBox="0 0 16 16" aria-hidden="true">'+P[n]+'</svg>';
 const put=(el,n)=>{if(el)el.innerHTML=ic(n)};
 
 const lg=q('.logo');if(lg)lg.insertAdjacentHTML('afterbegin',ic('logo'));
 const map={'[data-m=translate]':'move','[data-m=rotate]':'rot','[data-m=scale]':'scl','#tmsr':'meas','#tadd':'cube','#fit':'fit',
- '[data-pt=obj]':'obj','[data-pt=mat]':'mat','[data-pt=tex]':'tex','#gzz':'zoom','#gzp':'pan','#gzo':'persp',
+ '[data-pt=obj]':'obj','[data-pt=mat]':'mat','[data-pt=tex]':'tex','[data-pt=car]':'car','#gzz':'zoom','#gzp':'pan','#gzo':'persp',
  '#tj0':'j0','#tp1':'p1','#tn1':'n1','#tj1':'j1'};
 Object.entries(map).forEach(([s,n])=>put(q(s),n));
 qa('[data-ic]').forEach(e=>e.innerHTML=ic(e.dataset.ic));
 
 /* ---------- workspace tablari ---------- */
 const app=q('#app');
-const WS={layout:'obj',modeling:'obj',shading:'mat',animation:'obj'};
-function setProps(k){qa('#ptabs button').forEach(b=>b.classList.toggle('on',b.dataset.pt==k));qa('[data-p]').forEach(p=>p.classList.toggle('on',p.dataset.p==k))}
+const WS={layout:'obj',modeling:'obj',shading:'mat',animation:'obj',car:'car'};
+function setProps(k){qa('#ptabs button').forEach(b=>b.classList.toggle('on',b.dataset.pt==k));qa('[data-pp]').forEach(p=>p.classList.toggle('on',p.dataset.pp==k))}
 qa('#ptabs button').forEach(b=>b.onclick=()=>setProps(b.dataset.pt));
 function setWs(k){
  app.className=(app.className.replace(/\bws-\w+/g,'')+' ws-'+k).trim();
