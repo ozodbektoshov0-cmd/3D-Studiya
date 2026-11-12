@@ -9,5 +9,6 @@
 | occt-import-js / Open CASCADE | LGPL-2.1 (matnlar: `vendor/license.occt*.txt`) |
 | texture2ddecoder (`vendor/t2d`) | MIT (`vendor/t2d/LICENSE`) |
 | OpenSKP (ixtiyoriy, `vendor/openskp.min.js`) | MIT (`vendor/license.openskp.txt`) |
+| Blender (Suzanne mesh ma’lumoti, `js/blender-data.js`) | GPL-2.0-or-later (manba: blender/source/blender/bmesh/operators/bmo_primitive.cc) |
 
 Litsenziya matnlarini tegishli loyihalardan nusxalab qo’ying. Yuqoridagi ro’yxat qisqacha ma’lumot, huquqiy maslahat emas.

@@ -5,16 +5,16 @@
 <meta name="description" content="3D Studiya — brauzerda 3D modellarni ko’rish, tahrirlash va konvertatsiya qilish (GLB, OBJ, FBX, DFF, TXD, SKP, Z3D va boshqalar). Server kerak emas.">
 <meta name="theme-color" content="#1d1d1d"><meta name="keywords" content="3D muharrir, onlayn 3D editor, GLB, GLTF, OBJ, STL, FBX, USDZ, DFF, TXD, SKP, 3D konverter, brauzerda 3D, Blender uslubi">
 <meta name="robots" content="index,follow"><meta name="twitter:title" content="3D Studiya — onlayn 3D muharrir va konverter"><meta name="twitter:description" content="Brauzerda 3D modellarni ko’rish, tahrirlash, animatsiya va konvertatsiya. Server va ro’yxatdan o’tish kerak emas.">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"3D Studiya","url":"https://3d-studiya.vercel.app/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (WebGL browser)","inLanguage":["uz","en","ru"],"description":"Brauzerda ishlaydigan 3D muharrir va konverter: GLB, GLTF, OBJ, STL, FBX, DFF, TXD, SKP, USDZ va boshqa formatlar.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"3D Studiya","url":"https://3d-studiya.vercel.app/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (WebGL browser)","inLanguage":["uz","en","ru","ar"],"description":"Brauzerda ishlaydigan 3D muharrir va konverter: GLB, GLTF, OBJ, STL, FBX, DFF, TXD, SKP, USDZ va boshqa formatlar.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <meta property="og:type" content="website"><meta property="og:site_name" content="3D Studiya"><meta property="og:title" content="3D Studiya — 3D ko’rish, tahrirlash, konvertatsiya"><meta property="og:description" content="Brauzerda ishlaydigan 3D muharrir va konverter: GLB, OBJ, FBX, DFF, TXD, SKP va ko’p formatlar.">
 <meta property="og:image" content="https://3d-studiya.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://3d-studiya.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/blender.css"></head><body>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/blender.css"><link rel="stylesheet" href="css/game.css"><link rel="stylesheet" href="css/simple.css"></head><body>
 <div id="app">
 <header>
-<b class="logo">3D STUDIYA <small>v41</small></b>
-<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.wft,.wtd,.wdr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.z3d,.3dm,.3ds,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>z3d<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
+<b class="logo">3D STUDIYA <small>v0.0.62</small></b>
+<details class="mn"><summary>Fayl</summary><div><label class="it">Ochish (import)…<input id="f" type="file" multiple hidden accept=".s3dp,.glb,.gltf,.obj,.stl,.ply,.dff,.txd,.rpf,.yft,.ytd,.ydr,.wft,.wtd,.wdr,.fbx,.dae,.wrl,.vrml,.vtk,.3mf,.usd,.usda,.usdc,.usdz,.max,.z3d,.3dm,.3ds,.dxf,.svg,.kmz,.amf,.lwo,.pcd,.vox,.pmd,.pmx,.ptx,.step,.stp,.igs,.iges,.brep,.xyz,.off,.x3d,.x,.vtp,.blend,.skp,.png,.jpg,.jpeg,.webp"></label><div class="row"><select id="fmt" aria-label="Format"><option>glb<option>gltf<option>obj<option>stl<option>ply<option>dff<option>skp<option>z3d<option>fbx<option>dae<option>wrl<option>vtk<option>3mf<option>usda<option>usd<option>usdz<option>3dm<option>off<option>x3d<option>xyz<option>pcd<option>amf<option>vtp</select><label class="chk"><input type="checkbox" id="zup">Z-up</label><label class="chk"><input type="checkbox" id="txalso" checked>DFF bilan TXD</label><label class="chk"><input type="checkbox" id="onlysel">Faqat tanlangan</label></div><button id="ex" class="pri">Eksport</button><div class="row"><select id="txm" aria-label="Maks. tekstura"><option>256<option>512<option selected>1024<option>2048</select><button id="txe">TXD eksport</button></div><button id="rnd">Render (PNG)</button></div></details>
 <details class="mn"><summary>Tahrir</summary><div><button id="undo">Bekor qilish · Ctrl+Z</button><button id="redo">Qaytarish · Ctrl+Y</button><button id="dup">Nusxa · Shift+D</button><button id="del">O’chirish · X</button></div></details>
 <details class="mn"><summary>Qo’shish</summary><div id="addm"><button id="dmy">Dummy…</button><button id="img3d">Rasmdan 3D…</button></div></details>
 <details class="mn"><summary>Obyekt</summary><div><button id="org">Markazni o’rnatish</button><button id="smo">Silliq / qirrali</button><button id="mir">Ko’zgu X</button><button id="vis">Yashirish / ko’rsatish</button></div></details>
@@ -40,10 +40,10 @@
 </div></div>
 <div id="vlb"></div>
 <div id="gz"><canvas id="gzc" width="132" height="132"></canvas><div class="gzb"><button id="gzz" title="Yaqinlashtirish (sudrang) · bosish: modelga moslash"></button><button id="gzp" title="Siljitish (sudrang)"></button><button id="gzo" title="Perspektiva / Ortho"></button></div></div>
-<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · 3DM · SKP · Z3D · 3DS · AMF · LWO · PCD · PLY · PMD/PMX · PTX · STEP/STP · VOX · VTP · X · X3D · XYZ · OFF · DFF + TXD + YFT / YDR / YTD + RPF (GTA)</div>
+<div id="hint">Modelni shu yerga tashlang yoki Fayl → Ochish (import).<br>GLB · GLTF · OBJ · STL · PLY · FBX · DAE · WRL · VTK · 3MF · USD/USDA/USDZ · 3DM · SKP · Z3D · 3DS · AMF · LWO · PCD · PLY · PMD/PMX · PTX · STEP/STP · VOX · VTP · X · X3D · XYZ · OFF · DFF + TXD + YFT / YDR / YTD + RPF (GTA) · DXF · SVG · KMZ</div>
 </div>
 <aside>
-<section id="ol"><div class="ph">Outliner<span class="sp"></span><span id="ocnt"></span></div>
+<section id="ol"><div class="ph">Obyektlar<span class="sp"></span><span id="ocnt"></span></div>
 <div class="oh"><i class="chev"></i><span class="ico" data-ic="folder"></span>Sahna to’plami</div><div class="oh o2"><i class="chev"></i><span class="ico" data-ic="folder"></span>To’plam</div>
 <div id="list"></div></section>
 <section id="pp"><div id="ptabs"><button data-pt="obj" class="on" title="Obyekt"></button><button data-pt="mat" title="Material"></button><button data-pt="tex" title="Teksturalar"></button><button data-pt="car" title="Mashina"></button></div>
@@ -105,10 +105,12 @@
 <script src="js/formats.js"></script>
 <script src="js/formats2.js"></script>
 <script src="js/skp.js"></script>
+<script src="js/zstd.js"></script>
 <script src="js/maxread.js"></script>
 <script src="js/z3d.js"></script>
 <script src="js/more.js"></script>
 <script src="js/mesh.js"></script>
+<script src="js/studio-plus.js"></script>
 <script src="js/tools.js"></script>
 <script src="js/group.js"></script>
 <script src="js/gta.js"></script>
@@ -116,9 +118,14 @@
 <script src="js/img3d.js"></script>
 <script src="js/fitpart.js"></script>
 <script src="js/txd-write.js"></script>
-<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/gtapack.js"></script>
+<script src="js/i18n.js"></script><script src="js/i18n-ar.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/carfx.js"></script>
 <script src="js/blender-ui.js"></script>
+<script src="js/blender-data.js"></script><script src="js/blender-add.js"></script><script src="js/blender-obj.js"></script><script src="js/blender-subsurf.js"></script><script src="js/blender-edit.js"></script><script src="js/blender-io.js"></script><script src="js/blender-prefs.js"></script>
+<script src="js/game.js"></script>
+<script src="js/simple.js"></script>
 <script>if("serviceWorker" in navigator&&location.protocol!="file:"&&!window.APP_SHELL)navigator.serviceWorker.register("sw.js")</script>
 </body></html>
