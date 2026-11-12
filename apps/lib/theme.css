@@ -1,0 +1,14 @@
+/* Studiya bilan bir xil ko’rinish (v53): neytral qora-kulrang, amber urg’u, yassi tugmalar, bir xil shrift. */
+:root{--st-bg:#0f1013;--st-pn:#1a1c20;--st-hd:#141619;--st-ip:#2a2d33;--st-tx:#e9ebef;--st-mt:#8f95a0;--st-ac:#ff9f2e;--st-on:#1b1100;--st-ln:#2a2d33;--st-r:6px;
+ --st-ui:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color-scheme:dark}
+html,body{font-family:var(--st-ui)}
+button,input,select,textarea{font-family:inherit}
+::selection{background:var(--st-ac);color:var(--st-on)}
+input[type=range],input[type=checkbox],input[type=radio],progress{accent-color:var(--st-ac)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--st-ac);outline-offset:-2px}
+*{scrollbar-color:#3a3e46 transparent}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#3a3e46;border-radius:6px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:#4b505a;background-clip:padding-box;border:2px solid transparent}
+/* studiya ichida: yuqoridagi studiya paneli “Studiyaga” tugmasini beradi, ilovaning o’z “orqaga” havolasi ortiqcha */
+.in-studio a[data-studio-back]{display:none!important}

@@ -1,0 +1,176 @@
+/* ---- v52: soddalashtirilgan interfeys, yangi dizayn va telefonda gorizontal rejim ----
+   Oxirgi yuklanadi: style.css / blender.css ustiga yoziladi, JS’dagi id va hodisalarga tegmaydi. */
+:root{
+ --bg:#0f1013;--pn:#1a1c20;--hd:#141619;--ip:#2a2d33;--fd:#111215;--fh:#363a42;--bd:#0a0b0d;
+ --tx:#e9ebef;--mt:#8f95a0;--ac:#ff9f2e;--or:#ff9f2e;--on:#1b1100;--sel:#33270f;--rw:#1c1e22;--rh:#24272c;--ln:#2a2d33;
+ --r:6px;--ui:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+ padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+html{background:var(--bg)}
+body{font:12.5px/1.35 var(--ui);overscroll-behavior:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--ac);outline-offset:-2px}
+button.on,.pri,.cb.on,.cb.pri,#lt button.on,#vh button.on,#ptabs button.on,.tc button.on,.gzb button.on,.ghud .gtop button.on{background:var(--ac);color:var(--on)}
+.gmenu .gmaps button:hover{background:var(--ac);color:var(--on)}.gmenu .gmaps button:hover small{color:#3a2600}
+
+/* ---------- yuqori panel ---------- */
+header{background:var(--hd);border-bottom:1px solid var(--bd);min-height:40px;padding:0 8px;align-items:center;gap:2px}
+.logo{margin:0 12px 0 2px;font-size:13.5px;font-weight:650;letter-spacing:0;color:var(--tx)}
+.logo svg{width:20px;height:20px;color:var(--ac)}
+.logo small{font-weight:500;opacity:.5}
+details.mn summary,header .hb{padding:6px 11px;margin:0;border-radius:var(--r);font-size:12.5px;color:#d4d8de}
+details.mn summary:hover,header .hb:hover{background:var(--rh)}
+details.mn[open]>summary{background:var(--ip);color:#fff}
+details.mn>div{background:#16181b;border:1px solid #2b2e35;border-radius:10px;padding:6px;min-width:232px;max-height:calc(100vh - 56px);box-shadow:0 16px 44px #000c}
+details.mn button,.it{padding:8px 10px;border-radius:var(--r);background:none}
+details.mn button:hover,.it:hover{background:var(--rh)}
+details.mn button.pri{background:var(--ac);color:var(--on);margin:4px 0}
+/* “Boshqa” menyusi: boshqa menyular ichida akkordeon bo’lib turadi */
+.mm{padding:0!important;min-width:256px!important;overflow:auto}
+.mm details.mn{border-bottom:1px solid #23262b}.mm details.mn:last-child{border-bottom:0}
+.mm details.mn>summary{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:0;color:var(--tx);font-weight:600;background:none}
+.mm details.mn>summary::after{content:"";border:4px solid transparent;border-left:5px solid var(--mt);border-right:0;transition:transform .12s}
+.mm details.mn[open]>summary{background:#202328}
+.mm details.mn[open]>summary::after{transform:rotate(90deg)}
+.mm details.mn>div{position:static!important;background:var(--fd);border:0;border-radius:0;box-shadow:none;padding:4px;min-width:0;max-height:none;overflow:visible}
+#gbtn{margin:0 2px}
+
+/* ---------- ish maydonlari qatori ---------- */
+#ws{background:var(--hd);border-bottom:1px solid var(--bd);min-height:30px}
+#ws button{padding:0 16px;color:var(--mt);border-right:0;border-radius:0;background:none}
+#ws button:hover{background:var(--rh);color:var(--tx)}
+#ws button.on{background:none;color:#fff;box-shadow:inset 0 -2px 0 var(--ac)}
+#wsn{display:none}
+
+/* ---------- chap asboblar ---------- */
+#lt{width:48px;background:var(--pn);border-right:1px solid var(--bd);padding:8px 6px;gap:4px;overflow-y:auto;scrollbar-width:none}
+#lt button{width:36px;height:36px;border-radius:9px;color:#c9ced6}
+#lt button:hover{background:var(--rh)}
+#lt .ts{background:var(--ln);margin:5px 0}
+
+/* ---------- ko’rinish oynasi ---------- */
+#vp{background:#2c2f33}
+#vhd{height:36px;background:#15171acc;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid #0009;gap:8px}
+#modesel{background:var(--ip);height:26px;border-radius:var(--r)}
+#vh>*{height:26px;padding:0 10px;border-radius:var(--r);color:#d4d8de;font-size:12px}
+#vh>*:hover{background:var(--rh)}
+#vh:not(.adv):not(.em) :is(#msel,#selall,#bsel,#xray,#snap){display:none}
+#vlb{top:46px;left:10px;background:#15171acc;border:1px solid #0009;border-radius:var(--r);color:#cfd3da}
+#gz{top:46px}
+.gzb button{background:#15171acc;border:1px solid #0009}
+#hint{color:#a7adb7;line-height:1.7;padding-top:70px}
+
+/* ---------- o’ng panel ---------- */
+aside{background:var(--pn);border-left:1px solid var(--bd)}
+.ph{background:var(--hd);color:var(--mt);font-size:11.5px;font-weight:600;padding:8px 12px}
+.oh{display:none}
+#ol{border-bottom:1px solid var(--bd)}
+#list{background:var(--fd)}
+#list>button,#list>button:nth-child(odd){background:var(--fd);color:#dfe2e7;border-bottom:1px solid #1a1c20;padding:7px 10px 7px 12px}
+#list>button:hover{background:var(--rh)}
+#list>button.on{background:var(--sel);color:#fff;box-shadow:inset 3px 0 0 var(--ac)}
+#list>button.on .ico{color:var(--ac)}
+#ptabs{background:var(--hd);border-right:1px solid var(--bd);width:38px;padding:8px 5px}
+#ptabs button{width:28px;height:28px;border-radius:7px;color:#c0c5cd}
+#ptabs button:hover{background:var(--rh)}
+#noprop{color:var(--mt)}
+details.pn{border-bottom:1px solid var(--bd)}
+details.pn>summary{background:#212429;color:var(--tx);padding:8px 12px}
+.nmr .ico{color:var(--ac)}
+#prop input[type=text],#xf input,#dec,#cf,#sf,#ef,#rq{background:var(--fd);border:1px solid var(--ln);border-radius:5px;font-variant-numeric:tabular-nums}
+#prop input[type=text]:focus,#xf input:focus,#dec:focus,#cf:focus,#sf:focus,#ef:focus,#rq:focus{border-color:var(--ac);outline:0}
+input[type=range],input[type=checkbox]{accent-color:var(--ac)}
+.sg>summary{background:#212429;color:var(--ac)}
+
+/* ---------- vaqt chizig’i (faqat Animatsiya ish maydonida) va holat paneli ---------- */
+#app:not(.ws-animation) #tlb{display:none!important}
+#tlb{background:var(--pn)}
+.tc button{background:var(--ip)}
+footer{background:var(--hd);border-top:1px solid var(--bd);padding:3px 10px;font-size:11.5px;min-height:22px}
+#chips span{background:none;border:0;padding:0 10px 0 0;text-transform:none;letter-spacing:0;color:var(--mt);font-size:11.5px}
+#chips span b{color:var(--tx)}
+#chips span:nth-child(n+4){display:none}
+#st{color:var(--mt)}
+#toast{background:#16181b;border:1px solid #2b2e35;border-radius:10px;box-shadow:0 10px 30px #000a}
+
+/* ---------- dialoglar ---------- */
+#sp,#ab,#rp{background:var(--pn);border:1px solid #2b2e35;border-radius:12px}
+
+/* ---------- panel tugmasi va yoting oynasi ---------- */
+#bpnl{display:none}
+#rot{display:none;flex-direction:column;position:fixed;inset:0;z-index:100;background:var(--bg);align-items:center;justify-content:center;text-align:center;padding:24px}
+#rot>div{max-width:300px}
+#rot svg{width:84px;height:84px;color:var(--ac);fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+#rot b{display:block;font-size:19px;margin:18px 0 6px}
+#rot p{margin:0 0 20px;color:var(--mt);line-height:1.55;font-size:14px}
+#rot button{padding:11px 18px;font-size:14px;background:var(--ip);margin:4px}
+#rot .go{background:var(--ac);color:var(--on);font-weight:600;}
+@media(prefers-reduced-motion:no-preference){#rot svg .phn{transform-origin:50% 50%;animation:rotph 2.6s .4s ease-in-out infinite}}
+@keyframes rotph{0%,20%{transform:rotate(0)}55%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+@media(orientation:portrait) and (pointer:coarse) and (max-width:700px){body:not(.norot):not(.game) #rot{display:flex}}
+
+/* ---------- barmoq uchun kattaroq tugmalar ---------- */
+@media(pointer:coarse){
+ body{font-size:13px}
+ details.mn button,.it{padding:10px 12px}
+ .mm details.mn>summary{padding:12px 14px}
+ #vh>*,#modesel{height:30px}
+ #vhd{height:40px}
+ #vlb,#gz{top:50px}
+ #ws button{min-height:34px}
+}
+
+/* ---------- telefon, gorizontal holat: ko’rish oynasi butun ekranni oladi ---------- */
+body.compact header{min-height:36px;padding:0 4px}
+body.compact .logo small,body.compact .logo span{display:none}
+body.compact .logo{margin-right:6px}
+body.compact header .hb{font-size:0;padding:4px 10px}
+body.compact header .hb::first-letter{font-size:17px}
+body.compact #bpnl{display:inline-flex;align-items:center;justify-content:center;font-size:0}
+body.compact #bpnl svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+body.compact #bpnl.on{background:var(--ac);color:var(--on)}
+body.compact main{flex-direction:row}
+body.compact #lt{flex-direction:column;width:46px;border-right:1px solid var(--bd);border-bottom:0;padding:6px 5px;overflow-x:hidden;overflow-y:auto}
+body.compact #lt .ts{width:26px;height:1px;margin:4px 0}
+body.compact #lt button{width:34px;height:34px}
+body.compact #vhd{height:34px}
+body.compact #vlb{top:42px}
+body.compact footer{padding:1px 8px;min-height:18px;font-size:11px}
+body.compact #toast{bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+/* o’ng panel — suriladigan yon oyna */
+body.compact aside{position:fixed;top:36px;right:0;bottom:20px;width:min(330px,48vw)!important;height:auto!important;flex-direction:column;border:1px solid #2b2e35;border-right:0;border-radius:12px 0 0 12px;z-index:25;transform:translateX(105%);transition:transform .2s ease;box-shadow:-12px 0 36px #000a;padding-right:env(safe-area-inset-right,0px)}
+body.compact.pnl aside{transform:none}
+body.compact #ol{flex:0 0 36%;border-right:0;border-bottom:1px solid var(--bd)}
+body.compact #pp{flex:1}
+body.compact aside #ws{flex:none;min-height:32px;border-bottom:1px solid var(--bd)}
+body.compact aside #ws button{padding:0 11px;font-size:12px}
+body.compact #tlb{max-width:100%}
+@media(prefers-reduced-motion:reduce){body.compact aside{transition:none}}
+
+/* v0.0.59: outliner daraxti va ko’p tanlash paneli */
+#list>button .chev{flex:none;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;opacity:.8;cursor:pointer;user-select:none;border-radius:3px}
+#list>button .chev::before{content:'';border:4px solid transparent;border-top:5px solid currentColor;border-bottom:0}
+#list>button .chev.c::before{border:4px solid transparent;border-left:5px solid currentColor;border-right:0}
+#list>button .chev:hover{background:#ffffff22}
+#list>button .chev:hover{opacity:1}
+#list>button .chev.nil{visibility:hidden;cursor:default}
+#list>button.dummy .nm{font-style:italic;opacity:.85}
+#ol .ph .olb{flex:none;background:none;border:0;color:var(--mt);cursor:pointer;font-size:11px;padding:2px 5px;border-radius:4px}
+#ol .ph .olb:hover{background:var(--rh);color:var(--tx)}
+body.multi #prop .nmr1,body.multi #prop .xfd{display:none!important}
+#gxb{display:grid;grid-template-columns:78px repeat(3,minmax(0,1fr));gap:2px 3px;margin:8px 10px;align-items:center}
+#gxb span{color:var(--mt)}
+#gxb input{width:100%;min-width:0;box-sizing:border-box;background:var(--fd);border:1px solid var(--ln);border-radius:5px;padding:4px 3px;text-align:center;color:var(--tx);font:inherit;font-variant-numeric:tabular-nums}
+#gxb input:focus{border-color:var(--ac);outline:0}
+#gxb input::-webkit-inner-spin-button{opacity:0}
+#gxf .gnote{margin:0 10px 8px;font-size:11.5px;color:var(--mt);line-height:1.35}
+
+/* GTA paket dialogi */
+#gpk{background:var(--pn);color:var(--tx);border:1px solid var(--ln);border-radius:12px;padding:0;min-width:min(420px,92vw);box-shadow:0 20px 60px #000c}
+#gpk::backdrop{background:#000a}
+#gpk .ph{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--ln)}
+#gpk .db{padding:12px 14px}
+#gpk .gpg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+#gpk label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mt)}
+#gpk input{background:var(--fd);border:1px solid var(--ln);border-radius:5px;padding:6px 8px;color:var(--tx);font:inherit}
+#gpk input:focus{border-color:var(--ac);outline:0}
+#gpk .gnote{font-size:11.5px;color:var(--mt);margin:10px 0 0}
+#gpk .row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}

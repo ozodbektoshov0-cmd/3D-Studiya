@@ -29,6 +29,7 @@ async function load(f){
  else if(EXT2.test(ext))o=await imp2(ext,buf);
  else if(ext=='skp')o=await skpImp(buf);
  else if(ext=='max')o=maxImp(buf);
+ else if(/^(dxf|svg|kmz)$/.test(ext)){await engineImport(f);return}
  else if(ext=='z3d')o=z3dImp(buf);
  else if(ext=='blend')throw Error('.blend yopiq format, brauzerda o’qib bo’lmaydi — Blender’da GLB yoki FBX qilib saqlang');
  else if(ext=='wtd'){toast(f.name+': GTA IV teksturalari ochilmoqda…');await wtd(f);return}

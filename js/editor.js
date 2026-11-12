@@ -5,8 +5,34 @@ function select(o){sel=o;o?tc.attach(o):tc.detach();$('#prop').hidden=!o;
  if(o){$('#nm').value=o.name;const m=mats(o)[0];if(m&&m.color)$('#col').value='#'+m.color.getHexString()}refresh()}
 function refresh(){applyTex();typeof sync=='function'&&sync();
  const L=$('#list');L.textContent='';const ml=meshes();let t=0;
- ml.forEach((m,i)=>{const g=m.geometry,c=g.index?g.index.count:g.getAttribute('position').count;t+=c/3;
-  const b=document.createElement('button');b.textContent=m.name||'mesh '+(i+1);if(m==sel||MS.has(m))b.className='on';b.onclick=e=>{if(e.ctrlKey||e.shiftKey||ms){if(!MS.size&&sel)MS.add(sel);MS.has(m)?MS.delete(m):MS.add(m);refresh()}else{MS.clear();select(m)}};L.append(b)});
+ ml.forEach(m=>{const g=m.geometry,c=g.index?g.index.count:g.getAttribute('position').count;t+=c/3});
+ /* outliner daraxti: meshlar + nomli freym/dummy/guruhlar (Object3D, Group); har biri ochiladi-yopiladi */
+ const nmI=new Map();ml.forEach((m,i)=>nmI.set(m,i+1));
+ const OLC=window.OLC||(window.OLC=new Set());
+ const cont=o=>!o.isMesh&&!o.isBone&&!o.isCamera&&!o.isLight&&!o.userData.grp&&(o.isGroup||o.type=='Object3D')&&!!o.name;
+ const skip=o=>o.isBone||o.isCamera||o.isLight||(o.userData&&o.userData.grp);
+ const hasRow=o=>o.children.some(c=>!skip(c)&&(c.isMesh||cont(c)||hasRow(c)));
+ const rows=[];
+ const walk=(p,d)=>p.children.forEach(c=>{
+  if(skip(c))return;
+  if(c.isMesh||cont(c)){const k=hasRow(c);rows.push({o:c,d,k});if(k&&!OLC.has(c))walk(c,d+1)}
+  else walk(c,d)});
+ walk(root,0);
+ const under=o=>{const a=[];o.traverse(x=>x.isMesh&&a.push(x));return a};
+ rows.forEach(r=>{
+  const o=r.o,isM=o.isMesh,b=document.createElement('button');
+  b._o=o;b._d=r.d;b._k=r.k;
+  b.textContent=o.name||(isM?'mesh '+nmI.get(o):'Group');
+  const mine=isM?[o]:under(o);
+  if(isM?(o==sel||MS.has(o)):(mine.length&&mine.every(x=>x==sel||MS.has(x))))b.className='on';
+  b.onclick=e=>{
+   const add=e.ctrlKey||e.shiftKey||ms;
+   if(isM){if(add){if(!MS.size&&sel)MS.add(sel);MS.has(o)?MS.delete(o):MS.add(o);refresh()}else{MS.clear();select(o)}return}
+   if(!mine.length)return toast((o.name||'Group')+': ichida mesh yo’q');
+   if(add){if(!MS.size&&sel)MS.add(sel);const all=mine.every(x=>MS.has(x)||x==sel);
+    mine.forEach(x=>all?MS.delete(x):MS.add(x));if(all&&mine.includes(sel)){const n=[...MS][0];MS.delete(n);select(n||null);return}refresh()}
+   else{MS.clear();mine.forEach(x=>MS.add(x));select(mine[0])}};
+  L.append(b)});
  $('#st').textContent=ml.length?ml.length+' ta mesh · '+Math.round(t).toLocaleString()+' uchburchak':'Model ochilmagan.';
 }
 function fit(o){const b=new THREE.Box3().setFromObject(o||root);if(b.isEmpty())return;

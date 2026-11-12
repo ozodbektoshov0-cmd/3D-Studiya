@@ -34,5 +34,6 @@ cv.addEventListener('pointerup',e=>{if(!em||!dn||tc.axis||Math.hypot(e.clientX-d
 $('#edit').onclick=()=>em?editOff():editOn();
 $('#msel').onclick=e=>ms=e.target.classList.toggle('on');
 addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName))return;const k=e.key.toLowerCase();
+ if(em&&window.BL_EDITKEY&&BL_EDITKEY(e,k))return;
  if(k=='tab'){e.preventDefault();e.stopImmediatePropagation();em?editOff():editOn()}
  else if(em&&(k=='escape'||k=='x'||k=='delete'||(e.ctrlKey&&k=='z'))){e.preventDefault();e.stopImmediatePropagation();if(k=='escape')editOff();else if(k=='z')eUndo()}},true);

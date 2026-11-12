@@ -1,14 +1,27 @@
 /* ---- Hammasini tanlash, guruh bo'lib ko'chirish/aylantirish, Reset to parent ---- */
 const gpv=new THREE.Object3D();gpv.userData.grp=true;S.add(gpv);
+/* ---- Ko’p tanlash: alohida guruh paneli (hammasiga birdaniga). Bitta meshning Joy/Burilish/O’lcham maydonlari yashiriladi ---- */
+const gXf=document.createElement('details');gXf.className='pn';gXf.id='gxf';gXf.open=true;gXf.hidden=true;
+gXf.innerHTML='<summary>Tanlanganlar: <b id="gxn">0</b> ta — hammasiga birdaniga</summary><div id="gxb"></div><p class="gnote">Joy — tanlanganlar markazi. Burilish va o’lcham markaz atrofida hammasiga qo’llanadi.</p>';
+const gNm=$('#prop .nmr');gNm.parentNode.insertBefore(gXf,gNm.nextSibling);
+$('#xf').closest('details').classList.add('xfd');gNm.classList.add('nmr1');
+const GI={};
+[['Joy (markaz)','p',.1],['Burilish °','r',5],['O’lcham ×','s',.1]].forEach(([l,k,st])=>{const s=document.createElement('span');s.textContent=l;$('#gxb').append(s);
+ for(let i=0;i<3;i++){const e=document.createElement('input');e.type='number';e.step=st;GI[k+i]=e;e.onchange=()=>gApplyInputs();$('#gxb').append(e)}});
+function gSyncInputs(){
+ const r=gpv.rotation,v={p:[gpv.position.x,gpv.position.y,gpv.position.z],r:[r.x*180/Math.PI,r.y*180/Math.PI,r.z*180/Math.PI],s:[gpv.scale.x,gpv.scale.y,gpv.scale.z]};
+ for(const k in v)v[k].forEach((x,i)=>{const e=GI[k+i];if(e&&document.activeElement!==e)e.value=+x.toFixed(3)})}
 const tops=()=>{const a=pick(),s=new Set(a);return a.filter(o=>{for(let p=o.parent;p;p=p.parent)if(s.has(p))return false;return true})};
 let G0=null;
 function groupSync(){
+ const t=window.em?[]:tops(),multi=t.length>=2;
+ document.body.classList.toggle('multi',multi);
  if(window.em)return;
- const t=tops();
- if(t.length>=2){
+ if(multi){
   const b=new THREE.Box3();t.forEach(o=>b.expandByObject(o));
   if(!b.isEmpty()){gpv.position.copy(b.getCenter(new THREE.Vector3()));gpv.quaternion.identity();gpv.scale.set(1,1,1);gpv.updateMatrixWorld(true);if(tc.object!==gpv)tc.attach(gpv)}
- }else if(tc.object===gpv){sel?tc.attach(sel):tc.detach()}
+  gXf.hidden=false;$('#gxn').textContent=pick().length;gSyncInputs();
+ }else{gXf.hidden=true;if(tc.object===gpv){sel?tc.attach(sel):tc.detach()}}
 }
 const _refresh=refresh;
 refresh=function(){_refresh.apply(this,arguments);groupSync()};
@@ -19,19 +32,37 @@ function selectAll(){
  toast(a.length+' ta obyekt tanlandi — ko’chirish/aylantirish hammasiga ta’sir qiladi');
 }
 function setLocal(o,m){const p=o.parent;if(p){p.updateWorldMatrix(true,false);m=new THREE.Matrix4().copy(p.matrixWorld).invert().multiply(m)}m.decompose(o.position,o.quaternion,o.scale)}
-tc.addEventListener('mouseDown',()=>{
- if(tc.object!==gpv)return;gpv.updateMatrixWorld(true);
- G0={inv:gpv.matrixWorld.clone().invert(),items:tops().map(o=>{o.updateWorldMatrix(true,false);return{o,W:o.matrixWorld.clone(),p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone()}})}});
-tc.addEventListener('objectChange',()=>{
- if(tc.object!==gpv||!G0)return;gpv.updateMatrixWorld(true);
+function gStart(){
+ gpv.updateMatrixWorld(true);
+ G0={inv:gpv.matrixWorld.clone().invert(),items:tops().map(o=>{o.updateWorldMatrix(true,false);return{o,W:o.matrixWorld.clone(),p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone()}})}}
+function gApply(){
+ gpv.updateMatrixWorld(true);
  const d=new THREE.Matrix4().multiplyMatrices(gpv.matrixWorld,G0.inv);
- G0.items.forEach(it=>setLocal(it.o,new THREE.Matrix4().multiplyMatrices(d,it.W)))});
-tc.addEventListener('mouseUp',()=>{
- if(tc.object!==gpv||!G0)return;const g=G0;G0=null;
+ G0.items.forEach(it=>setLocal(it.o,new THREE.Matrix4().multiplyMatrices(d,it.W)))}
+function gEnd(){
+ const g=G0;G0=null;if(!g)return;
  const a=g.items,b=a.map(it=>({o:it.o,p:it.o.position.clone(),q:it.o.quaternion.clone(),s:it.o.scale.clone()}));
- const put=(arr,k)=>arr.forEach(x=>{x.o.position.copy(x[k[0]]);x.o.quaternion.copy(x[k[1]]);x.o.scale.copy(x[k[2]])});
  hist(()=>{a.forEach(x=>{x.o.position.copy(x.p);x.o.quaternion.copy(x.q);x.o.scale.copy(x.s)});groupSync()},
-      ()=>{b.forEach(x=>{x.o.position.copy(x.p);x.o.quaternion.copy(x.q);x.o.scale.copy(x.s)});groupSync()})});
+      ()=>{b.forEach(x=>{x.o.position.copy(x.p);x.o.quaternion.copy(x.q);x.o.scale.copy(x.s)});groupSync()})}
+tc.addEventListener('mouseDown',()=>{if(tc.object===gpv)gStart()});
+tc.addEventListener('objectChange',()=>{if(tc.object!==gpv||!G0)return;gApply();gSyncInputs()});
+tc.addEventListener('mouseUp',()=>{if(tc.object===gpv&&G0)gEnd()});
+/* maydonlardan kiritish: hammasiga birdaniga (markaz atrofida) */
+function gApplyInputs(){
+ if(window.em||tc.object!==gpv)return;
+ const v=k=>[0,1,2].map(i=>+GI[k+i].value||0),s=v('s').map(x=>x||1);
+ gStart();
+ gpv.position.set(...v('p'));gpv.rotation.set(...v('r').map(x=>x*Math.PI/180));gpv.scale.set(...s);
+ gApply();gEnd();groupSync()}
+/* o’chirish: tanlanganlarning hammasi (X / Delete / o’chirish tugmasi) */
+const delOne=$('#del').onclick;
+$('#del').onclick=function(){
+ if(window.em)return delOne&&delOne.apply(this,arguments);
+ const T=tops();if(T.length<2)return delOne&&delOne.apply(this,arguments);
+ const rec=T.filter(o=>o.parent).map(o=>({o,p:o.parent,i:o.parent.children.indexOf(o)}));
+ select(null);MS.clear();rec.forEach(r=>r.p.remove(r.o));
+ hist(()=>rec.slice().reverse().forEach(r=>{r.p.add(r.o);const c=r.p.children;if(r.i>=0&&r.i<c.length-1){c.pop();c.splice(r.i,0,r.o)}}),()=>rec.forEach(r=>r.p.remove(r.o)));
+ refresh();toast(rec.length+' ta obyekt o’chirildi')};
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='a'&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){e.preventDefault();selectAll()}});
 $('#selall').onclick=selectAll;
 /* ---- Reset to parent: har bir obyektning aylanishi va masshtabi geometriyaga "pishiriladi", o'qlari ota-obyekt (ildiz) o'qlariga tenglashadi.

@@ -1,4 +1,4 @@
-/* ---- Dastur tili: O’zbekcha (asl matn) / English / Русский ----
+/* ---- Dastur tili: O’zbekcha (asl matn) / English / Русский / العربية ----
    Interfeys matnlari o’zbekcha yozilgan. Til almashganda matn va title atributlari lug’at bo’yicha almashtiriladi.
    Lug’atda yo’q matn o’zbekcha qoladi. Yangi matn qo’shish: pastdagi ro’yxatga “o’zbekcha|English|Русский” qatorini qo’shing. */
 (function(){
@@ -344,7 +344,7 @@ Yuza|Face|Грань
 Skelet|Skeleton|Скелет
 Klip|Clip|Клип
 `;
-const D={en:{},ru:{}};
+const D={en:{},ru:{},ar:{}};const AF=[];const LARM={};const nz=x=>x.replace(/[‘ʻʼ]/g,'’');
 raw.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1].replace(/\\n/g,'\n');D.ru[k]=a[2].replace(/\\n/g,'\n')}});
 /* o’zgaruvchan sonli matnlar */
 const P=[
@@ -363,7 +363,10 @@ const P=[
  [/^(\d+) ta ko’zgu nusxa: (.+)$/,'$1 mirror copies: $2','Зеркальных копий: $1: $2']
 ];
 let lang='uz';const O=new WeakMap();
-function tr(s,opt){if(lang=='uz')return null;const k=s.trim();if(!k)return null;let r=(opt&&D[lang]['@'+k])||D[lang][k];
+function trAr(s,opt){const t=s.trim();const k=nz(t);if(!k)return null;const A=D.ar;let r=(opt&&A['@'+k])||A[k];
+ if(r!=null)return s.replace(t,()=>r);
+ const o=nz(s);let x=o;for(const f of AF)x=x.replace(f[0],f[1]);return x===o?null:x}
+function tr(s,opt){if(lang=='uz')return null;if(lang=='ar')return trAr(s,opt);const k=s.trim();if(!k)return null;let r=(opt&&D[lang]['@'+k])||D[lang][k];
  if(r==null)for(const p of P)if(p[0].test(k)){r=k.replace(p[0],p[lang=='en'?1:2]);break}
  return r==null?null:s.replace(k,()=>r)}
 function fix(n){const t=n.nodeValue,e=O.get(n),op=!!n.parentNode&&n.parentNode.tagName=='OPTION';let src=t;
@@ -389,6 +392,11 @@ new MutationObserver(ms=>{if(lang=='uz'){ms.forEach(m=>m.addedNodes.forEach(n=>0
 }).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:AT});
 const T0=document.title;
 function addRaw(r){r.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1];D.ru[k]=a[2]}})}
-window.I18N={add(r){addRaw(r);if(lang!='uz')walk(document.body)},set(l){if(!['uz','en','ru'].includes(l))l='uz';lang=l;document.documentElement.lang=l;walk(document.body);
+/* prompt / alert / confirm oynalari ham tarjima qilinadi */
+['prompt','alert','confirm'].forEach(n=>{const o=window[n];if(typeof o!='function')return;window[n]=function(m,...a){if(lang!='uz'&&typeof m=='string'){const t=tr(m);if(t!=null)m=t}return o.call(window,m,...a)}});
+window.I18N={add(r){addRaw(r);if(lang!='uz')walk(document.body)},
+ addAr(a,f,l){for(const k in a)D.ar[nz(k)]=a[k];AF.length=0;f.forEach(x=>AF.push(x));for(const k in l)LARM[k]=l[k];if(lang=='ar')walk(document.body)},
+ t(s){return tr(s)},l(u){if(lang=='ar'&&LARM[u]!=null)return LARM[u];return tr(u)},
+ set(l){if(!['uz','en','ru','ar'].includes(l))l='uz';lang=l;document.documentElement.lang=l;document.documentElement.dir=l=='ar'?'rtl':'ltr';walk(document.body);
  const t=lang=='uz'?null:D[lang][T0];document.title=t||T0}};
 })();

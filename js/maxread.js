@@ -1,4 +1,4 @@
-/* ---- 3ds Max (.max) import: OLE2 konteyner → Scene/ClassDirectory3 → Editable Mesh/Poly, transform, ierarxiya, material ----
+/* ---- 3ds Max (.max) import: OLE2 konteyner → Scene/ClassDirectory3 (yoki yangi Max: *_Compressed = zstd) → Editable Mesh/Poly, transform, ierarxiya, material ----
    Yopiq format bo'lgani uchun faqat ko'rinadigan tuzilma o'qiladi (4 ta haqiqiy fayl asosida):
    Editable Mesh va Editable Poly, PRS transform, pivot, ota-bola bog'lanish, instance, UV, smoothing group,
    Multi/Sub material (nom, diffuse rang, tekstura fayl nomi). Parametrik obyektlar (Box, Sphere…) va modifikatorlar o'qilmaydi. */
@@ -23,7 +23,16 @@ function maxImp(buf){
  const stream=nm=>{const e=ents.find(x=>x.type==2&&x.name==nm);if(!e)return null;
   if(e.size<cut){const idx=[];let x=e.start;while(x<END&&idx.length<1e6){idx.push(x);x=mfat[x]}const out=new Uint8Array(idx.length*mss);idx.forEach((s,i)=>out.set(mini.subarray(s*mss,s*mss+mss),i*mss));return out.subarray(0,e.size)}
   return chain(e.start,e.size)};
- const SC=stream('Scene'),CD=stream('ClassDirectory3'),FA=stream('FileAssetMetaData2');
+ /* Yangi Max (2024+): oqimlar “<nom>_Compressed” nomi bilan saqlanadi — 2 bayt (FF FF) + zstd kadr.
+    Ochilgandan keyin oqim boshida qisqa sarlavha bo'ladi (ClassDirectory3: 6 bayt, Scene: 14 bayt) — pastda aniqlanadi. */
+ const cstream=nm=>{const s=stream(nm);if(s)return{d:s,z:false};
+  const c=stream(nm+'_Compressed');if(!c)return null;
+  const o=(c[0]==0x28&&c[1]==0xB5)?0:2;
+  if(!(c[o]==0x28&&c[o+1]==0xB5&&c[o+2]==0x2F&&c[o+3]==0xFD))throw Error('MAX: '+nm+'_Compressed oqimi noma’lum usulda siqilgan (zstd emas)');
+  if(typeof zstdDecode!='function')throw Error('MAX: zstd dekoderi (js/zstd.js) yuklanmagan');
+  return{d:zstdDecode(c.subarray(o)),z:true}};
+ const sSC=cstream('Scene'),sCD=cstream('ClassDirectory3'),sFA=cstream('FileAssetMetaData2')||cstream('FileAssetMetaData3');
+ const SC=sSC&&sSC.d,CD=sCD&&sCD.d,FA=sFA&&sFA.d;
  /* yangi Max: tekstura fayllari alohida ro'yxatda (GUID → yo'l) */
  const assets=new Map();
  if(FA&&FA.length>24){try{const d=new DataView(FA.buffer,FA.byteOffset,FA.byteLength),str=(o,n)=>{let t='';for(let j=0;j<n;j++)t+=String.fromCharCode(d.getUint16(o+j*2,true));return t};
@@ -39,10 +48,14 @@ function maxImp(buf){
    else{cont=!!(ln>>>31);ln=ln&0x7fffffff}
    if(ln<hdr||o+ln>end)break;out.push({id,off:o,hdr,len:ln,cont});o+=ln}return out};
  const kids=(P,c)=>{if(!c.cont)return[];return c._k||(c._k=chunks(P,c.off+c.hdr,c.off+c.len))};
+ /* siqilgan oqimlarda sarlavha uzunligi: chunk zanjiri oqim oxirigacha aniq yetib boradigan birinchi siljish */
+ const fit=P=>{const L=P.u8.length;for(let a=0;a<=32;a++){const r=chunks(P,a,L);if(r.length&&r.reduce((t,c)=>t+c.len,a)==L)return a}return 0};
+ const co=sCD.z?fit(C):0,so=sSC.z?fit(S):0;
  const cl=[];
- for(const n of chunks(C,0,CD.length)){let nm='';for(const k of kids(C,n)){if(k.id==0x2042){for(let j=k.off+k.hdr;j+1<k.off+k.len;j+=2)nm+=String.fromCharCode(C.dv.getUint16(j,true))}}cl.push(nm)}
- const rootC=chunks(S,0,SC.length)[0];if(!rootC)throw Error('MAX Scene oqimi buzuq');
- const top=kids(S,rootC);
+ for(const n of chunks(C,co,CD.length)){let nm='';for(const k of kids(C,n)){if(k.id==0x2042){for(let j=k.off+k.hdr;j+1<k.off+k.len;j+=2)nm+=String.fromCharCode(C.dv.getUint16(j,true))}}cl.push(nm)}
+ const sch=chunks(S,so,SC.length);if(!sch.length)throw Error('MAX Scene oqimi buzuq');
+ /* eski format: bitta ildiz chunk ichida obyektlar; yangi (zstd) format: obyektlar to'g'ridan-to'g'ri yuqori darajada */
+ const top=(sSC.z&&sch.length>1)?sch:kids(S,sch[0]);
  const cname=i=>{const c=top[i];return c&&c.id<cl.length?cl[c.id]:''};
  /* ---------- yordamchilar ---------- */
  const kid=(P,c,id)=>{for(const k of kids(P,c))if(k.id==id)return k;return null};
@@ -62,7 +75,10 @@ function maxImp(buf){
   if(prs!==undefined&&valid(prs)&&cname(prs)=='Position/Rotation/Scale'){const [p,ro,sa]=refl(prs);
    if(valid(p)&&cname(p)=='Position XYZ')pos=refl(p).slice(0,3).map(fval);
    if(valid(ro)&&cname(ro)=='Euler XYZ')rot=refl(ro).slice(0,3).map(fval);
-   if(valid(sa)&&cname(sa)=='Bezier Scale'){const s=sub(sa,0x2505);if(s)sc=[0,1,2].map(j=>s.P.dv.getFloat32(s.k.off+s.k.hdr+j*4,true))}}
+   if(valid(sa)&&cname(sa)=='Bezier Scale'){const s=sub(sa,0x2505);if(s)sc=[0,1,2].map(j=>s.P.dv.getFloat32(s.k.off+s.k.hdr+j*4,true))}
+   /* ScaleXYZ: Position XYZ kabi 3 ta alohida Bezier Float (X, Y, Z). Yangi Maxda odatiy. Qiymat topilmasa — 1 (nol emas) */
+   else if(valid(sa)&&cname(sa)=='ScaleXYZ'){const q=refl(sa).slice(0,3);
+    if(q.length==3)sc=q.map(x=>{const k=valid(x)?sub(x,0x2501):null;return k?k.P.dv.getFloat32(k.k.off+k.k.hdr,true):1})}}
   const m=rotM(rot[0],rot[1],rot[2]);m.scale(new THREE.Vector3(sc[0],sc[1],sc[2]));m.setPosition(pos[0],pos[1],pos[2]);return m};
  const offTM=ni=>{const p=tk(ni,0x96A),q=tk(ni,0x96B),s=tk(ni,0x96C),m=new M4();
   if(q&&blen(q)>=16){const qq=new THREE.Quaternion(f32(q,0),f32(q,4),f32(q,8),f32(q,12));if(Math.abs(qq.x)+Math.abs(qq.y)+Math.abs(qq.z)>1e-7)m.makeRotationFromQuaternion(qq.normalize())}
@@ -70,8 +86,39 @@ function maxImp(buf){
   if(p&&blen(p)>=12)m.setPosition(f32(p,0),f32(p,4),f32(p,8));return m};
  const isId=m=>{const e=m.elements;for(let i=0;i<16;i++)if(Math.abs(e[i]-((i%5)?0:1))>1e-9)return false;return true};
  /* ---------- geometriya ---------- */
- const baseObj=oi=>{const c=cname(oi);if(c=='Editable Mesh'||c=='Editable Poly')return oi;
-  if(c=='Derived Object'){for(const r of refl(oi))if(valid(r)&&/^Editable (Mesh|Poly)$/.test(cname(r)))return r}return null};
+ const PRIM=/^(Box|Cylinder|Sphere|GeoSphere|Plane|Cone|Torus)$/;
+ const baseObj=oi=>{const c=cname(oi);if(c=='Editable Mesh'||c=='Editable Poly'||PRIM.test(c))return oi;
+  if(c=='Derived Object'){for(const r of refl(oi))if(valid(r)&&(/^Editable (Mesh|Poly)$/.test(cname(r))||PRIM.test(cname(r))))return r}return null};
+ /* ---------- parametrik primitivlar (Box, Cylinder, Sphere, Plane, Cone, Torus) ----------
+    Max ularni mesh sifatida saqlamaydi, faqat ParamBlock2 parametrlarini. O’lchamlar TYPE_WORLD (float) parametrlaridan, id o’sish tartibida olinadi:
+    Box: uzunlik, kenglik, balandlik · Cylinder: radius, balandlik · Sphere: radius · Plane: uzunlik, kenglik · Cone: r1, r2, balandlik · Torus: r1, r2.
+    Segmentlar standart. Parametr tartibi taxminiy — shuning uchun import xabarida “taxminiy” deb ko’rsatiladi. */
+ function primParams(oi){
+  const pbs=refl(oi).concat(Object.values(refs(oi))).filter(r=>valid(r)&&cname(r)=='ParamBlock2'),out=[];
+  for(const pb of pbs){
+   for(const e of kids(S,top[pb])){
+    if(e.id!=0x0E||blen(e)<14)continue;
+    const id=S.dv.getUint16(e.off+e.hdr,true),ty=u32(e,2);
+    if(ty==7||ty==0){const v=f32(e,blen(e)-4);if(isFinite(v))out.push({id,ty,v})}}
+   if(out.length)break}
+  out.sort((a,b)=>a.id-b.id);
+  const w=out.filter(x=>x.ty==7);return(w.length?w:out).map(x=>x.v)}
+ const primCache=new Map();
+ function primGeom(oi){
+  const c=cname(oi);let P;
+  try{P=primParams(oi)}catch(e){return null}
+  const ok=(n)=>P.length>=n&&P.slice(0,n).every(v=>v>1e-6&&v<1e7);
+  let g=null;const T=THREE;
+  try{
+   if(c=='Box'&&ok(3)){const[L,W,H]=P;g=new T.BoxGeometry(W,L,H).translate(0,0,H/2)}
+   else if(c=='Cylinder'&&ok(2)){const[R,H]=P;g=new T.CylinderGeometry(R,R,H,24).rotateX(Math.PI/2).translate(0,0,H/2)}
+   else if((c=='Sphere'||c=='GeoSphere')&&ok(1)){g=new T.SphereGeometry(P[0],32,16).rotateX(Math.PI/2)}
+   else if(c=='Plane'&&ok(2)){const[L,W]=P;g=new T.PlaneGeometry(W,L)}
+   else if(c=='Cone'&&P.length>=3&&P[0]>=0&&P[1]>=0&&P[0]+P[1]>1e-6&&P[2]>1e-6&&P.slice(0,3).every(v=>v<1e7)){g=new T.CylinderGeometry(P[1],P[0],P[2],24).rotateX(Math.PI/2).translate(0,0,P[2]/2)}
+   else if(c=='Torus'&&ok(2)){g=new T.TorusGeometry(P[0],P[1],16,48)}
+  }catch(e){g=null}
+  if(!g)return null;
+  return{g,groups:[{start:0,count:g.index.count,id:0}]}}
  function readMesh(oi){
   const m=tk(oi,0x8FE);if(!m)return null;const g={};for(const k of kids(S,m))if(!(k.id in g)||k.id==0x2394||k.id==0x2396)g[k.id]=g[k.id]||k;
   const T=[]; /* uchburchaklar: a,b,c,smg,mat */
@@ -88,10 +135,21 @@ function maxImp(buf){
   }else{
    const v=g[0x100],f=g[0x11A];if(!v||!f)return null;const nv=u32(v,0);V=new Float32Array(nv*3);
    for(let i=0;i<nv;i++)for(let j=0;j<3;j++)V[i*3+j]=f32(v,8+i*16+j*4);
-   const nf=u32(f,0),fr=[];let o=4;
-   for(let i=0;i<nf;i++){if(o+4>blen(f))return null;const d=u32(f,o);if(d<3||d>256)return null;const sz=12*d-10;if(o+sz>blen(f))return null;
-    const vs=[];for(let j=0;j<d;j++)vs.push(u32(f,o+4+j*4));fr.push({vs,smg:S.dv.getUint16(f.off+f.hdr+o+4+4*d+6,true)});o+=sz}
-   if(o!=blen(f))return null;
+   const nf=u32(f,0);
+   /* Yuz yozuvi: [d][d ta uch][sarlavha][(d-3) ta diagonal × 8 bayt].
+      ESKI Max: sarlavha 10 bayt, smoothing group sarlavha ichida (+6, u16)  → yozuv = 12d−10.
+      YANGI Max (zstd siqilgan fayllar): sarlavha 6 bayt; birinchi baytdagi 0x08 biti o'rnatilgan bo'lsa +6 da yana 2 bayt (smoothing group) keladi,
+      aks holda guruh yo'q (0)  → yozuv = 12d−14 (+2). Har ikki variant chunk hajmiga aniq mos kelishi tekshiriladi; mos kelmasa mesh o'tkazib yuboriladi. */
+   const scanOld=()=>{const R=[];let q=4;
+    for(let i=0;i<nf;i++){if(q+4>blen(f))return null;const d=u32(f,q);if(d<3||d>256)return null;const sz=12*d-10;if(q+sz>blen(f))return null;
+     const vs=[];for(let j=0;j<d;j++)vs.push(u32(f,q+4+j*4));R.push({vs,smg:S.dv.getUint16(f.off+f.hdr+q+4+4*d+6,true)});q+=sz}
+    return q==blen(f)?R:null};
+   const scanNew=()=>{const R=[];let q=4;
+    for(let i=0;i<nf;i++){if(q+4>blen(f))return null;const d=u32(f,q);if(d<3||d>256)return null;
+     const fo=q+4+4*d;if(fo+6>blen(f))return null;const fl=S.u8[f.off+f.hdr+fo],opt=(fl&8)?2:0,sz=4+4*d+6+opt+8*(d-3);if(q+sz>blen(f))return null;
+     const vs=[];for(let j=0;j<d;j++)vs.push(u32(f,q+4+j*4));R.push({vs,smg:opt?S.dv.getUint16(f.off+f.hdr+fo+6,true):0});q+=sz}
+    return q==blen(f)?R:null};
+   const fr=(sSC.z?(scanNew()||scanOld()):(scanOld()||scanNew()));if(!fr)return null;
    /* UV (kanal 1): 0x128 uvw, 0x12B yuzlar [deg, idx...] */
    const uv=g[0x128],uf=g[0x12B];let uvFaces=null;
    if(uv&&uf){const nu=u32(uv,0);uvV=new Float32Array(nu*2);for(let i=0;i<nu;i++){uvV[i*2]=f32(uv,4+i*12);uvV[i*2+1]=f32(uv,8+i*12)}
@@ -182,13 +240,16 @@ function maxImp(buf){
   nodes.push({i,name:nk?utf16(nk):'node'+i,parent:valid(par)&&cname(par)=='Node'?par:null,obj:r[1],mat:r[3],tm:nodeTM(i)})}
  if(!nodes.length)throw Error('MAX ichida obyektlar (Node) topilmadi');
  const ZY=new M4().makeRotationX(-Math.PI/2); /* Max Z-up → sayt Y-up */
- const out=new THREE.Group(),byI=new Map(),geomCache=new Map(),bad={};let nm=0,skipped=0,total=0;
+ const out=new THREE.Group(),byI=new Map(),geomCache=new Map(),bad={},prim={},badPrim={};let nm=0,skipped=0,total=0;
  for(const n of nodes){
   let o=null;const oi=n.obj;let base=oi!==undefined&&valid(oi)?baseObj(oi):null;
   if(base!==null){
    const off=offTM(n.i),offK=isId(off)?'':off.elements.join(',');const key=base+'|'+offK;
    let G=geomCache.get(key);
-   if(G===undefined){const md=readMesh(base);G=md?buildGeom(md,offK?off:null):null;geomCache.set(key,G||null)}
+   if(G===undefined){
+    if(PRIM.test(cname(base))){G=primGeom(base);if(G){if(offK)G.g.applyMatrix4(off);prim[cname(base)]=(prim[cname(base)]||0)+1}else badPrim[cname(base)]=(badPrim[cname(base)]||0)+1}
+    else{const md=readMesh(base);G=md?buildGeom(md,offK?off:null):null}
+    geomCache.set(key,G||null)}
    if(G){const mats=subMats(n.mat),ns=mats.length,arr=[];
     const geo=G.g.clone();geo.clearGroups();
     const slot=new Map();G.groups.forEach(gr=>{const k=gr.id%ns;if(!slot.has(k))slot.set(k,arr.length),arr.push(mats[k])});
@@ -203,9 +264,11 @@ function maxImp(buf){
   const L=n.parent===null?new M4().multiplyMatrices(ZY,n.tm):n.tm.clone();
   L.decompose(o.position,o.quaternion,o.scale);byI.set(n.i,o)}
  for(const n of nodes){const o=byI.get(n.i),p=n.parent!==null?byI.get(n.parent):null;(p||out).add(o)}
- if(!nm)throw Error('MAX ichida o’qiladigan mesh topilmadi (faqat Editable Mesh/Poly qo’llanadi; boshqa turlar: '+Object.entries(bad).map(([k,v])=>k+'×'+v).join(', ')+')');
+ if(!nm)throw Error('MAX: o’qiladigan mesh topilmadi. Faqat Editable Mesh/Poly o’qiladi; parametrik obyektlar (Box, Cylinder…) saqlanmagan'+(Object.keys(bad).length||Object.keys(badPrim).length?' — topilgan turlar: '+Object.entries(Object.assign({},bad,badPrim)).map(([k,v])=>k+'×'+v).join(', '):'')+'. Max’da obyektlarni o’ng tugma → Convert To → Editable Poly qiling yoki FBX / 3DS / OBJ qilib eksport qiling.');
  const info=[];const bs=Object.entries(bad);
  if(bs.length)info.push('o’qilmadi: '+bs.map(([k,v])=>k+'×'+v).join(', '));
+ if(Object.keys(prim).length)info.push('parametrik (taxminiy o’lcham): '+Object.entries(prim).map(([k,v])=>k+'×'+v).join(', '));
+ if(Object.keys(badPrim).length)info.push('parametrlari o’qilmadi: '+Object.entries(badPrim).map(([k,v])=>k+'×'+v).join(', '));
  if(skipped)info.push(skipped+' ta mesh buzuq');
  maxImp.info=info;maxImp.tris=total;
  return out;

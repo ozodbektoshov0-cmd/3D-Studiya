@@ -173,3 +173,9 @@ label.cs output{text-align:right;color:var(--mt);font-size:11px}
 label.cs{grid-template-columns:92px minmax(0,1fr) 54px}
 label.cs input[type=range]{width:100%;min-width:0;margin:0}
 label.cs output{white-space:nowrap}
+
+/* ---- العربية (Arabic): RTL qo’llab-quvvatlash ---- */
+html[lang="ar"] body{font-family:"Segoe UI","Noto Sans Arabic","Noto Naskh Arabic",Tahoma,"Geeza Pro","Arial",system-ui,sans-serif}
+html[dir="rtl"] .tc,html[dir="rtl"] input[type="range"],html[dir="rtl"] input[type="number"],html[dir="rtl"] #xf{direction:ltr}
+html[dir="rtl"] input[type="number"]{text-align:left}
+html[dir="rtl"] pre,html[dir="rtl"] code,html[dir="rtl"] textarea{direction:ltr;text-align:left}

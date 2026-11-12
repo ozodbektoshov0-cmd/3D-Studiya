@@ -35,7 +35,7 @@ function boolOp(op){const L=real();if(L.length!=2||!L.includes(sel))return toast
  const pA=A.parent,pB=B.parent;select(null);pA.remove(A);pB.remove(B);root.add(r);hist(()=>{root.remove(r);pA.add(A);pB.add(B)},()=>{pA.remove(A);pB.remove(B);root.add(r)});MS.clear();select(r);toast('Boolean tayyor (UV yo’qoladi — “UV avto” ishlating)')}
 /* --- ierarxiya --- */
 const dep=o=>{let n=0;while(o.parent&&o.parent!==root){n++;o=o.parent}return n};
-const rf1=refresh;refresh=()=>{rf1();const ml=meshes();[...$('#list').children].forEach((x,i)=>{if(ml[i])x.style.paddingLeft=(8+dep(ml[i])*14)+'px'})};
+const rf1=refresh;refresh=()=>{rf1();[...$('#list').children].forEach(x=>{x.style.paddingLeft=(8+(x._d||0)*14)+'px'})};
 function parentOp(up){const L=real();let A=sel,B;
  if(up){if(!A||A.parent===root)return toast('Bu obyekt allaqachon ildizda');B=root}
  else{if(L.length!=2||!L.includes(sel))return toast('Ota qilish: 2 ta mesh tanlang (aktiv = bola, ikkinchisi = ota)');B=L.find(o=>o!==A);for(let p=B;p;p=p.parent)if(p===A)return toast('Aylana ierarxiya mumkin emas')}

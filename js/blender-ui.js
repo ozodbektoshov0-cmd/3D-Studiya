@@ -6,7 +6,7 @@
 'use strict';
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const lang=()=>document.documentElement.lang||'uz';
-const L=(u,e,r)=>({uz:u,en:e,ru:r}[lang()]||u);
+const L=(u,e,r)=>{const g=lang();if(g=='ar')return (window.I18N&&I18N.l(u))||e;return {uz:u,en:e,ru:r}[g]||u};
 
 /* ---------- ikonkalar ---------- */
 const P={
@@ -106,11 +106,11 @@ dragBtn(q('#gzp'),(dx,dy)=>{const k=cam.position.distanceTo(ctl.target)*.0018,r=
  o=r.multiplyScalar(-dx*k).add(u.multiplyScalar(dy*k));cam.position.add(o);ctl.target.add(o)});
 q('#gzo').onclick=()=>q('#ortho').click();
 
-const VN={front:['Old','Front','Спереди'],back:['Orqa','Back','Сзади'],right:['O’ng','Right','Справа'],left:['Chap','Left','Слева'],top:['Yuqori','Top','Сверху'],bottom:['Pastki','Bottom','Снизу'],user:['Erkin','User','Пользов.']};
+const VN={front:['Old','Front','Спереди','أمامي'],back:['Orqa','Back','Сзади','خلفي'],right:['O’ng','Right','Справа','يمين'],left:['Chap','Left','Слева','يسار'],top:['Yuqori','Top','Сверху','علوي'],bottom:['Pastki','Bottom','Снизу','سفلي'],user:['Erkin','User','Пользов.','حر']};
 const vl=q('#vlb');
 function viewLabel(){const d=new THREE.Vector3();cam.getWorldDirection(d);let k='user';
  const T=.9995;if(d.z<-T)k='front';else if(d.z>T)k='back';else if(d.x<-T)k='right';else if(d.x>T)k='left';else if(d.y<-T)k='top';else if(d.y>T)k='bottom';
- const o=q('#ortho').classList.contains('on'),n=VN[k],i={uz:0,en:1,ru:2}[lang()]??0;
+ const o=q('#ortho').classList.contains('on'),n=VN[k],i={uz:0,en:1,ru:2,ar:3}[lang()]??0;
  const tx=n[i]+' · '+(o?L('Ortografik','Orthographic','Ортографический'):L('Perspektiva','Perspective','Перспектива'));
  if(vl.textContent!=tx)vl.textContent=tx;
  q('#gzo').classList.toggle('on',o)}
@@ -129,14 +129,29 @@ function deco(){
  ml.forEach(m=>{const p=m.geometry&&m.geometry.getAttribute('position');if(p){v+=uniq(m.geometry,p);t+=m.geometry.index?m.geometry.index.count/3:p.count/3}});
  CN={v,t:Math.round(t),o:ml.length};
  q('#ocnt').textContent=ml.length?ml.length:'';
- qa(':scope>button',L0).forEach((b,i)=>{const m=ml[i];if(!m)return;
+ qa(':scope>button',L0).forEach(b=>{const m=b._o;if(!m)return;
   const txt=b.textContent;b.textContent='';
-  const a=document.createElement('span');a.className='ico';a.innerHTML=ic('obj');
+  const OL=window.OLC||(window.OLC=new Set());
+  const ch=document.createElement('span');ch.className='chev'+(b._k?'':' nil');
+  if(b._k){const set=()=>{ch.classList.toggle('c',OL.has(m));ch.title=OL.has(m)?L('Ochish','Expand','Раскрыть'):L('Yopish','Collapse','Свернуть')};set();
+   ch.onclick=ev=>{ev.stopPropagation();OL.has(m)?OL.delete(m):OL.add(m);refresh()}}
+  const a=document.createElement('span');a.className='ico';a.innerHTML=ic(m.isMesh?(m.userData.dummy?'cube':'obj'):'folder');
+  if(m.userData&&m.userData.dummy)b.classList.add('dummy');
   const n=document.createElement('span');n.className='nm';n.textContent=txt;
   const e=document.createElement('span');e.className='ey';e.title=L('Ko’rsatish / yashirish','Show / hide','Показать / скрыть');
   const upd=()=>{e.innerHTML=ic(m.visible?'eye':'eyeoff');b.classList.toggle('hid',!m.visible)};
   e.onclick=ev=>{ev.stopPropagation();m.visible=!m.visible;upd()};upd();
-  b.append(a,n,e)});
+  b.append(ch,a,n,e)});
+ /* hammasini ochish / yopish tugmalari */
+ const ph=q('#ol .ph');if(ph&&!q('#olx')){
+  const mk=(id,tx,tt,fn)=>{const x=document.createElement('button');x.id=id;x.type='button';x.className='olb';x.textContent=tx;x.title=tt;x.onclick=fn;return x};
+  const sp=q('#ocnt');
+  ph.insertBefore(mk('olx','▾▾',L('Hammasini ochish','Expand all','Раскрыть всё'),()=>{(window.OLC||(window.OLC=new Set())).clear();refresh()}),sp);
+  ph.insertBefore(mk('olc','▸▸',L('Hammasini yopish','Collapse all','Свернуть всё'),()=>{const S0=window.OLC||(window.OLC=new Set());
+   qa(':scope>button',q('#list')).forEach(b=>{if(b._k)S0.add(b._o)});
+   /* ichkarida ham yopilishi uchun butun daraxt bo’ylab */
+   root.traverse(o=>{if(o!==root&&!o.isBone&&o.children.some(c=>c.isMesh||(!c.isBone&&c.name)))S0.add(o)});refresh()}),sp);
+ }
 }
 deco();
 

@@ -64,6 +64,7 @@ const snapAp=()=>{if($('#snap').classList.contains('on')){tc.setTranslationSnap(
 const bgSet=v=>{C.bgOn=true;S.background=new THREE.Color(v);vp.style.background=v;$('#bgc').value=v};
 const bgOff=()=>{C.bgOn=false;S.background=null;vp.style.background=''};
 const vis=(id,v)=>{$(id).hidden=!v};
+const bl=(k,v)=>{const c=window.BL_CFG=window.BL_CFG||{};if(k!='keys')c[k]=v;c.on&&c.on(k,v)};   /* Blender sozlamalari: js/blender-prefs.js bilan bog’lanish */
 const xfer=(ok)=>E('input',{type:'file',accept:'.json,application/json',hidden:true,onchange:ok});
 
 /* ---------- sxema ---------- */
@@ -108,15 +109,24 @@ const sec=[
  {k:'snS',t:'rng',l:'Magnit: o’lcham qadami',mn:.01,mx:1,st:.01,v:.1,ap:snapAp},
  {k:'hl',t:'rng',l:'Bekor qilish tarixi',h:'Eng ko’p saqlanadigan amallar soni.',mn:10,mx:500,st:10,v:200}]],
 ['Interfeys va asboblar',[
- {k:'lang',t:'sel',l:'Dastur tili',o:[['uz','O’zbekcha'],['en','English'],['ru','Русский']],v:'uz',ap:v=>window.I18N&&I18N.set(v)},
+ {k:'lang',t:'sel',l:'Dastur tili',o:[['uz','O’zbekcha'],['en','English'],['ru','Русский'],['ar','العربية']],v:'uz',ap:v=>window.I18N&&I18N.set(v)},
  {k:'ui',t:'sel',l:'Interfeys o’lchami',o:[[11,'Kichik'],[12,'Oddiy'],[14,'Katta'],[16,'Juda katta']],v:12,ap:v=>document.body.style.fontSize=v+'px'},
- {k:'acc',t:'col',l:'Asosiy rang',v:'#4772b3',ap:v=>document.documentElement.style.setProperty('--ac',v),sw:['#4772b3','#2e8b57','#8a5cc2','#c0392b','#d98a1f']},
+ {k:'acc',t:'col',l:'Asosiy rang',v:'#ff9f2e',ap:v=>document.documentElement.style.setProperty('--ac',v),sw:['#ff9f2e','#4772b3','#2e8b57','#8a5cc2','#c0392b']},
  {k:'tLt',t:'chk',l:'Chap asboblar paneli',v:true,ap:v=>vis('#lt',v)},
  {k:'tVh',t:'chk',l:'Ko’rinish tugmalari (Ortho, Old…)',v:true,ap:v=>vis('#vh',v)},
  {k:'tAs',t:'chk',l:'O’ng panel (Outliner, Xossalar)',v:true,ap:v=>vis('aside',v)},
  {k:'tFt',t:'chk',l:'Pastki holat qatori',v:true,ap:v=>vis('footer',v)},
  {k:'asW',t:'rng',l:'O’ng panel kengligi',mn:200,mx:480,st:10,u:' px',v:280,ap:v=>$('aside').style.width=v+'px'},
  {t:'info',l:'Klaviatura yorliqlari',x:'G ko’chirish · R aylantirish · S o’lcham\nShift+D nusxa · X o’chirish · F kamera\nCtrl+Z / Ctrl+Y bekor qilish / qaytarish\nTab — Edit mode · Ctrl+A hammasi\nNumpad 1 / 3 / 7 — old / o’ng / yuqori'}]],
+['Blender',[
+ {k:'blNav',t:'chk',l:'Blender sichqoncha boshqaruvi',h:'O’rta tugma — aylantirish, Shift + o’rta tugma — surish, g’ildirak — yaqinlashtirish.',v:false,ap:v=>bl('blNav',v)},
+ {k:'blShiftA',t:'chk',l:'Shift+A — “Qo’shish” menyusini ochadi',v:true,ap:v=>bl('blShiftA',v)},
+ {k:'blEm',t:'chk',l:'Edit rejimi asboblar paneli',h:'Extrude, Inset, Delete, Merge va tanlash tugmalari. Yorliqlar (E, I, X, M…) panel o’chiq bo’lsa ham ishlaydi.',v:true,ap:v=>bl('blEm',v)},
+ {k:'blStats',t:'chk',l:'Statistika (Blender “Statistics”)',h:'Ko’rinish burchagida: obyektlar, nuqtalar va uchburchaklar — tanlangan/jami. Edit rejimida tanlangan nuqtalar.',v:false,ap:v=>bl('blStats',v)},
+ {k:'blSm',t:'rng',l:'Auto Smooth: standart burchak',mn:1,mx:180,st:1,u:'°',v:30,ap:v=>bl('blSm',v)},
+ {t:'btn',l:'Blender mavzusi',h:'Ko’k urg’u rangi va Blender’ning kulrang ko’rinish foni.',b:'Qo’llash',ap:()=>{const a=I.find(i=>i.k=='acc');C.acc='#4772b3';a&&a.ap('#4772b3');C.bg='#3d3d3d';bgSet('#3d3d3d');save();sync();toast('Blender mavzusi qo’llandi')}},
+ {t:'btn',l:'Klaviatura xaritasi',b:'Ochish (F1)',ap:()=>{dlg.close();bl('keys')}},
+ {t:'info',l:'Blender yorliqlari',x:'Shift+A — qo’shish menyusi\nEdit rejimi: E extrude · I inset · X o’chirish · M birlashtirish\nA hammasi · Alt+A hech biri · Ctrl+I teskari · L bog’langan\nF1 — to’liq yorliqlar ro’yxati'}]],
 ['Fayllar va tiklash',[
  {k:'fmt',t:'sel',l:'Standart eksport formati',o:()=>[...$('#fmt').options].map(o=>o.value),v:'glb',ap:v=>{$('#fmt').value=v}},
  {k:'txm',t:'sel',l:'Eksport: maks. tekstura',o:[256,512,1024,2048],v:1024,ap:v=>{$('#txm').value=v}},
@@ -133,6 +143,8 @@ const sec=[
 const I=sec.flatMap(s=>s[1]),DEF={};I.forEach(i=>{if(i.k)DEF[i.k]=i.v});
 const conv=(k,v)=>typeof DEF[k]=='boolean'?!!v:v;
 try{C=Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){C=Object.assign({},DEF)}
+/* v52: eski standart ko’k rang saqlanib qolgan bo’lsa, yangi amber rangga bir marta o’tkaziladi */
+try{if(!localStorage.getItem('acc52')){localStorage.setItem('acc52','1');if(C.acc=='#4772b3')C.acc=DEF.acc}}catch(e){}
 const save=()=>{try{const o={};for(const k in C)if(!I.find(i=>i.k==k&&i.np))o[k]=C[k];localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}};
 function applyAll(keys){I.forEach(i=>{if(!i.ap||i.t=='btn'||i.np||(keys&&!keys.includes(i.k))||(i.on&&!C[i.on]))return;i.ap(C[i.k])})}
 function detect(k){for(const g in PS){const p=PS[g];if(p.k.includes(k))C[g]=Object.keys(p.t).find(n=>p.k.every((kk,i)=>C[kk]==conv(kk,p.t[n][i])))||p.c}}

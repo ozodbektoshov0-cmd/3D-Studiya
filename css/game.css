@@ -1,0 +1,42 @@
+/* ---- O’yin rejimi (haydash) ---- */
+.gmenu{position:fixed;inset:0;z-index:80;background:#000a;display:none;align-items:center;justify-content:center;padding:12px}
+.gmenu.on{display:flex}
+.gmenu .gbox{background:#262626;border:1px solid #000;border-radius:10px;max-width:560px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 10px 40px #000c}
+.gmenu .gh{display:flex;align-items:center;padding:10px 14px;background:var(--hd);font-weight:600}
+.gmenu .gh .sp{flex:1}
+.gmenu .gp{padding:12px 14px;color:var(--mt);line-height:1.4}
+.gmenu .gmaps{display:grid;gap:8px;padding:0 14px 14px}
+.gmenu .gmaps button{display:flex;align-items:center;gap:12px;text-align:start;padding:12px;background:#333;border-radius:8px}
+.gmenu .gmaps button:hover{background:var(--ac)}
+.gmenu .gmaps i{font-style:normal;font-size:28px}
+.gmenu .gmaps b{display:block;font-size:14px}
+.gmenu .gmaps small{color:#bbb}
+body.game #vp{position:fixed;inset:0;z-index:60;border:0}
+body.game #toast{z-index:90}
+body.game #vp>*:not(canvas):not(.ghud){display:none!important}
+body.game #c{pointer-events:none}
+.ghud{position:absolute;inset:0;pointer-events:none;font-family:system-ui,sans-serif;color:#fff;direction:ltr}
+.ghud *{pointer-events:auto}
+.ghud .gspd{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:#000a;border-radius:14px;padding:6px 22px;text-align:center;pointer-events:none}
+.ghud .gspd b{font-size:38px;font-variant-numeric:tabular-nums;line-height:1}
+.ghud .gspd small{display:block;color:#ccc;font-size:11px}
+.ghud .gtop{position:absolute;top:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.ghud .gtop button,.ghud .gt button{background:#000b;color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;border:0}
+.ghud .gtop button.on{background:var(--ac)}
+.ghud .gtop .ex{background:#b3321f}
+.ghud .gmap{position:absolute;top:8px;left:8px;background:#000a;border-radius:8px;padding:6px 10px;font-size:12px;pointer-events:none}
+.ghud .ghelp{position:absolute;left:8px;top:44px;max-width:min(420px,70vw);background:#000b;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.5;white-space:pre-line;direction:inherit}
+.ghud .gind{position:absolute;left:50%;bottom:108px;transform:translateX(-50%);font-size:26px;pointer-events:none;display:flex;gap:30px;text-shadow:0 0 6px #000}
+.ghud .gt{position:absolute;bottom:14px;display:none;gap:10px}
+.ghud .gt button{width:74px;height:74px;font-size:30px;border-radius:50%;touch-action:none;user-select:none}
+.ghud .gt.l{left:12px}.ghud .gt.r{right:12px;flex-direction:column;gap:8px}
+.ghud .gt.r button{height:62px;border-radius:16px;width:92px}
+@media(pointer:coarse){.ghud .gt{display:flex}.ghud .ghelp{display:none}}
+
+.ghud .gmm{position:absolute;left:8px;top:40px;width:150px;height:150px;pointer-events:none}
+.ghud .ghelp{top:200px}
+.ghud .glap{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#000a;border-radius:8px;padding:4px 12px;font-size:15px;font-variant-numeric:tabular-nums;pointer-events:none}
+.ghud .glap:empty{display:none}
+.ghud .gpause{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:90px;pointer-events:none;text-shadow:0 0 20px #000}
+.ghud .grpm{height:4px;background:#fff3;border-radius:2px;margin-top:4px;overflow:hidden}.ghud .grpm i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4cd964,#ffcc00,#ff3b30)}
+@media(max-width:700px){.ghud .gmm{width:110px;height:110px;top:40px}}
