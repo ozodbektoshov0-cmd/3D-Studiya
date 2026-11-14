@@ -28,7 +28,7 @@ async function load(f){
  else if(/^usd[az]?$/.test(ext))o=usdImp(buf);
  else if(EXT2.test(ext))o=await imp2(ext,buf);
  else if(ext=='skp')o=await skpImp(buf);
- else if(ext=='max')o=maxImp(buf);
+ else if(ext=='max'){if(buf.byteLength>2e7){toast('MAX: katta sahna ochilmoqda (gzip), kuting…');await new Promise(r=>setTimeout(r,80))}o=maxImp(buf)}
  else if(/^(dxf|svg|kmz)$/.test(ext)){await engineImport(f);return}
  else if(ext=='z3d')o=z3dImp(buf);
  else if(ext=='blend')throw Error('.blend yopiq format, brauzerda o’qib bo’lmaydi — Blender’da GLB yoki FBX qilib saqlang');

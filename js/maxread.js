@@ -1,5 +1,5 @@
 /* ---- 3ds Max (.max) import: OLE2 konteyner → Scene/ClassDirectory3 (yoki yangi Max: *_Compressed = zstd) → Editable Mesh/Poly, transform, ierarxiya, material ----
-   Yopiq format bo'lgani uchun faqat ko'rinadigan tuzilma o'qiladi (4 ta haqiqiy fayl asosida):
+   Yopiq format bo'lgani uchun faqat ko'rinadigan tuzilma o'qiladi (5 ta haqiqiy fayl asosida; oqimlar siqilmagan, gzip yoki zstd bo'lishi mumkin):
    Editable Mesh va Editable Poly, PRS transform, pivot, ota-bola bog'lanish, instance, UV, smoothing group,
    Multi/Sub material (nom, diffuse rang, tekstura fayl nomi). Parametrik obyektlar (Box, Sphere…) va modifikatorlar o'qilmaydi. */
 function maxImp(buf){
@@ -25,7 +25,16 @@ function maxImp(buf){
   return chain(e.start,e.size)};
  /* Yangi Max (2024+): oqimlar “<nom>_Compressed” nomi bilan saqlanadi — 2 bayt (FF FF) + zstd kadr.
     Ochilgandan keyin oqim boshida qisqa sarlavha bo'ladi (ClassDirectory3: 6 bayt, Scene: 14 bayt) — pastda aniqlanadi. */
- const cstream=nm=>{const s=stream(nm);if(s)return{d:s,z:false};
+ /* Ayrim Max fayllarida (masalan 3ds Max 2018–2023 qatori) “Scene”, “ClassDirectory3” oqimlari NOMI O'ZGARMAGAN holda gzip bilan siqilgan (1F 8B 08).
+    Eski import ularni xom chunk deb o'qirdi → “obyektlar (Node) topilmadi”. Ochilgandan keyin tuzilma eski (siqilmagan) formatniki bilan bir xil. */
+ const isGz=u=>u&&u.length>18&&u[0]==0x1F&&u[1]==0x8B&&u[2]==8;
+ const gunz=(u,nm)=>{
+  if(typeof fflate=='undefined'||!fflate.gunzipSync)throw Error('MAX: gzip dekoderi (vendor/fflate.min.js) yuklanmagan');
+  const isz=new DataView(u.buffer,u.byteOffset+u.length-4,4).getUint32(0,true);
+  if(isz>1.9e9)throw Error('MAX: '+nm+' oqimi ochilgach '+Math.round(isz/1048576)+' MB bo’ladi — brauzer xotirasiga sig’maydi. 3ds Max’da kerakli qismni FBX/OBJ qilib eksport qiling');
+  try{return fflate.gunzipSync(u)}
+  catch(e){throw Error(e instanceof RangeError?'MAX: '+nm+' oqimini ochishga xotira yetmadi ('+Math.round(isz/1048576)+' MB kerak) — boshqa ilovalarni yoping yoki kompyuterda oching':'MAX: '+nm+' oqimini (gzip) ochib bo’lmadi — fayl buzilgan bo’lishi mumkin')}};
+ const cstream=nm=>{const s=stream(nm);if(s)return isGz(s)?{d:gunz(s,nm),z:false}:{d:s,z:false};
   const c=stream(nm+'_Compressed');if(!c)return null;
   const o=(c[0]==0x28&&c[1]==0xB5)?0:2;
   if(!(c[o]==0x28&&c[o+1]==0xB5&&c[o+2]==0x2F&&c[o+3]==0xFD))throw Error('MAX: '+nm+'_Compressed oqimi noma’lum usulda siqilgan (zstd emas)');
@@ -50,13 +59,18 @@ function maxImp(buf){
  const kids=(P,c)=>{if(!c.cont)return[];return c._k||(c._k=chunks(P,c.off+c.hdr,c.off+c.len))};
  /* siqilgan oqimlarda sarlavha uzunligi: chunk zanjiri oqim oxirigacha aniq yetib boradigan birinchi siljish */
  const fit=P=>{const L=P.u8.length;for(let a=0;a<=32;a++){const r=chunks(P,a,L);if(r.length&&r.reduce((t,c)=>t+c.len,a)==L)return a}return 0};
- const co=sCD.z?fit(C):0,so=sSC.z?fit(S):0;
+ const co=sCD.z?fit(C):0;
  const cl=[];
  for(const n of chunks(C,co,CD.length)){let nm='';for(const k of kids(C,n)){if(k.id==0x2042){for(let j=k.off+k.hdr;j+1<k.off+k.len;j+=2)nm+=String.fromCharCode(C.dv.getUint16(j,true))}}cl.push(nm)}
+ /* Scene sarlavhasi: oqim oxirigacha “yetib boradigan” siljish bir nechta bo'lishi mumkin (masalan 12, 14, 20, 30) — faqat bittasi to'g'ri.
+    To'g'risini aniqlash: chunk id’lari ClassDirectory3 dagi sinflar soniga (cl.length) sig'adigan eng ko'p chunk beradigan siljish. */
+ const fitScene=()=>{const L=S.u8.length;let best=0,bs=-1;for(let a=0;a<=32;a++){const r=chunks(S,a,L);if(!r.length||r.reduce((t,c)=>t+c.len,a)!=L)continue;
+   let ok=0;for(const c of r)if(c.id<cl.length)ok++;const sc=ok/r.length*1000+Math.min(ok,1000)/1000;if(sc>bs+1e-9){bs=sc;best=a}}return best};
+ const so=sSC.z?fitScene():0;
  const sch=chunks(S,so,SC.length);if(!sch.length)throw Error('MAX Scene oqimi buzuq');
  /* eski format: bitta ildiz chunk ichida obyektlar; yangi (zstd) format: obyektlar to'g'ridan-to'g'ri yuqori darajada */
  const top=(sSC.z&&sch.length>1)?sch:kids(S,sch[0]);
- const cname=i=>{const c=top[i];return c&&c.id<cl.length?cl[c.id]:''};
+ const cname=i=>{const c=top[i];return c&&c.id<cl.length?cl[c.id]:(c&&c.id==0x2032?'Derived Object':'')}; /* Derived Object (modifikator, masalan TurboSmooth, qo'yilgan obyekt) ClassDirectory’da yo'q — o'rnatilgan chunk id 0x2032 */
  /* ---------- yordamchilar ---------- */
  const kid=(P,c,id)=>{for(const k of kids(P,c))if(k.id==id)return k;return null};
  const tk=(i,id)=>{const c=top[i];return c?kid(S,c,id):null};
@@ -87,8 +101,13 @@ function maxImp(buf){
  const isId=m=>{const e=m.elements;for(let i=0;i<16;i++)if(Math.abs(e[i]-((i%5)?0:1))>1e-9)return false;return true};
  /* ---------- geometriya ---------- */
  const PRIM=/^(Box|Cylinder|Sphere|GeoSphere|Plane|Cone|Torus)$/;
- const baseObj=oi=>{const c=cname(oi);if(c=='Editable Mesh'||c=='Editable Poly'||PRIM.test(c))return oi;
-  if(c=='Derived Object'){for(const r of refl(oi))if(valid(r)&&(/^Editable (Mesh|Poly)$/.test(cname(r))||PRIM.test(cname(r))))return r}return null};
+ const modUsed={}; /* e'tiborga olinmagan modifikatorlar (TurboSmooth, Shell…) — faqat asos (base) mesh o'qiladi */
+ const baseObj=(oi,dep=0)=>{const c=cname(oi);if(c=='Editable Mesh'||c=='Editable Poly'||PRIM.test(c))return oi;
+  /* Derived Object ichida yana Derived Object bo'lishi mumkin (modifikatorlar steki): rekursiv qidiriladi */
+  if(c=='Derived Object'&&dep<12){const rl=refl(oi).filter(valid);
+   for(const r of rl){const k=cname(r);if(/^Editable (Mesh|Poly)$/.test(k)||PRIM.test(k)){rl.forEach(x=>{const m=cname(x);if(m!='Derived Object'&&m!=k&&!/^ParamBlock/.test(m))modUsed[m]=(modUsed[m]||0)+1});return r}}
+   for(const r of rl)if(cname(r)=='Derived Object'){const b=baseObj(r,dep+1);if(b!==null){rl.forEach(x=>{const m=cname(x);if(m!='Derived Object'&&!/^ParamBlock/.test(m))modUsed[m]=(modUsed[m]||0)+1});return b}}}
+  return null};
  /* ---------- parametrik primitivlar (Box, Cylinder, Sphere, Plane, Cone, Torus) ----------
     Max ularni mesh sifatida saqlamaydi, faqat ParamBlock2 parametrlarini. O’lchamlar TYPE_WORLD (float) parametrlaridan, id o’sish tartibida olinadi:
     Box: uzunlik, kenglik, balandlik · Cylinder: radius, balandlik · Sphere: radius · Plane: uzunlik, kenglik · Cone: r1, r2, balandlik · Torus: r1, r2.
@@ -149,14 +168,28 @@ function maxImp(buf){
      const fo=q+4+4*d;if(fo+6>blen(f))return null;const fl=S.u8[f.off+f.hdr+fo],opt=(fl&8)?2:0,sz=4+4*d+6+opt+8*(d-3);if(q+sz>blen(f))return null;
      const vs=[];for(let j=0;j<d;j++)vs.push(u32(f,q+4+j*4));R.push({vs,smg:opt?S.dv.getUint16(f.off+f.hdr+fo+6,true):0});q+=sz}
     return q==blen(f)?R:null};
-   const fr=(sSC.z?(scanNew()||scanOld()):(scanOld()||scanNew()));if(!fr)return null;
+   /* BAYROQQA asoslangan format (gzip siqilgan Max 2018+ fayllarida uchraydi; bir mesh ichida yozuv hajmi har xil):
+      [d][d ta uch][bayroq u16] + [bayroq&0x01 ? 4 bayt: qirra bayroqlari] + [bayroq&0x08 ? u16: MATERIAL ID] + [bayroq&0x10 ? u32: SMOOTHING GROUP] + (d−3)×8 bayt diagonal.
+      Bayroq bitlari yo'q bo'lsa — qiymat 0. d=0 (bo'sh yuz) va d>256 (katta n-gon) ham uchraydi. Chunk oxirigacha AYNAN mos kelishi va uch indekslari < nv bo'lishi tekshiriladi. */
+   const scanFlg=()=>{const R=[],L=blen(f),b0=f.off+f.hdr;let q=4;
+    for(let i=0;i<nf;i++){if(q+4>L)return null;const d=u32(f,q);if((d>0&&d<3)||d>((L-q-4)>>2))return null; /* d=0: bo'sh (o'lik) yuz; d katta bo'lishi mumkin (yuzlab uchli n-gon) */
+     const fo=q+4+4*d;if(fo+2>L)return null;const fl=S.dv.getUint16(b0+fo,true);
+     const sz=2+((fl&1)?4:0)+((fl&8)?2:0)+((fl&16)?4:0)+8*Math.max(d-3,0);if(fo+sz>L)return null;
+     let p=fo+2,mat=0,smg=0;if(fl&1)p+=4;if(fl&8){mat=S.dv.getUint16(b0+p,true);p+=2}if(fl&16)smg=S.dv.getUint32(b0+p,true);
+     const vs=[];for(let j=0;j<d;j++){const x=u32(f,q+4+j*4);if(x>=nv)return null;vs.push(x)}
+     R.push({vs,smg,mat});q=fo+sz}
+    return q==L?R:null};
+   const fr=(sSC.z?(scanNew()||scanOld()||scanFlg()):(scanFlg()||scanOld()||scanNew()));if(!fr)return null;
    /* UV (kanal 1): 0x128 uvw, 0x12B yuzlar [deg, idx...] */
    const uv=g[0x128],uf=g[0x12B];let uvFaces=null;
    if(uv&&uf){const nu=u32(uv,0);uvV=new Float32Array(nu*2);for(let i=0;i<nu;i++){uvV[i*2]=f32(uv,4+i*12);uvV[i*2+1]=f32(uv,8+i*12)}
-    uvFaces=[];let p=0;for(let i=0;i<nf&&p+4<=blen(uf);i++){const d=u32(uf,p);if(d!=fr[i].vs.length){uvFaces=null;break}const a=[];for(let j=0;j<d;j++)a.push(u32(uf,p+4+j*4));uvFaces.push(a);p+=4+d*4}
+    uvFaces=[];let p=0;for(let i=0;i<nf&&p+4<=blen(uf);i++){const d=u32(uf,p);
+     if(!fr[i].vs.length){uvFaces.push([]);if(d==0)p+=4;continue} /* bo'sh (d=0) yuz: UV ro'yxatida unga mos yozuv bo'lmasligi mumkin */
+     if(d!=fr[i].vs.length){uvFaces=null;break}const a=[];for(let j=0;j<d;j++)a.push(u32(uf,p+4+j*4));uvFaces.push(a);p+=4+d*4}
+    if(uvFaces)while(uvFaces.length<nf&&!fr[uvFaces.length].vs.length)uvFaces.push([]);
     if(uvFaces&&uvFaces.length!=nf)uvFaces=null}
    const uA=[];
-   fr.forEach((q,i)=>{for(let j=1;j+1<q.vs.length;j++){T.push(q.vs[0],q.vs[j],q.vs[j+1],q.smg,0);
+   fr.forEach((q,i)=>{for(let j=1;j+1<q.vs.length;j++){T.push(q.vs[0],q.vs[j],q.vs[j+1],q.smg,q.mat||0);
      if(uvFaces)uA.push(uvFaces[i][0],uvFaces[i][j],uvFaces[i][j+1])}});
    if(uvFaces)uvF=Uint32Array.from(uA);else uvV=null;
   }
@@ -270,6 +303,7 @@ function maxImp(buf){
  if(Object.keys(prim).length)info.push('parametrik (taxminiy o’lcham): '+Object.entries(prim).map(([k,v])=>k+'×'+v).join(', '));
  if(Object.keys(badPrim).length)info.push('parametrlari o’qilmadi: '+Object.entries(badPrim).map(([k,v])=>k+'×'+v).join(', '));
  if(skipped)info.push(skipped+' ta mesh buzuq');
+ if(Object.keys(modUsed).length)info.push('modifikatorlar hisobga olinmadi (asosiy mesh o’qildi): '+Object.entries(modUsed).map(([k,v])=>k+'×'+v).join(', '));
  maxImp.info=info;maxImp.tris=total;
  return out;
 }
