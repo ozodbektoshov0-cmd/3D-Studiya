@@ -2,6 +2,19 @@
 
 Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server kerak emas.
 
+## v0.0.64 — MAX: gzip siqilgan fayllar ochilmasligi tuzatildi (“MAX ichida obyektlar (Node) topilmadi”)
+- **Sabab 1 (asosiy):** ayrim `.max` fayllarda `Scene` va `ClassDirectory3` oqimlari **nomi o’zgarmagan holda gzip bilan siqilgan** (`1F 8B 08` bilan boshlanadi; `_Compressed` qo’shimchasi ham, zstd ham yo’q). Import ularni xom chunk deb o’qir, sahifa 0 ta chunk topar va “obyektlar (Node) topilmadi” xatosi chiqardi. **Tuzatish:** oqim gzip bo’lsa `fflate.gunzipSync` bilan ochiladi (ochilgandan keyingi tuzilma eski siqilmagan formatniki bilan bir xil). Ochilgan hajm 1,9 GB dan oshsa yoki xotira yetmasa aniq xabar beriladi.
+- **Sabab 2:** shu fayllarda Editable Poly yuz yozuvi **bayroqqa bog’liq uzunlikda** (bir mesh ichida 30–40 bayt): `[d][d ta uch][bayroq u16]` + `bayroq&1` → 4 bayt (qirra bayroqlari) + `bayroq&8` → u16 (**material ID**) + `bayroq&16` → u32 (**smoothing group**) + (d−3)×8 bayt diagonal. Eski o’qigich faqat bir xil uzunlikdagi yozuvlarni tanir, shuning uchun mesh’larning katta qismi “buzuq” deb tashlab yuborilardi (sinov faylida 520 ta). Endi `scanFlg` ishlatiladi: chunk oxirigacha aniq mos kelishi va uch indekslari < nv ekani tekshiriladi. Material ID va 32 bitli silliqlash guruhi to’g’ri o’qiladi (avval material 0 edi).
+- **Sabab 3:** yuz ro’yxatida bo’sh yuz (`d=0`) va juda katta ko’pburchak (`d=576`) uchraydi — avval `d<3` / `d>256` rad etilardi.
+- **Sabab 4:** modifikatorlar steki **ichma-ich** Derived Object bo’lishi mumkin (masalan TurboSmooth → UVW Map → Editable Poly) — avval faqat bir daraja chuqurlikka qaralardi. Endi rekursiv qidiriladi; import xabarida qaysi modifikatorlar hisobga olinmagani ko’rsatiladi.
+- `js/loader.js`: katta `.max` (20 MB dan ortiq) uchun “ochilmoqda” xabari ko’rsatiladi (ochish bir necha soniya olishi mumkin).
+- Sinov: 1 ta haqiqiy fayl (UZ_AVTO01.max, 212 MB gzip → 633 MB ochilgan, 2934 obyekt) — avval xato; endi ≈9,5 mln uchburchak o’qiladi. O’qilmaydigan qismlar: Particle View, spline’lar (Line/Rectangle/Text + Extrude), kamera/yorug’lik. **Eslatma:** bunday katta sahna uchun brauzerga ≈2–3 GB xotira kerak; telefonda xotira yetmasligi mumkin.
+
+## v0.0.63 — MAX: ayrim yangi 3ds Max fayllari (“o’qiladigan mesh topilmadi”) tuzatildi
+- **Sabab 1:** siqilgan `Scene` oqimi sarlavhasining uzunligi noto’g’ri tanlanardi. Bir nechta siljish (12, 14, 20, 30) chunk zanjirini oqim oxirigacha “yetkazib” qo’yishi mumkin, faqat 14 to’g’ri edi; 12 tanlanib, 29 mingta soxta chunk hosil bo’lardi va hamma obyekt “noma’lum” bo’lib qolardi. **Tuzatish:** chunk id’lari ClassDirectory3 dagi sinflar soniga eng ko’p sig’adigan siljish tanlanadi.
+- **Sabab 2:** modifikator (masalan TurboSmooth) qo’yilgan obyektlar (Derived Object) ClassDirectory3 da yo’q, o’rnatilgan chunk id `0x2032` bilan keladi — ular o’qilmasdi. Endi shu id Derived Object deb tanib olinadi va ostidagi Editable Mesh/Poly o’qiladi (modifikatorning o’zi qo’llanmaydi).
+- Sinov: V-Ray 7 sahnasi (3ds Max 2024+, 18 obyekt) — avval xato, endi ≈38 ming uchburchak ochiladi. Yorug’lik va kameralar (VRaySun, VRayPhysicalCamera, Target) o’qilmaydi.
+
 ## v0.0.62 — MAX: yangi 3ds Max (2024+) fayllari ochilmasligi tuzatildi
 - **Sabab:** yangi 3ds Max `.max` ichidagi oqimlarni siqib saqlaydi (`Scene_Compressed`, `ClassDirectory3_Compressed` … — 2 bayt `FF FF` + **zstd** kadr). Import faqat siqilmagan `Scene`/`ClassDirectory3` ni qidirgani uchun “MAX ichida Scene/ClassDirectory3 topilmadi” xatosi chiqardi.
 - **Tuzatish:** `js/zstd.js` — sof JS zstd dekoder (RFC 8878, kutubxonasiz; lug’at va checksum tekshiruvi yo’q). `js/maxread.js` siqilgan oqimlarni ochadi, ochilgan oqim boshidagi sarlavhani (ClassDirectory3: 6 bayt, Scene: 14 bayt) chunk zanjiri oxirigacha aniq yetib borishi bo’yicha aniqlaydi. Eski (siqilmagan) fayllar uchun yo’l o’zgarmagan.

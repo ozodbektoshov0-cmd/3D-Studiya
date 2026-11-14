@@ -1,6 +1,6 @@
 /* Oflayn kesh — barcha fayllar ilova bilan birga keladi, internet kerak emas.
    Yangilash: V ni oshiring (v25 → v26) va barcha fayllarni bu ro'yxatga qo'shing. */
-const V='3d-studiya-v0.0.62';
+const V='3d-studiya-v0.0.64';
 const ASSETS=[
  ".","index.html","manifest.webmanifest","css/style.css","css/blender.css","css/game.css","css/simple.css","icon-192.png","icon-512.png","og.png",
  "apps/3d-model/index.html","apps/lib/OBJLoader.js","apps/lib/OrbitControls.js","apps/lib/SVGLoader.js","apps/lib/bridge.js","apps/lib/theme.css","apps/lib/three.min.js",
