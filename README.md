@@ -2,6 +2,36 @@
 
 Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server kerak emas.
 
+## v0.0.69 — Bayroqning o’rtasida oq yo’l
+- Bayroqda o’rta **oq yo’l** alohida mesh (`bayroq_oq`) sifatida qo’shildi: rangli (to’q sariq, yashil, ko’k) plastinalarda ham bayroq to’liq — ko’k, qizil, **oq**, yashil. Ikki qizil chiziq saqlanadi.
+
+## v0.0.68 — To’q sariq nomerlar (standart va kvadrat)
+- 3 ta yangi tur: **to’q sariq standart** (`01 | A123BC` / `502GDA`, bayroq + UZ), **kvadrat: o’ng ustunda hudud** va **kvadrat: pastki o’ngda hudud** (to’q sariq). Bayroqning o’rta (oq) yo’li plastina rangida qoladi — oq emas (Qoraqalpog’iston bayrog’iga o’xshab), ikki qizil chiziq saqlanadi.
+- Kvadrat turlarda pastki qatorga **oxirgi 2 harf** tushadi: `000MMM` → `000M` / `MM`, `M123MM` → `M123` / `MM`.
+- Jami 21 tur.
+
+## v0.0.67 — Nomer turlari lex.uz namunalariga moslandi
+- **Ranglar** lex.uz namunalaridan o’lchandi: «sariq» plastina aslida to’q sariq (`#E3991C`), yashil — mint (`#68CB99`), elektromobil hudud katagi — och zaytun (`#C7D678`). Ko’k (UN) o’zgarmadi.
+- **«Bayroq chapda» (`PAA 005`):** bayroq endi plastinaning butun ichki balandligida (≈ 151 × 97 mm), yarim oy va yulduzlar bilan.
+- **Kvadrat turlar:** belgi balandligi 90 mm (namunadagidek yirik), o’ng ustun (hudud katagi + bayroq/UZ katagi) va pastki o’ng katak yumaloq burchakli chiziq bilan; yashil/och zaytun hudud katagi.
+- **Yangi 2 tur — traktor belgisi:** oq va to’q sariq kvadrat (`899AA`, `456JT`): yuqori qatorda traktor belgisi (o’zimiz chizgan oddiy siluet: kapot, kabina, ikki g’ildirak — alohida meshlar `traktor` guruhida), pastki o’ngda hudud + bayroq + UZ.
+- Uzun turlarda harf–raqam oralig’i standartdagidek (namunada zich). Jami 18 tur.
+
+## v0.0.66 — Davlat raqami: 16 ta nomer turi (uzun va kvadrat)
+- **Nomer turi** tanlovi qo’shildi (Qo’shish → Davlat raqami). **Uzun (520 × 110 mm):** standart (hudud | raqam | bayroq, UZ), yashil hudud katakli standart, bayroq chapda (hududsiz), yashil (`CMD1234`, `D123456`, `T123456`, `X123456`), ko’k (`UN1234`), yashil va sariq hududli, hudud o’ngda. **Kvadrat (340 × 245 mm):** o’ng ustunda hudud + bayroq + UZ (oddiy va yashil katakli), pastki o’ngda katak (hudud + bayroq + UZ; yashil hududli; faqat bayroq; faqat hudud), sariq hududli va yashil (`CMD`).
+- **O’lchamlar:** rasmlardagi shrift, bayroq va «UZ» o’lchamlari buzilgan bo’lgani uchun ular nusxalanmadi — hamma turda belgi balandligi 75 mm (kvadratda 80 mm), hudud kodi 56 mm, bayroq bloki 38 × 24.4 mm + «UZ» (bayroqli, UZ’siz turlarda ×1.5) standart nomerdagidek. Faqat joylashuv, ranglar va tuzilma rasmlardan olingan. Kvadrat plastina o’lchami (340 × 245 mm) taxminiy; `js/nomer.js` boshidagi `TPL` va `SQ` jadvalida o’zgartiriladi.
+- **Kiritish:** ikki qatorli turlarda matn avtomatik bo’linadi: `123AB` → yuqorida `123`, pastda `AB`; `PAA123` → `PAA` / `123`; `T123456` → `123456` / `T`. Uzun yozuv bir tekis kichraytiriladi; yashil/ko’k turlarda harflar orasi kengaytiriladi (`C M D   1234`). Hududsiz turlarda hudud maydoni yashiriladi.
+- **Rang:** plastina rangi turga qarab (oq, yashil `#7EB61A`, ko’k `#3B82E0`, sariq `#FFD400`), yashil/ko’k plastinada hoshiya va belgilar oq. Hudud katagi `#4DB04A`.
+- Standart tur avvalgi versiya bilan nuqtama-nuqta bir xil (reja solishtirildi). Tarjimalar (uz/en/ru/ar), yangi testlar qo’shildi.
+
+## v0.0.65 — Davlat raqami (nomer): istalgan raqamdan sifatli 3D
+- **Qo’shish → Davlat raqami (nomer)…** — hudud kodi (`01`) va raqam (`A123BC`, `502GDA` yoki bitta maydonda `01 A123BC`) yoziladi. 2D oldindan ko’rish yozish bilan yangilanadi, **Yaratish** bosilsa sahnaga 3D nomer qo’shiladi (oxirgi qiymatlar eslab qolinadi). Oldindan ko’rish va 3D bitta «reja»dan chiqadi, ko’ringan narsa aynan yaratiladi.
+- **Belgilar:** `Nomer.zip → SVG/*.svg` (FE-Schrift XP, `0–9`, `A–Z`, jami 36 kontur) `js/nomer.js` ichiga joylangan. DFF fayllar ishlatilmaydi: har raqam SVG konturdan yangidan quriladi, shuning uchun istalgan kombinatsiya ishlaydi. Faqat lotin harflari va raqamlar; boshqa belgi aniq xabar bilan rad etiladi.
+- **Joylashuv:** ikki rasmiy format — jismoniy shaxs (`A123BC`: harf + 3 raqam + 2 harf) va yuridik shaxs (`502GDA`: 3 raqam + 3 harf) — namunadan o’lchangan joylarda (belgi o’rni namuna bilan 0.001 mm gacha mos). Boshqa tartiblar avtomatik: raqam/harf oralig’i qoidasi bo’yicha, plastinaga sig’masa butun yozuv bir tekis kichraytiriladi. Hudud kodi 1–2 belgi.
+- **Model:** plastina 520 × 110 mm, 0.4 mm qiyalikli kulrang chet; qora hoshiya va ajratgich 0.7 mm, belgilar 1.0 mm bo’rtma; bayroq (ko’k, oq, yashil, har doim **2 ta qizil chiziq**, yarim oy va 12 yulduz) va «UZ». Bayroq ranglari: nomerdagidek (`#3B8BD0` / `#45A83A`) yoki rasmiy davlat bayrog’i (`#0099B5` / `#1EB53A`). Normallar silliq, faqat o’tkir burchakda (> 35°) qirra; old tomon `+Z`, birlik — metr, pastki cheti panjarada.
+- **Tuzilma:** `Nomer 01 A123BC` guruhi ichida `plastina` (2 material: oq yuz, kulrang chet), `hoshiya`, `ajratgich`, `hudud_kodi`, `belgilar`, `bayroq`, `UZ` — har biri alohida mesh/material, shuning uchun alohida tahrirlash, ranglarini almashtirish va barcha eksport formatlari (GLB, OBJ, DFF + TXD …) ishlaydi.
+- **Tekshiruv:** har bir qopqoq uchun uchburchaklash yuzasi kontur yuzasi bilan solishtiriladi (nomuvofiqlik xato beradi). `tools/test.js`ga yangi test: ikki format joyi, 36 belgi, o’lcham 519.5 × 109.5 × 3 mm, tuzilma, ranglar, xato xabarlari va GLB eksport → import. DFF eksport → qayta o’qish ham sinab ko’rildi (17 mesh, 5 617 uchburchak).
+
 ## v0.0.64 — MAX: gzip siqilgan fayllar ochilmasligi tuzatildi (“MAX ichida obyektlar (Node) topilmadi”)
 - **Sabab 1 (asosiy):** ayrim `.max` fayllarda `Scene` va `ClassDirectory3` oqimlari **nomi o’zgarmagan holda gzip bilan siqilgan** (`1F 8B 08` bilan boshlanadi; `_Compressed` qo’shimchasi ham, zstd ham yo’q). Import ularni xom chunk deb o’qir, sahifa 0 ta chunk topar va “obyektlar (Node) topilmadi” xatosi chiqardi. **Tuzatish:** oqim gzip bo’lsa `fflate.gunzipSync` bilan ochiladi (ochilgandan keyingi tuzilma eski siqilmagan formatniki bilan bir xil). Ochilgan hajm 1,9 GB dan oshsa yoki xotira yetmasa aniq xabar beriladi.
 - **Sabab 2:** shu fayllarda Editable Poly yuz yozuvi **bayroqqa bog’liq uzunlikda** (bir mesh ichida 30–40 bayt): `[d][d ta uch][bayroq u16]` + `bayroq&1` → 4 bayt (qirra bayroqlari) + `bayroq&8` → u16 (**material ID**) + `bayroq&16` → u32 (**smoothing group**) + (d−3)×8 bayt diagonal. Eski o’qigich faqat bir xil uzunlikdagi yozuvlarni tanir, shuning uchun mesh’larning katta qismi “buzuq” deb tashlab yuborilardi (sinov faylida 520 ta). Endi `scanFlg` ishlatiladi: chunk oxirigacha aniq mos kelishi va uch indekslari < nv ekani tekshiriladi. Material ID va 32 bitli silliqlash guruhi to’g’ri o’qiladi (avval material 0 edi).
