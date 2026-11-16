@@ -98,5 +98,47 @@ test('zstd dekoder: ko’p blokli, RLE blokli va Huffman/FSE kadrlar (3ds Max 20
  /* C: 300000 nol — RLE bloklar (o’lchami oqimdagi 1 baytdan katta) */
  same(dec(hex("28b52ffda4e09304005400001000000100fbff39c00202001000039f04002d28de26")),new(U8())(300000),'RLE');
  assert.throws(()=>dec(new(U8())(16).fill(1)),/zstd/,'zstd bo’lmagan ma’lumot xato berishi kerak')});
+test('nomer: rasmiy formatlar joyi, 36 belgi, o’lcham, tuzilma, ranglar, xatolar va GLB aylanishi',async()=>{
+ vm.runInContext(fs.readFileSync('js/nomer.js','utf8'),ctx);const N=ctx.NomerPlate;assert(N,'NomerPlate yo’q');
+ const xs=t=>Array.from(N.layout(t).glyphs,g=>+g.x.toFixed(3));
+ assert.deepEqual(xs('A123BC'),[114.75,182.25,233.75,285.25,350.75,405.75],'jismoniy shaxs formati');
+ assert.deepEqual(xs('502GDA'),[111.25,161.75,212.25,290.05,347.95,405.85],'yuridik shaxs formati');
+ const all='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+ for(let i=0;i<36;i+=6)N.build({region:all[i]+all[i+1],text:all.slice(i,i+6)});   /* 36 belgining hammasi: uchburchaklash yuzasi build ichida tekshiriladi */
+ const g=N.build({region:'01',text:'A123BC'});g.updateMatrixWorld(true);
+ const sz=new T.Box3().setFromObject(g).getSize(new T.Vector3()).multiplyScalar(1000);
+ assert(Math.abs(sz.x-519.5)<1e-3&&Math.abs(sz.y-109.5)<1e-3&&Math.abs(sz.z-3)<1e-3,'o’lcham '+sz.toArray());
+ const names=[];g.traverse(o=>names.push(o.name));
+ for(const n of['plastina','hoshiya','ajratgich','hudud_kodi','belgilar','bayroq','UZ','bayroq_qizil_1','bayroq_qizil_2','bayroq_oq'])assert(names.includes(n),n+' yo’q');
+ assert.equal(g.getObjectByName('belgilar').children.length,6);
+ const pl=g.getObjectByName('plastina');assert.deepEqual(Array.from(pl.material,m=>m.color.getHex()),[0xffffff,0xb5b5b5]);assert.equal(pl.geometry.groups.length,2);
+ assert.equal(g.getObjectByName('bayroq_kok').material.color.getHex(),0x3b8bd0);
+ assert.equal(N.build({region:'01',text:'A123BC',flag:'rasmiy'}).getObjectByName('bayroq_kok').material.color.getHex(),0x0099b5);
+ let t0=0,m0=0;g.traverse(m=>{if(!m.isMesh)return;m0++;t0+=m.geometry.index.count/3;const n=m.geometry.attributes.normal.array,p=m.geometry.attributes.position.array;
+  let mx=0;for(const v of m.geometry.index.array)mx=Math.max(mx,v);assert(mx<p.length/3,m.name+': indeks chegaradan chiqdi');
+  for(let i=0;i<n.length;i+=3)assert(Math.abs(Math.hypot(n[i],n[i+1],n[i+2])-1)<1e-4,m.name+': normal birlik emas')});
+ for(const[r,t,re]of[['01','A?3',/belgisi yo’q/],['','A1',/Hudud/],['001','A1',/1–2/],['01','',/Raqamni/],['01','1234567890',/uzun/]])assert.throws(()=>N.parseInput(r,t),re,r+'|'+t);
+ const pi=(r,t)=>{const o=N.parseInput(r,t);return o.region+'|'+o.text};
+ assert.equal(pi('01',' 10 a123bc '),'10|A123BC','«10 A123BC» bitta maydonda');assert.equal(pi('01','a 123 bc'),'01|A123BC','harf+raqam+harf hududni almashtirmaydi');
+ const bin=await new Promise((ok,no)=>new T.GLTFExporter().parse(g,ok,no,{binary:true}));
+ const back=await new Promise((ok,no)=>new T.GLTFLoader().parse(new(U8())(new Uint8Array(bin)).buffer,'',ok,no));let tri=0,n=0;back.scene.traverse(o=>{if(o.isMesh){n++;tri+=o.geometry.index.count/3}});
+ assert.equal(tri,t0,'GLB: uchburchaklar soni');assert(n>=m0,'GLB: mesh soni')});
+test('nomer: 21 tur — qatorlarga bo’lish, o’lcham, sig’ish va GLB aylanishi',async()=>{
+ vm.runInContext(fs.readFileSync('js/nomer.js','utf8'),ctx);const N=ctx.NomerPlate,TT=Object.values(N.TEMPLATES);assert.equal(TT.length,21);
+ const sp=(t,x)=>N.parseInput('01',x,t).lines.join('/');
+ assert.equal(sp('kv-ustun','123AB'),'123/AB');assert.equal(sp('kv-katak-sariq','000MMM'),'000M/MM');assert.equal(sp('kv-katak','M123MM'),'M123/MM');assert.equal(sp('kv-bayroq','PAA123'),'PAA/123');assert.equal(sp('kv-t','T123456'),'123456/T');
+ assert.throws(()=>N.parseInput('01','123','kv-ustun'),/Pastki qator/);assert.throws(()=>N.parseInput('01','123','kv-t'),/harf/);
+ assert.equal(N.parseInput('01','c m d 1234','yashil').region,'','hududsiz tur');
+ for(const t of TT){
+  const ex=t.ex,g=N.build({tpl:t.id,region:ex[0],text:ex[1]});g.updateMatrixWorld(true);
+  const sz=new T.Box3().setFromObject(g).getSize(new T.Vector3()).multiplyScalar(1000);
+  assert(Math.abs(sz.x-(t.W-0.5))<1e-3&&Math.abs(sz.y-(t.H-0.5))<1e-3&&sz.z>=3-1e-3&&sz.z<=3.5+1e-3,t.id+': o’lcham '+sz.toArray());
+  const P=N.plan({tpl:t.id,region:ex[0],text:ex[1]});
+  for(const it of P.items)for(const c of it.c)for(const p of c)assert(p[0]>=3.5&&p[0]<=t.W-3.5&&p[1]>=3.5&&p[1]<=t.H-3.5,t.id+': '+it.id+' plastinadan chiqdi');
+  const pl=g.getObjectByName('plastina');assert.equal(pl.material[0].color.getHex(),P.bodyHex);
+  if(t.region)assert(g.getObjectByName('hudud_kodi'),t.id+': hudud yo’q');else assert(!g.getObjectByName('hudud_kodi'),t.id+': hudud bor');
+  if(/bayroq|ustun|katak|standart|traktor/.test(t.id)&&t.id!=='kv-t')assert(g.getObjectByName('bayroq_qizil_1')&&g.getObjectByName('bayroq_qizil_2'),t.id+': qizil chiziqlar');
+ }
+ const bin=await new Promise((ok,no)=>new T.GLTFExporter().parse(N.build({tpl:'kv-katak',region:'01',text:'0123AB'}),ok,no,{binary:true}));assert(bin.byteLength>1000)});
 (async()=>{let bad=0;for(const[n,f]of tests){try{await f();console.log('✓',n)}catch(e){bad++;console.log('✗',n,'\n   ',e.message)}}
  console.log(bad?'\n'+bad+' ta test yiqildi':'\nHamma testlar o’tdi');process.exit(bad?1:0)})();

@@ -343,11 +343,64 @@ Yopishtirish masofasi:|Snap distance:|Расстояние привязки:
 Yuza|Face|Грань
 Skelet|Skeleton|Скелет
 Klip|Clip|Клип
+Davlat raqami (nomer)…|License plate (nomer)…|Номерной знак (номер)…
+Davlat raqami (nomer)|License plate (nomer)|Номерной знак (номер)
+Hudud|Region|Регион
+Raqam|Number|Номер
+Jismoniy shaxs|Individual|Физическое лицо
+Yuridik shaxs|Legal entity|Юридическое лицо
+Bayroq ranglari|Flag colors|Цвета флага
+Nomerdagidek (tavsiya)|As on the plate (recommended)|Как на номере (рекомендуется)
+Rasmiy davlat bayrog’i|Official state flag|Официальный государственный флаг
+Eslatma:|Note:|Примечание:
+plastina o’lchami turga bog’liq (uzun 520 × 110 mm, kvadrat 340 × 245 mm), birlik — metr. Qismlar alohida mesh: plastina, hoshiya, belgilar, bayroq, UZ. Eksport: Fayl → GLB, OBJ, DFF + TXD va boshqalar. Raqamni «01 A123BC» ko’rinishida ham yozish mumkin.|plate size depends on the type (long 520 × 110 mm, square 340 × 245 mm), unit — meter. Parts are separate meshes: plate, frame, characters, flag, UZ. Export: File → GLB, OBJ, DFF + TXD and others. You can also type the number as “01 A123BC”.|размер таблички зависит от типа (длинная 520 × 110 мм, квадратная 340 × 245 мм), единица — метр. Части — отдельные меши: табличка, рамка, символы, флаг, UZ. Экспорт: Файл → GLB, OBJ, DFF + TXD и др. Номер можно ввести и как «01 A123BC».
+Format: jismoniy shaxs (harf + 3 raqam + 2 harf)|Format: individual (letter + 3 digits + 2 letters)|Формат: физическое лицо (буква + 3 цифры + 2 буквы)
+Format: yuridik shaxs (3 raqam + 3 harf)|Format: legal entity (3 digits + 3 letters)|Формат: юридическое лицо (3 цифры + 3 буквы)
+Boshqa tartib: belgilar avtomatik joylashtirildi|Other layout: characters were placed automatically|Другой порядок: символы расставлены автоматически
+Hudud kodini yozing (masalan 01)|Enter the region code (e.g. 01)|Введите код региона (например 01)
+Hudud kodi 1–2 belgi bo’lishi kerak|Region code must be 1–2 characters|Код региона — 1–2 символа
+Raqamni yozing (masalan A123BC)|Enter the number (e.g. A123BC)|Введите номер (например A123BC)
+Raqam juda uzun (ko’pi bilan 9 belgi)|Number is too long (9 characters at most)|Номер слишком длинный (не более 9 символов)
+Nomer turi|Plate type|Тип номера
+Uzun nomerlar (520 × 110 mm)|Long plates (520 × 110 mm)|Длинные номера (520 × 110 мм)
+Kvadrat nomerlar (340 × 245 mm)|Square plates (340 × 245 mm)|Квадратные номера (340 × 245 мм)
+Standart (hudud | raqam | bayroq, UZ)|Standard (region | number | flag, UZ)|Стандарт (регион | номер | флаг, UZ)
+Standart, yashil hudud katagi|Standard, green region box|Стандарт, зелёная ячейка региона
+Bayroq chapda (hududsiz)|Flag on the left (no region)|Флаг слева (без региона)
+Yashil (harf + raqam)|Green (letters + digits)|Зелёный (буквы + цифры)
+Ko’k (UN)|Blue (UN)|Синий (UN)
+Yashil, hududli|Green, with region|Зелёный, с регионом
+To’q sariq (H), hududli|Orange (H), with region|Оранжевый (H), с регионом
+Hudud o’ngda|Region on the right|Регион справа
+Kvadrat: o’ng ustunda hudud, bayroq, UZ|Square: region, flag, UZ in right column|Квадрат: регион, флаг, UZ в правой колонке
+Kvadrat: yashil hudud katagi, bayroq, UZ|Square: green region box, flag, UZ|Квадрат: зелёная ячейка региона, флаг, UZ
+Kvadrat: pastki o’ngda hudud, bayroq, UZ|Square: region, flag, UZ at bottom right|Квадрат: регион, флаг, UZ внизу справа
+Kvadrat: pastki o’ngda yashil hudud, bayroq, UZ|Square: green region, flag, UZ at bottom right|Квадрат: зелёный регион, флаг, UZ внизу справа
+Kvadrat: pastki o’ngda bayroq (hududsiz)|Square: flag at bottom right (no region)|Квадрат: флаг внизу справа (без региона)
+Kvadrat: to’q sariq, hududli|Square: orange, with region|Квадрат: оранжевый, с регионом
+Kvadrat: pastki o’ngda hudud (bayroqsiz)|Square: region at bottom right (no flag)|Квадрат: регион внизу справа (без флага)
+Kvadrat: yashil (CMD)|Square: green (CMD)|Квадрат: зелёный (CMD)
+Bir qatorli nomer: belgilar avtomatik joylashtiriladi|Single-row plate: characters are placed automatically|Однострочный номер: символы расставляются автоматически
+Ikki qatorli: oxirgi 2 harf pastga, qolgani yuqoriga|Two rows: the last 2 letters go to the bottom row, the rest to the top|Две строки: последние 2 буквы — вниз, остальное — вверх
+Ikki qatorli: boshidagi harflar yuqoriga, qolgani pastga|Two rows: leading letters go to the top row, the rest to the bottom|Две строки: начальные буквы — вверх, остальное — вниз
+Ikki qatorli: raqamlar yuqoriga, harflar pastga|Two rows: digits on top, letters at the bottom|Две строки: цифры сверху, буквы снизу
+Pastki qator uchun oxirida harf kerak (masalan 123AB)|The bottom row needs trailing letters (e.g. 123AB)|Для нижней строки нужны буквы в конце (например 123AB)
+Yuqori qator uchun boshida harf kerak (masalan PAA123)|The top row needs leading letters (e.g. PAA123)|Для верхней строки нужны буквы в начале (например PAA123)
+Raqam ham, harf ham kerak (masalan T123456)|Both digits and letters are needed (e.g. T123456)|Нужны и цифры, и буквы (например T123456)
+Qator juda uzun (ko’pi bilan 7 belgi)|Row is too long (7 characters at most)|Строка слишком длинная (не более 7 символов)
+Nomer turi noma’lum|Unknown plate type|Неизвестный тип номера
+To’q sariq: standart (hudud | raqam | bayroq, UZ)|Orange: standard (region | number | flag, UZ)|Оранжевый: стандарт (регион | номер | флаг, UZ)
+Kvadrat: to’q sariq, o’ng ustunda hudud, bayroq, UZ|Square: orange, region, flag, UZ in right column|Квадрат: оранжевый, регион, флаг, UZ в правой колонке
+Kvadrat: to’q sariq, pastki o’ngda hudud, bayroq, UZ|Square: orange, region, flag, UZ at bottom right|Квадрат: оранжевый, регион, флаг, UZ внизу справа
+Kvadrat: traktor belgisi, pastki o’ngda hudud, bayroq, UZ|Square: tractor symbol, region, flag, UZ at bottom right|Квадрат: знак трактора, регион, флаг, UZ внизу справа
+Kvadrat: to’q sariq, traktor belgisi, hudud, bayroq, UZ|Square: orange, tractor symbol, region, flag, UZ|Квадрат: оранжевый, знак трактора, регион, флаг, UZ
 `;
 const D={en:{},ru:{},ar:{}};const AF=[];const LARM={};const nz=x=>x.replace(/[‘ʻʼ]/g,'’');
 raw.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1].replace(/\\n/g,'\n');D.ru[k]=a[2].replace(/\\n/g,'\n')}});
 /* o’zgaruvchan sonli matnlar */
 const P=[
+ [/^«(.+)» belgisi yo’q\. Faqat lotin harflari \(A–Z\) va raqamlar \(0–9\)$/,'Character “$1” is not available. Only Latin letters (A–Z) and digits (0–9)','Символа «$1» нет. Только латинские буквы (A–Z) и цифры (0–9)'],
+ [/^Nomer yaratildi: (.+) · (.+) uchburchak$/,'Plate created: $1 · $2 triangles','Номер создан: $1 · треугольников: $2'],
  [/^(.+): PS2 native DFF \(GTA PS2 versiyasi\) qo’llanmaydi.*$/,'$1: PS2 native DFF (GTA PS2 version) is not supported — a PC DFF (San Andreas / Vice City / III) is needed','$1: PS2 native DFF (версия GTA для PS2) не поддерживается — нужен DFF для ПК (San Andreas / Vice City / III)'],
  [/^(.+): DFF buzuq yoki to’liq emas.*$/,'$1: DFF is corrupt or incomplete (the file may be truncated) — copy the file again','$1: DFF повреждён или неполон (файл мог быть обрезан) — скопируйте файл заново'],
  [/^SKP: (\d+) ta orqa yuza mesh’i olib tashlandi.*$/,'SKP: $1 back-face meshes removed (faces are double-sided)','SKP: удалено мешей обратных граней: $1 (грани двусторонние)'],
@@ -374,7 +427,7 @@ function fix(n){const t=n.nodeValue,e=O.get(n),op=!!n.parentNode&&n.parentNode.t
  const r=lang=='uz'?src:(tr(src,op)??src);
  if(!e&&r===src)return;
  O.set(n,[src,r]);if(r!==t)n.nodeValue=r}
-const AT=['title','placeholder','aria-label'];
+const AT=['title','placeholder','aria-label','label'];
 function fixA(el,a){const t=el.getAttribute(a);if(t==null)return;const m=el.__i||(el.__i={}),e=m[a];let src=t;
  if(e&&t===e[1])src=e[0];
  const r=lang=='uz'?src:(tr(src)??src);
