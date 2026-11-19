@@ -2,7 +2,40 @@
    Interfeys matnlari o’zbekcha yozilgan. Til almashganda matn va title atributlari lug’at bo’yicha almashtiriladi.
    Lug’atda yo’q matn o’zbekcha qoladi. Yangi matn qo’shish: pastdagi ro’yxatga “o’zbekcha|English|Русский” qatorini qo’shing. */
 (function(){
-const raw=`
+const raw=`✂ Aniq kesish|✂ Exact cut|✂ Точный разрез
+Yoqilsa, shakl chizig’i kesib o’tgan uchburchaklar bo’linadi — qirra tekis chiqadi, qoldiq qolmaydi. “Tegsa” rejimida ishlamaydi.|If on, triangles crossed by the shape outline are split — the edge comes out smooth with no leftovers. Not used in “Touch” mode.|Если включено, треугольники, пересечённые контуром фигуры, разрезаются — край получается ровным, без остатков. В режиме «Касание» не работает.
+Shakl bilan Detach|Detach by shape|Detach по фигуре
+SHAKL BILAN DETACH|DETACH BY SHAPE|DETACH ПО ФИГУРЕ
+Chiziq|Line|Линия
+Erkin chiziq|Freehand line|Свободная линия
+Aylana|Circle|Круг
+Ellips|Ellipse|Эллипс
+Uchburchak|Triangle|Треугольник
+Romb|Diamond|Ромб
+Olti burchak|Hexagon|Шестиугольник
+Yulduz|Star|Звезда
+Lasso (erkin shakl)|Lasso (free shape)|Лассо (свободная форма)
+Ko’pburchak|Polygon|Многоугольник
+Ko’rinish:|View:|Вид:
+Ko’rinadigan|Visible only|Только видимые
+Orqasi bilan|Through (X-ray)|Насквозь (X-ray)
+Qamrov:|Coverage:|Охват:
+Markaz|Center|Центр
+To’liq|Fully inside|Целиком
+Tegsa|Touch|Касание
+Qalinlik (px):|Thickness (px):|Толщина (px):
+✥ Aylantirish|✥ Orbit|✥ Вращение
+Tanlov:|Selection:|Выбор:
+Yangi|New|Новый
++ Qo’sh|+ Add|+ Добавить
+− Ayir|− Subtract|− Вычесть
+Bog’langan (L)|Linked (L)|Связанные (L)
+Teskari (Ctrl+I)|Invert (Ctrl+I)|Инверсия (Ctrl+I)
+Tozalash|Clear|Очистить
+Detach — yangi mesh (Enter)|Detach — new mesh (Enter)|Detach — новый меш (Enter)
+Nusxa sifatida|As copy|Как копию
+Chizing: Shift — qo’shish, Alt — ayirish. O’ng/o’rta tugma — kamera. Ko’pburchak: bosib nuqta qo’ying, Enter/ikki marta bosish — yopish.|Draw: Shift — add, Alt — subtract. Right/middle button — camera. Polygon: click to place points, Enter/double click — close.|Рисуйте: Shift — добавить, Alt — вычесть. Правая/средняя кнопка — камера. Многоугольник: кликайте точки, Enter/двойной клик — замкнуть.
+
 Fayl|File|Файл
 Tahrir|Edit|Правка
 Qo’shish|Add|Добавить

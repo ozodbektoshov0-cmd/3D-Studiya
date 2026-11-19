@@ -85,15 +85,19 @@ function maxImp(buf){
  /* ---------- transform ---------- */
  const M4=THREE.Matrix4;
  const rotM=(a,b,c)=>{const m=new M4(),x=new M4().makeRotationX(a),y=new M4().makeRotationY(b),z=new M4().makeRotationZ(c);return m.multiplyMatrices(z,y).multiply(x)}; /* Max Euler XYZ = Rz·Ry·Rx (ustun-vektor) */
- const nodeTM=ni=>{const r=refs(ni),prs=r[0];let pos=[0,0,0],rot=[0,0,0],sc=[1,1,1];
+ const nodeTM=ni=>{const r=refs(ni),prs=r[0];let pos=[0,0,0],rot=[0,0,0],sc=[1,1,1],quat=null;
   if(prs!==undefined&&valid(prs)&&cname(prs)=='Position/Rotation/Scale'){const [p,ro,sa]=refl(prs);
    if(valid(p)&&cname(p)=='Position XYZ')pos=refl(p).slice(0,3).map(fval);
+   /* TCB Position: joriy qiymat 0x2503 chunkida (3 float) — mashina g'ildiraklari kabi boshqa dasturdan keltirilgan obyektlarda uchraydi */
+   else if(valid(p)&&cname(p)=='TCB Position'){const s=sub(p,0x2503);if(s&&blen(s.k)>=12)pos=[0,1,2].map(j=>s.P.dv.getFloat32(s.k.off+s.k.hdr+j*4,true))}
    if(valid(ro)&&cname(ro)=='Euler XYZ')rot=refl(ro).slice(0,3).map(fval);
-   if(valid(sa)&&cname(sa)=='Bezier Scale'){const s=sub(sa,0x2505);if(s)sc=[0,1,2].map(j=>s.P.dv.getFloat32(s.k.off+s.k.hdr+j*4,true))}
+   /* TCB Rotation: kvaternion 0x2504 chunkida (x,y,z,w). Max kvaternioni standartga nisbatan QO'SHMA (g'ildirak o'qi bilan tekshirilgan) */
+   else if(valid(ro)&&cname(ro)=='TCB Rotation'){const s=sub(ro,0x2504);if(s&&blen(s.k)>=16){const g=j=>s.P.dv.getFloat32(s.k.off+s.k.hdr+j*4,true);quat=new THREE.Quaternion(-g(0),-g(1),-g(2),g(3));if(quat.lengthSq()>1e-9)quat.normalize();else quat=null}}
+   if(valid(sa)&&(cname(sa)=='Bezier Scale'||cname(sa)=='TCB Scale')){const s=sub(sa,0x2505);if(s)sc=[0,1,2].map(j=>s.P.dv.getFloat32(s.k.off+s.k.hdr+j*4,true))}
    /* ScaleXYZ: Position XYZ kabi 3 ta alohida Bezier Float (X, Y, Z). Yangi Maxda odatiy. Qiymat topilmasa — 1 (nol emas) */
    else if(valid(sa)&&cname(sa)=='ScaleXYZ'){const q=refl(sa).slice(0,3);
     if(q.length==3)sc=q.map(x=>{const k=valid(x)?sub(x,0x2501):null;return k?k.P.dv.getFloat32(k.k.off+k.k.hdr,true):1})}}
-  const m=rotM(rot[0],rot[1],rot[2]);m.scale(new THREE.Vector3(sc[0],sc[1],sc[2]));m.setPosition(pos[0],pos[1],pos[2]);return m};
+  const m=quat?new M4().makeRotationFromQuaternion(quat):rotM(rot[0],rot[1],rot[2]);m.scale(new THREE.Vector3(sc[0],sc[1],sc[2]));m.setPosition(pos[0],pos[1],pos[2]);return m};
  const offTM=ni=>{const p=tk(ni,0x96A),q=tk(ni,0x96B),s=tk(ni,0x96C),m=new M4();
   if(q&&blen(q)>=16){const qq=new THREE.Quaternion(f32(q,0),f32(q,4),f32(q,8),f32(q,12));if(Math.abs(qq.x)+Math.abs(qq.y)+Math.abs(qq.z)>1e-7)m.makeRotationFromQuaternion(qq.normalize())}
   if(s&&blen(s)>=12)m.scale(new THREE.Vector3(f32(s,0),f32(s,4),f32(s,8)));
@@ -101,13 +105,34 @@ function maxImp(buf){
  const isId=m=>{const e=m.elements;for(let i=0;i<16;i++)if(Math.abs(e[i]-((i%5)?0:1))>1e-9)return false;return true};
  /* ---------- geometriya ---------- */
  const PRIM=/^(Box|Cylinder|Sphere|GeoSphere|Plane|Cone|Torus)$/;
- const modUsed={}; /* e'tiborga olinmagan modifikatorlar (TurboSmooth, Shell…) — faqat asos (base) mesh o'qiladi */
+ let symN=0;const modUsed={}; /* e'tiborga olinmagan modifikatorlar (TurboSmooth, Shell…) — faqat asos (base) mesh o'qiladi */
  const baseObj=(oi,dep=0)=>{const c=cname(oi);if(c=='Editable Mesh'||c=='Editable Poly'||PRIM.test(c))return oi;
   /* Derived Object ichida yana Derived Object bo'lishi mumkin (modifikatorlar steki): rekursiv qidiriladi */
   if(c=='Derived Object'&&dep<12){const rl=refl(oi).filter(valid);
-   for(const r of rl){const k=cname(r);if(/^Editable (Mesh|Poly)$/.test(k)||PRIM.test(k)){rl.forEach(x=>{const m=cname(x);if(m!='Derived Object'&&m!=k&&!/^ParamBlock/.test(m))modUsed[m]=(modUsed[m]||0)+1});return r}}
-   for(const r of rl)if(cname(r)=='Derived Object'){const b=baseObj(r,dep+1);if(b!==null){rl.forEach(x=>{const m=cname(x);if(m!='Derived Object'&&!/^ParamBlock/.test(m))modUsed[m]=(modUsed[m]||0)+1});return b}}}
+   for(const r of rl){const k=cname(r);if(/^Editable (Mesh|Poly)$/.test(k)||PRIM.test(k)){rl.forEach(x=>{const m=cname(x);if(m!='Derived Object'&&m!=k&&m!='Symmetry'&&!/^ParamBlock/.test(m))modUsed[m]=(modUsed[m]||0)+1});return r}}
+   for(const r of rl)if(cname(r)=='Derived Object'){const b=baseObj(r,dep+1);if(b!==null){rl.forEach(x=>{const m=cname(x);if(m!='Derived Object'&&m!='Symmetry'&&!/^ParamBlock/.test(m))modUsed[m]=(modUsed[m]||0)+1});return b}}}
   return null};
+/* ---------- Symmetry modifikatori ----------
+    Ko'p mashina modellari yarim holda saqlanib, Symmetry bilan to'ldiriladi (oyna, pol, g'ildirak, chiroqlar…). ParamBlock2: id0 = o'q (0 X, 1 Y, 2 Z), id3 = payvand chegarasi.
+    Ko'zgu tekisligi — pivot tekisligi: node fazosida (offTM qo'llangandan keyin) tanlangan o'q koordinatasi 0 (g'ildirak shinasi, oynalar, pol, kapot, bagajnik chok halqalari aynan shu tekislikda tugaydi;
+    gizmo “Position” qiymati tekislikka ta'sir qilmaydi). Kesish (slice) va flip hisobga olinmaydi: asl nusxa + aks nusxa. Eski “Mirror” modifikatori qo'llanmaydi. */
+ const symParams=r=>{const pb=refl(r).find(q=>valid(q)&&cname(q)=='ParamBlock2');if(pb===undefined)return null;const v={};
+  for(const e of kids(S,top[pb])){if((e.id!=0x0E&&e.id!=0x100E)||blen(e)<14)continue;const id=S.dv.getUint16(e.off+e.hdr,true),ty=u32(e,2);v[id]=(ty==0||ty==7)?f32(e,blen(e)-4):u32(e,blen(e)-4)}
+  const ax=v[0]>=0&&v[0]<=2?v[0]|0:0,thr=isFinite(v[3])&&v[3]>0?Math.min(v[3],1):0.1;return{ax,thr}};
+ const symStack=(x,dp=0)=>{const out=[];if(x===undefined||!valid(x)||dp>12||cname(x)!='Derived Object')return out;const rl=refl(x).filter(valid);
+  for(const r of rl)if(cname(r)=='Derived Object')out.push(...symStack(r,dp+1)); /* avval pastdagi (ichki) stek, keyin yuqoridagilar — pastdan yuqoriga */
+  for(let i=rl.length-1;i>=0;i--)if(cname(rl[i])=='Symmetry'){const m=symParams(rl[i]);if(m)out.push(m)}
+  return out};
+ function applyOff(md,off){const V=new Float32Array(md.V.length),v=new THREE.Vector3();for(let i=0;i<V.length;i+=3){v.set(md.V[i],md.V[i+1],md.V[i+2]).applyMatrix4(off);V[i]=v.x;V[i+1]=v.y;V[i+2]=v.z}return{V,T:md.T,uvV:md.uvV,uvF:md.uvF}}
+ function mirrorMD(md,ax,thr){
+  const {V,T,uvV,uvF}=md,nv=V.length/3,nt=T.length/5,map=new Int32Array(nv),src=[];let n2=nv;
+  for(let i=0;i<nv;i++){if(Math.abs(V[i*3+ax])<=thr)map[i]=i;else{map[i]=n2++;src.push(i)}} /* chok cho'qqilari payvandlanadi */
+  const V2=new Float32Array(n2*3);V2.set(V);
+  for(let k=0;k<src.length;k++){const i=src[k],o=(nv+k)*3;V2[o]=V[i*3];V2[o+1]=V[i*3+1];V2[o+2]=V[i*3+2];V2[o+ax]=-V[i*3+ax]}
+  const T2=new Array(nt*10);for(let i=0;i<nt*5;i++)T2[i]=T[i];
+  for(let t=0;t<nt;t++){const a=T[t*5],b=T[t*5+1],c=T[t*5+2],o=(nt+t)*5;T2[o]=map[a];T2[o+1]=map[c];T2[o+2]=map[b];T2[o+3]=T[t*5+3];T2[o+4]=T[t*5+4]} /* aks nusxada yuz yo'nalishi teskari */
+  let uvF2=uvF;if(uvF&&uvF.length>=nt*3){uvF2=new Array(nt*6);for(let i=0;i<nt*3;i++)uvF2[i]=uvF[i];for(let t=0;t<nt;t++){const o=(nt+t)*3;uvF2[o]=uvF[t*3];uvF2[o+1]=uvF[t*3+2];uvF2[o+2]=uvF[t*3+1]}}
+  return{V:V2,T:T2,uvV,uvF:uvF2}}
  /* ---------- parametrik primitivlar (Box, Cylinder, Sphere, Plane, Cone, Torus) ----------
     Max ularni mesh sifatida saqlamaydi, faqat ParamBlock2 parametrlarini. O’lchamlar TYPE_WORLD (float) parametrlaridan, id o’sish tartibida olinadi:
     Box: uzunlik, kenglik, balandlik · Cylinder: radius, balandlik · Sphere: radius · Plane: uzunlik, kenglik · Cone: r1, r2, balandlik · Torus: r1, r2.
@@ -116,7 +141,7 @@ function maxImp(buf){
   const pbs=refl(oi).concat(Object.values(refs(oi))).filter(r=>valid(r)&&cname(r)=='ParamBlock2'),out=[];
   for(const pb of pbs){
    for(const e of kids(S,top[pb])){
-    if(e.id!=0x0E||blen(e)<14)continue;
+    if((e.id!=0x0E&&e.id!=0x100E)||blen(e)<14)continue;
     const id=S.dv.getUint16(e.off+e.hdr,true),ty=u32(e,2);
     if(ty==7||ty==0){const v=f32(e,blen(e)-4);if(isFinite(v))out.push({id,ty,v})}}
    if(out.length)break}
@@ -256,7 +281,7 @@ function maxImp(buf){
    if(c=='Standard'){
     for(const r of refl(mi)){if(!valid(r))continue;const sh=cname(r);
      if(/^(Blinn|Phong|Metal|Anisotropic|Multi-Layer|Oren-Nayar-Blinn|Strauss|Translucent Shader)$/.test(sh)){
-      const pb=refl(r)[0];if(valid(pb)&&cname(pb)=='ParamBlock2'){for(const e of kids(S,top[pb])){if(e.id!=0x0E||blen(e)<27)continue;
+      const pb=refl(r)[0];if(valid(pb)&&cname(pb)=='ParamBlock2'){for(const e of kids(S,top[pb])){if((e.id!=0x0E&&e.id!=0x100E)||blen(e)<27)continue;
         if(S.dv.getUint16(e.off+e.hdr,true)==1&&u32(e,2)==2){const o=e.off+e.hdr+blen(e)-12;mat.color.setRGB(S.dv.getFloat32(o,true),S.dv.getFloat32(o+4,true),S.dv.getFloat32(o+8,true));break}}}}
      if(sh=='Texmaps'){const rr=refs(r);if(rr[3]!==undefined&&valid(rr[3])&&cname(rr[3])=='Bitmap'){const f=texFile(rr[3]);if(f)mat.userData.tex=noext(f)}}}
    }else{const b=findBitmap(mi,0,new Set());if(b>=0){const f=texFile(b);if(f)mat.userData.tex=noext(f)}}
@@ -277,11 +302,13 @@ function maxImp(buf){
  for(const n of nodes){
   let o=null;const oi=n.obj;let base=oi!==undefined&&valid(oi)?baseObj(oi):null;
   if(base!==null){
-   const off=offTM(n.i),offK=isId(off)?'':off.elements.join(',');const key=base+'|'+offK;
+   const off=offTM(n.i),offK=isId(off)?'':off.elements.join(',');const syms=PRIM.test(cname(base))?[]:symStack(oi),key=base+'|'+offK+(syms.length?'|S'+syms.map(m=>m.ax+':'+m.thr).join(';'):'');
    let G=geomCache.get(key);
    if(G===undefined){
     if(PRIM.test(cname(base))){G=primGeom(base);if(G){if(offK)G.g.applyMatrix4(off);prim[cname(base)]=(prim[cname(base)]||0)+1}else badPrim[cname(base)]=(badPrim[cname(base)]||0)+1}
-    else{const md=readMesh(base);G=md?buildGeom(md,offK?off:null):null}
+    else{let md=readMesh(base);
+     if(md&&syms.length){if(offK)md=applyOff(md,off);for(const m of syms)md=mirrorMD(md,m.ax,m.thr);symN++;G=buildGeom(md,null)}
+     else G=md?buildGeom(md,offK?off:null):null}
     geomCache.set(key,G||null)}
    if(G){const mats=subMats(n.mat),ns=mats.length,arr=[];
     const geo=G.g.clone();geo.clearGroups();
@@ -303,6 +330,7 @@ function maxImp(buf){
  if(Object.keys(prim).length)info.push('parametrik (taxminiy o’lcham): '+Object.entries(prim).map(([k,v])=>k+'×'+v).join(', '));
  if(Object.keys(badPrim).length)info.push('parametrlari o’qilmadi: '+Object.entries(badPrim).map(([k,v])=>k+'×'+v).join(', '));
  if(skipped)info.push(skipped+' ta mesh buzuq');
+ if(symN)info.push('Symmetry qo’llandi: '+symN+' ta mesh');
  if(Object.keys(modUsed).length)info.push('modifikatorlar hisobga olinmadi (asosiy mesh o’qildi): '+Object.entries(modUsed).map(([k,v])=>k+'×'+v).join(', '));
  maxImp.info=info;maxImp.tris=total;
  return out;
