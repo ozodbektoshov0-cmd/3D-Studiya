@@ -2,6 +2,28 @@
 
 Brauzerda ishlaydigan 3D ko’rish, tahrirlash va konvertatsiya sayti. Server kerak emas.
 
+## v0.0.72 — Shakl bilan Detach: aniq kesish, qoldiqsiz
+- **Tuzatish:** avval shakl faqat butun uchburchaklarni tanlardi — qirra tishli (zina-zina) chiqardi, ko’rinadigan rejimda esa piksel kenglikdan ingichka uchburchaklar tanlanmay “qoldiq” bo’lib qolardi.
+- **Yangi “✂ Aniq kesish” (standart yoqilgan):** shakl chizig’i kesib o’tgan uchburchaklar chiziq bo’ylab bo’linadi, shuning uchun ajratilgan qism qirrasi chizgan shaklingizdek **tekis** chiqadi. Oddiy kesishda uchburchak aynan kesilgan nuqtada bo’linadi (yangi yuzlar kam), murakkab joylarda ~3 piksel aniqlikkacha bo’linadi. Qo’shni uchburchaklar bir xil nuqtada bo’linadi — yoriq (T-tugun) bo’lmaydi; UV va normallar interpolyatsiya qilinadi; yuza o’zgarmaydi. Chiziq/cho’tka asboblari ham endi qalinlik bo’yicha aniq kesadi.
+- **Qoldiqlarni to’ldirish:** butunlay tanlangan yuzlar bilan o’ralgan tanlanmay qolgan yuzlar avtomatik tanlanadi.
+- “Tegsa” qamrovi eski usulda (butun uchburchaklar) ishlaydi. “Yangi” rejimida yangi shakl chizilsa kesish asl meshdan qayta boshlanadi, “+ Qo’sh / − Ayir”da oldingi kesish ustiga qo’shiladi. Tozalash kesishni bekor qiladi. Kesish faqat Detach qilinganda meshga qo’llanadi (Ctrl+Z bilan qaytadi).
+- Tarjimalar: “✂ Aniq kesish”.
+
+## v0.0.71 — Shakl bilan Detach: chizib tanlab ajratish
+- **Yangi: Asboblar → “Shakl bilan Detach”.** Mesh ustiga shakl chizing — shakl ichidagi yuzlar belgilanadi (to’q sariq), **Enter** bilan yangi meshga ajratiladi. Asl mesh qolgan yuzlari bilan qoladi, yangi mesh `nomi_ajratma_N` nomi bilan qo’shiladi; Ctrl+Z / Ctrl+Shift+Z ishlaydi. “Nusxa sifatida” — asl meshdan olib tashlamasdan nusxa ajratadi.
+- **11 xil shakl:** chiziq (to’g’ri), erkin chiziq (cho’tka, qalinligi sozlanadi), ramka (Shift — kvadrat), aylana, ellips, uchburchak, romb, olti burchak, yulduz, lasso (erkin shakl), ko’pburchak (nuqtalar qo’yib, Enter yoki ikki marta bosib yopiladi).
+- **Ko’rinish:** “Ko’rinadigan” — faqat ekranda ko’rinib turgan yuzlar (GPU ID-bufer; boshqa mesh to’sib turgan yuzlar tanlanmaydi), “Orqasi bilan” — mesh orqasidagi yuzlar ham. **Qamrov:** Markaz ichida / To’liq ichida / Tegsa (chiziq asboblari doim “Tegsa”).
+- **Tanlov:** Shift — qo’shish, Alt/Ctrl — ayirish (yoki “Yangi / + Qo’sh / − Ayir” tugmalari), L — bog’langan qismgacha kengaytirish, Ctrl+I — teskari, Esc — tozalash/yopish. O’ng/o’rta tugma kamerani aylantiradi; telefonda “✥ Aylantirish” tugmasi.
+- Ko’p materialli meshlarda materiallar saqlanadi. Suyakli (skin) va morph meshlarda, dummylarda ishlamaydi. 1,5 mln dan ortiq yuzli meshda “Ko’rinadigan” rejim o’rniga “Orqasi bilan” ishlatiladi.
+
+## v0.0.70 — MAX: mashinaning yarmi, oynalar va g’ildiraklar joyiga tushdi (Symmetry, TCB, ranglar)
+- **Symmetry modifikatori qo’llanadi.** Ko’p mashina modellari yarim holda saqlanib, Symmetry bilan to’ldirilgan (old/orqa oyna, pol, kapot, bagajnik, faralar, g’ildirak shinalari…). Import faqat asos (base) meshni olgani uchun mashinaning yarmi yo’q bo’lib qolardi. Endi ParamBlock2 dan o’q (`id0`: 0 X, 1 Y, 2 Z) va chegara (`id3`) o’qilib, mesh **ko’zgu tekisligi bo’yicha aks ettiriladi**: yuz yo’nalishi teskarilanadi, UV, silliqlash guruhi va material ID saqlanadi, chok cho’qqilari payvandlanadi (shuning uchun chok silliq).
+- **Ko’zgu tekisligi** — pivot tekisligi: node fazosida (`offTM` dan keyin) tanlangan o’q koordinatasi 0. Haqiqiy fayl bilan tekshirildi: g’ildirak shinasining chok halqasi (60 cho’qqi), `Car Windows`, `Car Bottom`, `Hood`, `Bagajnik` (120 cho’qqi) shu tekislikda tugaydi. Gizmo “Position” qiymati tekislikka ta’sir qilmaydi (tekshiruvda u noto’g’ri natija berdi). Kesish (slice) va flip hisobga olinmaydi (asl + aks nusxa). Eski **Mirror** modifikatori hali qo’llanmaydi (faqat Capsule/Sphere kabi 6 ta mayda obyektda).
+- **TCB kontrollerlari o’qiladi** (`TCB Position` `0x2503`, `TCB Rotation` `0x2504` kvaternion, `TCB Scale` `0x2505`). Avval bunday 437 ta obyekt (g’ildiraklar, `SP` ichidagi `a19…a30` va boshqalar) koordinata boshiga, burilishsiz tushar edi — “joylashuvlar o’zgargan”. Max kvaternioni standartga nisbatan **qo’shma**: g’ildirak o’qi mashinaning ko’ndalang yo’nalishiga faqat shunda to’g’ri keladi (qo’shmasiz — bo’ylama bo’lib qoladi).
+- **Ranglar:** bu fayllarda ParamBlock2 yozuvi `0x100E` ID bilan saqlangan, kod esa faqat `0x0E` ni qidirgani uchun 2063 ta materialning hammasi bir xil kulrang chiqardi. Endi ikkalasi ham qabul qilinadi (70 xil rang o’qiladi). VRayMtl va shaffoflik hali o’qilmaydi.
+- Import xabarida “Symmetry qo’llandi: N ta mesh” ko’rsatiladi; “modifikatorlar hisobga olinmadi” ro’yxatidan Symmetry olib tashlandi (TurboSmooth, Shell, UVW Map, Mirror… hali qo’llanmaydi).
+- Sinov (UZ_AVTO01.max): `Group016` 161 397 → 192 102, `Group031` 137 096 → 167 860 uchburchak; tepadan/oldidan/yondan proyeksiyada oynalar, panjara, faralar va g’ildiraklar ikki tomonda to’liq. Jami ≈9,60 mln uchburchak.
+
 ## v0.0.69 — Bayroqning o’rtasida oq yo’l
 - Bayroqda o’rta **oq yo’l** alohida mesh (`bayroq_oq`) sifatida qo’shildi: rangli (to’q sariq, yashil, ko’k) plastinalarda ham bayroq to’liq — ko’k, qizil, **oq**, yashil. Ikki qizil chiziq saqlanadi.
 
