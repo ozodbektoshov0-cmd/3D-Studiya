@@ -1,4 +1,7 @@
 {
   "buildCommand": "node tools/check.js",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "functions": {
+    "api/ai/chat.js": { "maxDuration": 60 }
+  }
 }
