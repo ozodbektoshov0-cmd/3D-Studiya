@@ -109,7 +109,7 @@ const sec=[
  {k:'snS',t:'rng',l:'Magnit: o’lcham qadami',mn:.01,mx:1,st:.01,v:.1,ap:snapAp},
  {k:'hl',t:'rng',l:'Bekor qilish tarixi',h:'Eng ko’p saqlanadigan amallar soni.',mn:10,mx:500,st:10,v:200}]],
 ['Interfeys va asboblar',[
- {k:'lang',t:'sel',l:'Dastur tili',o:[['uz','O’zbekcha'],['en','English'],['ru','Русский'],['ar','العربية']],v:'uz',ap:v=>window.I18N&&I18N.set(v)},
+ {k:'lang',t:'sel',l:'Dastur tili',o:[['uz','O’zbekcha'],['az','Azərbaycanca'],['tr','Türkçe'],['kk','Қазақша'],['ky','Кыргызча'],['tg','Тоҷикӣ'],['tk','Türkmençe'],['en','English'],['ru','Русский'],['ar','العربية']],v:'uz',ap:v=>window.I18N&&I18N.set(v)},
  {k:'ui',t:'sel',l:'Interfeys o’lchami',o:[[11,'Kichik'],[12,'Oddiy'],[14,'Katta'],[16,'Juda katta']],v:12,ap:v=>document.body.style.fontSize=v+'px'},
  {k:'acc',t:'col',l:'Asosiy rang',v:'#ff9f2e',ap:v=>document.documentElement.style.setProperty('--ac',v),sw:['#ff9f2e','#4772b3','#2e8b57','#8a5cc2','#c0392b']},
  {k:'tLt',t:'chk',l:'Chap asboblar paneli',v:true,ap:v=>vis('#lt',v)},
@@ -215,4 +215,5 @@ $('#snap').addEventListener('click',snapAp);
 $('#bgc').addEventListener('input',e=>{C.bg=e.target.value;C.bgOn=true;save()});
 addEventListener('beforeunload',e=>{if(C.warn&&meshes().length){e.preventDefault();e.returnValue=''}});
 applyAll();detect('scale');detect('hemi');sync();
+window.addEventListener('i18n-change',e=>{const l=e&&e.detail&&e.detail.lang;if(l&&C.lang!==l){C.lang=l;save();sync()}});
 })();

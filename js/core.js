@@ -9,5 +9,5 @@ const ctl=new THREE.OrbitControls(cam,cv);ctl.enableDamping=true;
 const tc=new THREE.TransformControls(cam,cv);S.add(tc);
 tc.addEventListener('dragging-changed',e=>ctl.enabled=!e.value);
 const root=new THREE.Group();S.add(root);let sel=null,wire=false,name='model';
-new ResizeObserver(()=>{const r=vp.getBoundingClientRect();R.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}).observe(vp);
+(()=>{let f=0;const go=()=>{f=0;const r=vp.getBoundingClientRect();if(r.width>0&&r.height>0){R.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}};go();new ResizeObserver(()=>{if(!f)f=requestAnimationFrame(go)}).observe(vp)})();
 (function loop(){requestAnimationFrame(loop);ctl.update();if(window.bh){bh.visible=!!sel;sel&&bh.setFromObject(sel)}R.render(S,cam)})();

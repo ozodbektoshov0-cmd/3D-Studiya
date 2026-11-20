@@ -539,7 +539,23 @@ const A={
 "Kvadrat: to’q sariq, o’ng ustunda hudud, bayroq, UZ": "مربعة: برتقالية، المنطقة والعلم وUZ في العمود الأيمن",
 "Kvadrat: to’q sariq, pastki o’ngda hudud, bayroq, UZ": "مربعة: برتقالية، المنطقة والعلم وUZ أسفل اليمين",
 "Kvadrat: traktor belgisi, pastki o’ngda hudud, bayroq, UZ": "مربعة: رمز جرار والمنطقة والعلم وUZ أسفل اليمين",
-"Kvadrat: to’q sariq, traktor belgisi, hudud, bayroq, UZ": "مربعة: برتقالية برمز جرار والمنطقة والعلم وUZ"
+"Kvadrat: to’q sariq, traktor belgisi, hudud, bayroq, UZ": "مربعة: برتقالية برمز جرار والمنطقة والعلم وUZ",
+"AI": "AI",
+"AI Studiya": "استوديو الذكاء الاصطناعي",
+"Suhbat / Tahlil": "دردشة / تحليل",
+"3D yaratish": "إنشاء 3D",
+"Material va yorug’lik": "الخامة والإضاءة",
+"Sahna rasmini yuborish": "إرفاق لقطة المشهد",
+"Yuborish": "إرسال",
+"Yozing… (masalan: Sport mashina yarat yoki Modelni tahlil qil)": "اكتب طلبك… (مثل: أنشئ سيارة رياضية أو حلّل النموذج)",
+"AI o’ylamoqda…": "يفكر الذكاء الاصطناعي…",
+"3D obyekt qo’shildi": "تمت إضافة كائن ثلاثي الأبعاد",
+"Material qo’llandi": "تم تطبيق الخامة",
+"Yorug’lik yangilandi": "تم تحديث الإضاءة",
+"Sport mashina yarat": "أنشئ سيارة رياضية",
+"Daraxt va uy yasab ber": "اصنع شجرة ومنزلًا",
+"Oltin xrom material": "خامة كروم ذهبي",
+"Modelni tahlil qil": "حلّل النموذج الحالي"
 };
 const LAR={"Edit rejimi uchun avval mesh tanlang": "اختر مجسمًا أولًا للدخول إلى وضع التحرير", "Ortografik": "متعامد", "Perspektiva": "منظوري", "Animatsiya yo’q — Klip menyusidan kalit qo’shib klip yarating": "لا توجد حركة — أضف مفاتيح وأنشئ مقطعًا من قائمة «مقطع»", "Obyektlar ": "الكائنات ", "Uchlar ": "الرؤوس ", "Uchburchak ": "المثلثات ", "Rejim ": "الوضع ", "Edit": "تحرير", "Obyekt": "كائن", "Asbob ": "الأداة ", "Ko’chirish": "نقل", "Aylantirish": "تدوير", "O’lcham": "تحجيم", "Ko’rinish ": "العرض ", "Karkas": "سلكي", "Qattiq": "صلب", "Magnit ": "الالتقاط ", "Yoqiq": "يعمل", "O’chiq": "متوقف", "Bekor ": "تراجع ", "Bo’sh": "فارغ", "Qaytarish ": "إعادة ", "Kadr ": "الإطار ", "Ijro ": "التشغيل ", "Ketmoqda": "قيد التشغيل", "To’xtagan": "متوقف", "Anim ": "الحركة ", " klip": " مقطع", "Yo’q": "لا يوجد", "Tanlangan ": "المحدد ", "Olib tashlash": "إزالة"};
 const F=[

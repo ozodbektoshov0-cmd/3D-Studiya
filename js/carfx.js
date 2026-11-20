@@ -8,7 +8,7 @@
 'use strict';
 const V3=THREE.Vector3,Q4=THREE.Quaternion,$q=s=>document.querySelector(s);
 const lang=()=>document.documentElement.lang||'uz';
-const L=(u,e,r)=>{const g=lang();if(g=='ar')return (window.I18N&&I18N.l(u))||e;return {uz:u,en:e,ru:r}[g]||u};
+const L=(u,e,r)=>{const g=lang();if(g=='uz')return u;if(g=='en')return e;if(g=='ru')return r;return (window.I18N&&I18N.l(u))||e};
 const D2R=Math.PI/180,UP=new V3(0,1,0);
 
 /* ---------- tarjimalar ---------- */

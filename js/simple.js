@@ -4,7 +4,7 @@
 (function(){
 'use strict';
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
-const L=(u,e,r)=>{const g=document.documentElement.lang||'uz';return {uz:u,en:e,ru:r}[g]||u};
+const L=(u,e,r)=>{const g=document.documentElement.lang||'uz';if(g=='uz')return u;if(g=='en')return e;if(g=='ru')return r;return (window.I18N&&I18N.l(u))||e};
 if(window.I18N&&I18N.add)I18N.add(`Boshqa|More|Ещё
 Obyektlar|Objects|Объекты
 Panel|Panel|Панель
@@ -46,6 +46,13 @@ const app=q('#app'),aside=q('aside'),ws=q('#ws'),main=q('main');
 const bp=document.createElement('button');bp.className='hb';bp.id='bpnl';bp.title=L('Panel','Panel','Панель');
 bp.innerHTML=svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>');
 const sp=q('header .sp');hd.append(bp);
+const LANGS=[['uz','UZ · O’zbekcha'],['az','AZ · Azərbaycanca'],['tr','TR · Türkçe'],['kk','KK · Қазақша'],['ky','KY · Кыргызча'],['tg','TG · Тоҷикӣ'],['tk','TK · Türkmençe'],['en','EN · English'],['ru','RU · Русский'],['ar','AR · العربية']];
+const ls=document.createElement('select');ls.id='langsel';ls.className='hb';ls.setAttribute('aria-label','Dastur tili');ls.title='Dastur tili';
+LANGS.forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;ls.append(o)});
+ls.value=document.documentElement.lang||'uz';
+ls.onchange=()=>{if(window.I18N&&I18N.set)I18N.set(ls.value)};
+const bset=q('#bset');bset?hd.insertBefore(ls,bset):hd.append(ls);
+window.addEventListener('i18n-change',e=>{const l=e&&e.detail&&e.detail.lang;if(l&&ls.value!==l)ls.value=l});
 function drawer(o){document.body.classList.toggle('pnl',o);bp.classList.toggle('on',o)}
 bp.onclick=()=>drawer(!document.body.classList.contains('pnl'));
 q('#vp').addEventListener('pointerdown',()=>{if(document.body.classList.contains('pnl'))drawer(false)},true);

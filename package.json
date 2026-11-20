@@ -1,0 +1,17 @@
+{
+  "name": "3d-studiya",
+  "version": "0.0.72",
+  "private": true,
+  "description": "Brauzerda ishlaydigan 3D ko'rish, tahrirlash va konvertatsiya studiyasi",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node tools/check.js",
+    "lint": "node tools/check.js",
+    "test": "node tools/test.js"
+  },
+  "dependencies": {
+    "@google/genai": "^3.6.1",
+    "express": "^5.3.0"
+  }
+}

@@ -428,7 +428,8 @@ Kvadrat: to’q sariq, pastki o’ngda hudud, bayroq, UZ|Square: orange, region,
 Kvadrat: traktor belgisi, pastki o’ngda hudud, bayroq, UZ|Square: tractor symbol, region, flag, UZ at bottom right|Квадрат: знак трактора, регион, флаг, UZ внизу справа
 Kvadrat: to’q sariq, traktor belgisi, hudud, bayroq, UZ|Square: orange, tractor symbol, region, flag, UZ|Квадрат: оранжевый, знак трактора, регион, флаг, UZ
 `;
-const D={en:{},ru:{},ar:{}};const AF=[];const LARM={};const nz=x=>x.replace(/[‘ʻʼ]/g,'’');
+const SUP=['uz','en','ru','ar','az','tr','kk','ky','tg','tk'];
+const D={en:{},ru:{},ar:{},az:{},tr:{},kk:{},ky:{},tg:{},tk:{}};const AF=[];const LARM={};const PF_MAP={};const LARM_MAP={};const nz=x=>x.replace(/[‘ʻʼ']/g,'’');
 raw.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.length==3){const k=a[0].replace(/\\n/g,'\n');D.en[k]=a[1].replace(/\\n/g,'\n');D.ru[k]=a[2].replace(/\\n/g,'\n')}});
 /* o’zgaruvchan sonli matnlar */
 const P=[
@@ -452,9 +453,10 @@ let lang='uz';const O=new WeakMap();
 function trAr(s,opt){const t=s.trim();const k=nz(t);if(!k)return null;const A=D.ar;let r=(opt&&A['@'+k])||A[k];
  if(r!=null)return s.replace(t,()=>r);
  const o=nz(s);let x=o;for(const f of AF)x=x.replace(f[0],f[1]);return x===o?null:x}
-function tr(s,opt){if(lang=='uz')return null;if(lang=='ar')return trAr(s,opt);const k=s.trim();if(!k)return null;let r=(opt&&D[lang]['@'+k])||D[lang][k];
- if(r==null)for(const p of P)if(p[0].test(k)){r=k.replace(p[0],p[lang=='en'?1:2]);break}
- return r==null?null:s.replace(k,()=>r)}
+function tr(s,opt){if(lang=='uz')return null;if(lang=='ar')return trAr(s,opt);const t=s.trim();const k=nz(t);if(!t)return null;const map=D[lang]||{};let r=(opt&&(map['@'+t]||map['@'+k]))||map[t]||map[k];
+ if(r==null&&(lang=='en'||lang=='ru'))for(const p of P)if(p[0].test(k)){r=k.replace(p[0],p[lang=='en'?1:2]);break}
+ if(r==null&&PF_MAP[lang]){const o=nz(s);let x=o;for(const f of PF_MAP[lang])x=x.replace(f[0],f[1]);if(x!==o)return x}
+ return r==null?null:s.replace(t,()=>r)}
 function fix(n){const t=n.nodeValue,e=O.get(n),op=!!n.parentNode&&n.parentNode.tagName=='OPTION';let src=t;
  if(e&&t===e[1])src=e[0];                       /* t — bizning oldingi natijamiz: asl matn saqlangan */
  const r=lang=='uz'?src:(tr(src,op)??src);
@@ -482,7 +484,10 @@ function addRaw(r){r.trim().split('\n').forEach(l=>{const a=l.split('|');if(a.le
 ['prompt','alert','confirm'].forEach(n=>{const o=window[n];if(typeof o!='function')return;window[n]=function(m,...a){if(lang!='uz'&&typeof m=='string'){const t=tr(m);if(t!=null)m=t}return o.call(window,m,...a)}});
 window.I18N={add(r){addRaw(r);if(lang!='uz')walk(document.body)},
  addAr(a,f,l){for(const k in a)D.ar[nz(k)]=a[k];AF.length=0;f.forEach(x=>AF.push(x));for(const k in l)LARM[k]=l[k];if(lang=='ar')walk(document.body)},
- t(s){return tr(s)},l(u){if(lang=='ar'&&LARM[u]!=null)return LARM[u];return tr(u)},
- set(l){if(!['uz','en','ru','ar'].includes(l))l='uz';lang=l;document.documentElement.lang=l;document.documentElement.dir=l=='ar'?'rtl':'ltr';walk(document.body);
- const t=lang=='uz'?null:D[lang][T0];document.title=t||T0}};
+ addLang(code,a,f,l){if(!D[code])D[code]={};for(const k in a)D[code][nz(k)]=a[k];if(f)PF_MAP[code]=f;if(l){const m=LARM_MAP[code]||(LARM_MAP[code]={});for(const k in l)m[k]=l[k]}if(lang==code)walk(document.body)},
+ t(s){return tr(s)},l(u){if(lang=='ar'&&LARM[u]!=null)return LARM[u];const m=LARM_MAP[lang];if(m&&m[u]!=null)return m[u];return tr(u)},
+ langs:SUP,
+ set(l){if(!SUP.includes(l))l='uz';lang=l;document.documentElement.lang=l;document.documentElement.dir=l=='ar'?'rtl':'ltr';walk(document.body);
+ const dm=D[lang]||{};const t=lang=='uz'?null:(dm[T0]||dm[nz(T0)]);document.title=t||T0;
+ try{window.dispatchEvent(new CustomEvent('i18n-change',{detail:{lang:l}}))}catch(e){}}};
 })();

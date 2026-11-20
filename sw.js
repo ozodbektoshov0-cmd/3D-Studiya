@@ -7,7 +7,7 @@ const ASSETS=[
  "js/native.js","js/core.js","js/dff-read.js","js/txd.js","js/dff-write.js","js/yft.js","js/ytd.js","js/wft.js",
  "js/loader.js","js/rpf.js","js/editor.js","js/export.js","js/features.js","js/edit.js","js/formats.js",
  "js/formats2.js","js/tools.js","js/txd-write.js","js/engine.js","js/gtapack.js","js/skp.js","js/maxread.js","js/zstd.js","js/z3d.js","js/group.js","js/gta.js","js/shape-detach.js",
- "js/extra.js","js/img3d.js","js/nomer.js","js/fitpart.js","js/game.js","js/more.js","js/mesh.js","js/studio-plus.js","js/settings.js","js/blender-ui.js","js/blender-data.js","js/blender-add.js","js/blender-obj.js","js/blender-subsurf.js","js/blender-edit.js","js/blender-io.js","js/blender-prefs.js","js/simple.js","js/carfx.js","js/i18n.js","js/i18n-ar.js",
+ "js/extra.js","js/img3d.js","js/nomer.js","js/fitpart.js","js/game.js","js/ai-assistant.js","js/more.js","js/mesh.js","js/studio-plus.js","js/settings.js","js/blender-ui.js","js/blender-data.js","js/blender-add.js","js/blender-obj.js","js/blender-subsurf.js","js/blender-edit.js","js/blender-io.js","js/blender-prefs.js","js/simple.js","js/carfx.js","js/i18n.js","js/i18n-ar.js","js/i18n-extra.js",
  "vendor/three.min.js","vendor/OrbitControls.js","vendor/TransformControls.js","vendor/GLTFLoader.js",
  "vendor/OBJLoader.js","vendor/STLLoader.js","vendor/PLYLoader.js","vendor/GLTFExporter.js",
  "vendor/OBJExporter.js","vendor/STLExporter.js","vendor/PLYExporter.js","vendor/fflate.min.js",

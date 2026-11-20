@@ -122,17 +122,12 @@
             color: var(--text-color);
             border: 1px solid var(--border);
             padding: 8px 14px;
-            border-radius:999px;
+            border-radius: 8px;
             cursor: pointer;
-            font: 700 11px var(--font);
-            letter-spacing: 1px;
+            font: 600 12px var(--font);
             white-space: nowrap;
             flex: none;
-            transition: 0.2s;
-        }
-        .mode-toggle::before {
-            content: ""; width: 9px; height: 9px; border-radius: 50%;
-            background: var(--accent); box-shadow: 0 0 10px var(--accent);
+            transition: background-color 0.16s, border-color 0.16s, color 0.16s;
         }
         .mode-toggle:hover { border-color: var(--border-strong); color: var(--accent); }
 
@@ -162,26 +157,25 @@
         .panel::-webkit-scrollbar-thumb { background: var(--track); border-radius:6px; }
         .card {
             background: var(--card);
-            border: 1px solid var(--border);
-            border-radius:8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 14px;
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
         }
         .card-h { display: flex; align-items: center; gap: 10px; }
         .num {
-            width: 22px; height: 22px; border-radius:7px; flex: none;
+            width: 24px; height: 24px; border-radius: 7px; flex: none;
             display: grid; place-items: center;
             font: 700 11px var(--mono);
+            font-variant-numeric: tabular-nums;
             color: var(--on-accent);
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
         }
-        .panel-title { font: 700 13px var(--font); letter-spacing: 0.2px; margin: 0; color: var(--text-color); }
-        .card-h .hint { margin-left: auto; font: 11px var(--mono); color: var(--muted); }
+        .panel-title { font: 700 13.5px var(--font); letter-spacing: 0.1px; margin: 0; color: var(--text-color); }
+        .card-h .hint { margin-left: auto; font: 11px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 
         /* ---------- DROPZONE ---------- */
         .drop-zone {
@@ -272,13 +266,18 @@
         .opt-row { display: flex; flex-wrap: wrap; gap: 8px; }
         .chk {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 7px 11px; border-radius:8px;
+            padding: 8px 12px; border-radius: 8px;
             background: var(--card-2); border: 1px solid var(--border);
-            font-size: 12px; color: var(--text-color); cursor: pointer; user-select: none;
-            transition: 0.2s;
+            font-size: 12.5px; color: var(--text-color); cursor: pointer; user-select: none;
+            transition: border-color 0.16s, background-color 0.16s;
         }
         .chk:hover { border-color: var(--border-strong); }
-        .chk input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; cursor: pointer; }
+        .chk:has(input:checked) {
+            border-color: var(--border-strong);
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+        }
+        .chk.chk-full { width: 100%; justify-content: flex-start; min-height: 40px; font-weight: 600; }
+        .chk input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; cursor: pointer; flex: none; }
         .toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .mode-grid-3 {
             display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;
@@ -326,9 +325,9 @@
             height: calc(100vh - 104px);
             min-height: 520px;
             background:
-                radial-gradient(ellipse at 50% 38%, #202123 0%, #0e0f11 55%, #07080a 100%);
-            border: 1px solid var(--border);
-            border-radius:8px;
+                radial-gradient(ellipse at 50% 38%, #20232a 0%, #101216 58%, #090a0d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -350,28 +349,27 @@
         }
         .hud-box {
             display: flex; flex-wrap: wrap; gap: 4px 14px;
-            background: rgba(12,13,15,0.66);
-            border: 1px solid rgba(143,149,160,0.2);
-            border-radius:8px;
+            background: rgba(14, 16, 20, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             padding: 8px 12px;
             font: 11px var(--mono);
-            color: #8f95a0;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            font-variant-numeric: tabular-nums;
+            color: #9ba3b0;
         }
         .hud-box b { color: var(--accent); font-weight: 700; }
         .viewport-hint {
             position: absolute; left: 14px; bottom: 12px; z-index: 2;
             pointer-events: none;
-            font: 11px var(--mono); color: #8f95a0;
-            background: rgba(12,13,15,0.55);
-            border: 1px solid rgba(143,149,160,0.14);
-            padding: 6px 10px; border-radius:8px;
+            font: 11px var(--mono); color: #9ba3b0;
+            background: rgba(14, 16, 20, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 6px 10px; border-radius: 8px;
         }
         .status-bar {
             padding: 11px 16px;
             border-top: 1px solid var(--border);
-            background: rgba(7,8,10,0.86);
+            background: rgba(11, 13, 16, 0.96);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -383,10 +381,6 @@
             z-index: 3;
         }
         .status-bar > span:first-child { display: inline-flex; align-items: baseline; gap: 10px; min-width: 0; flex: 1 1 320px; }
-        .status-bar > span:first-child::before {
-            content: ""; width: 8px; height: 8px; border-radius: 50%; flex: none; align-self: center;
-            background: var(--ok); box-shadow: 0 0 10px var(--ok);
-        }
         #status-msg { color: var(--accent); overflow-wrap: anywhere; }
         .ver { font-size: 10.5px; letter-spacing: 0.6px; opacity: 0.8; }
 
@@ -511,6 +505,10 @@
                     <button class="btn" id="modeObjectBtn" type="button"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg>Diska</button>
                 </div>
                 <p class="note">Avto: rasm nomermi yoki diska/obyektmi — o‘zi aniqlaydi. Kerak bo‘lsa qo‘lda tanlang.</p>
+                <label class="chk chk-full" for="wireframeCheck" title="Joriy modelning ichki mesh (setka) tuzilishini ko‘rsatish">
+                    <input type="checkbox" id="wireframeCheck">
+                    <span>Wireframe rejimi (mesh tuzilishi)</span>
+                </label>
                 <button class="btn" id="resetCamBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Kamerani tiklash</button>
             </div>
         </section>
@@ -812,7 +810,18 @@ camera.position.set(0, 12, 130);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(viewport.clientWidth, viewport.clientHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+if (THREE.ACESFilmicToneMapping !== undefined) {
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+}
 viewport.appendChild(renderer.domElement);
+renderer.domElement.addEventListener('webglcontextlost', e => {
+    e.preventDefault();
+    setStatus('⚠ WebGL konteksti vaqtincha to‘xtadi — tiklanmoqda…');
+});
+renderer.domElement.addEventListener('webglcontextrestored', () => {
+    setStatus('✓ WebGL ko‘rinishi tiklandi.');
+});
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -3534,18 +3543,46 @@ document.getElementById('modeAutoBtn').addEventListener('click', () => setModeSe
 document.getElementById('modePlateBtn').addEventListener('click', () => setModeSelection('plate', 'AVTO NOMER'));
 document.getElementById('modeObjectBtn').addEventListener('click', () => setModeSelection('object', 'OBYEKT / DISKA'));
 
+function applyWireframeToObject(obj, enabled) {
+    if (!obj) return;
+    obj.traverse(child => {
+        if (child.isMesh && child.material) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach(mat => {
+                mat.wireframe = enabled;
+                mat.needsUpdate = true;
+            });
+        }
+    });
+}
+
 function updateMaterialsOnScene() {
     const metalness = parseFloat(document.getElementById('metalSlider').value);
     const roughness = parseFloat(document.getElementById('roughSlider').value);
 
     currentModelRoot.traverse(child => {
         if (child.isMesh && child.material) {
-            child.material.metalness = metalness;
-            child.material.roughness = roughness;
-            child.material.wireframe = isWireframe;
-            child.material.needsUpdate = true;
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach(mat => {
+                mat.metalness = metalness;
+                mat.roughness = roughness;
+                mat.wireframe = isWireframe;
+                mat.needsUpdate = true;
+            });
         }
     });
+    if (window.CVCONV && S && S.pivot) {
+        applyWireframeToObject(S.pivot, isWireframe);
+    }
+}
+
+function setWireframeMode(enabled) {
+    isWireframe = !!enabled;
+    const wfCheck = document.getElementById('wireframeCheck');
+    const wfBtn = document.getElementById('wireframeBtn');
+    if (wfCheck) wfCheck.checked = isWireframe;
+    if (wfBtn) wfBtn.classList.toggle('active', isWireframe);
+    updateMaterialsOnScene();
 }
 
 document.getElementById('depthSlider').addEventListener('input', e => {
@@ -3596,10 +3633,15 @@ document.getElementById('roughSlider').addEventListener('input', e => {
     updateMaterialsOnScene();
 });
 
+const wireframeCheckEl = document.getElementById('wireframeCheck');
+if (wireframeCheckEl) {
+    wireframeCheckEl.addEventListener('change', function () {
+        setWireframeMode(this.checked);
+    });
+}
+
 document.getElementById('wireframeBtn').addEventListener('click', function () {
-    isWireframe = !isWireframe;
-    this.classList.toggle('active', isWireframe);
-    updateMaterialsOnScene();
+    setWireframeMode(!isWireframe);
 });
 
 document.getElementById('autoRotateBtn').addEventListener('click', function () {
@@ -5884,7 +5926,8 @@ function gmInitView() {
     const area = new THREE.Group(), house = new THREE.Group(), marker = new THREE.Group(); world.add(area); world.add(house); world.add(marker);
     const v = { renderer, scene, camera, controls, world, area, house, marker, sea, raf: 0, size: [0, 0] };
     const resize = () => { const w = wrap.clientWidth, h = wrap.clientHeight; if (!w || !h || (w === v.size[0] && h === v.size[1])) return; v.size = [w, h]; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
-    if (window.ResizeObserver) new ResizeObserver(resize).observe(wrap); window.addEventListener('resize', resize); v.resize = resize;
+    let rzRaf = 0; const onResize = () => { if (!rzRaf) rzRaf = requestAnimationFrame(() => { rzRaf = 0; resize(); }); };
+    if (window.ResizeObserver) new ResizeObserver(onResize).observe(wrap); window.addEventListener('resize', onResize); v.resize = resize;
     const loop = () => { v.raf = requestAnimationFrame(loop); if (document.hidden || !wrap.getClientRects().length) return; resize(); controls.update(); renderer.render(scene, camera); };
     loop();
     // bosib joy tanlash
@@ -6244,7 +6287,7 @@ function showModel(m) {
     const mats = m.mats.map(mt => {
         let map = null; if (mt.tex && m.tex.has(mt.tex)) { map = texCache.get(mt.tex); if (!map) { map = new THREE.CanvasTexture(m.tex.get(mt.tex).canvas); map.wrapS = map.wrapT = THREE.RepeatWrapping; map.anisotropy = 8; texCache.set(mt.tex, map); } }
         const tr = mt.color[3] < 255 || (map && m.tex.get(mt.tex).alpha);
-        return new THREE.MeshStandardMaterial({ color: map && mt.color[0] === 255 && mt.color[1] === 255 && mt.color[2] === 255 ? 0xffffff : new THREE.Color(mt.color[0] / 255, mt.color[1] / 255, mt.color[2] / 255), map, metalness: 0.08, roughness: clamp(0.82 - mt.spec * 0.5, 0.3, 0.9), transparent: !!tr, opacity: mt.color[3] / 255, alphaTest: map && m.tex.get(mt.tex).alpha ? 0.08 : 0, side: o.dbl ? THREE.DoubleSide : THREE.FrontSide });
+        return new THREE.MeshStandardMaterial({ color: map && mt.color[0] === 255 && mt.color[1] === 255 && mt.color[2] === 255 ? 0xffffff : new THREE.Color(mt.color[0] / 255, mt.color[1] / 255, mt.color[2] / 255), map, metalness: 0.08, roughness: clamp(0.82 - mt.spec * 0.5, 0.3, 0.9), transparent: !!tr, opacity: mt.color[3] / 255, alphaTest: map && m.tex.get(mt.tex).alpha ? 0.08 : 0, wireframe: isWireframe, side: o.dbl ? THREE.DoubleSide : THREE.FrontSide });
     });
     for (const me of m.meshes) {
         const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(me.pos, 3)); if (me.nrm) g.setAttribute('normal', new THREE.BufferAttribute(me.nrm, 3));

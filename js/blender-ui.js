@@ -6,7 +6,7 @@
 'use strict';
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const lang=()=>document.documentElement.lang||'uz';
-const L=(u,e,r)=>{const g=lang();if(g=='ar')return (window.I18N&&I18N.l(u))||e;return {uz:u,en:e,ru:r}[g]||u};
+const L=(u,e,r)=>{const g=lang();if(g=='uz')return u;if(g=='en')return e;if(g=='ru')return r;return (window.I18N&&I18N.l(u))||e};
 
 /* ---------- ikonkalar ---------- */
 const P={
@@ -110,8 +110,9 @@ const VN={front:['Old','Front','Спереди','أمامي'],back:['Orqa','Back
 const vl=q('#vlb');
 function viewLabel(){const d=new THREE.Vector3();cam.getWorldDirection(d);let k='user';
  const T=.9995;if(d.z<-T)k='front';else if(d.z>T)k='back';else if(d.x<-T)k='right';else if(d.x>T)k='left';else if(d.y<-T)k='top';else if(d.y>T)k='bottom';
- const o=q('#ortho').classList.contains('on'),n=VN[k],i={uz:0,en:1,ru:2,ar:3}[lang()]??0;
- const tx=n[i]+' · '+(o?L('Ortografik','Orthographic','Ортографический'):L('Perspektiva','Perspective','Перспектива'));
+ const o=q('#ortho').classList.contains('on'),n=VN[k],g=lang(),i={uz:0,en:1,ru:2,ar:3}[g];
+ const dirTxt=i!=null?n[i]:((window.I18N&&I18N.l(n[0]))||n[1]);
+ const tx=dirTxt+' · '+(o?L('Ortografik','Orthographic','Ортографический'):L('Perspektiva','Perspective','Перспектива'));
  if(vl.textContent!=tx)vl.textContent=tx;
  q('#gzo').classList.toggle('on',o)}
 
@@ -232,4 +233,5 @@ addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)
 let last=0;
 (function loop(t){requestAnimationFrame(loop);drawGz();if(t-last>200){last=t;viewLabel();chipsTick();drawRuler()}else if(app.classList.contains('ws-animation'))drawRuler()})(0);
 chipsTick();viewLabel();
+window.addEventListener('i18n-change',()=>{chipsTick();viewLabel()});
 })();

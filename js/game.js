@@ -386,7 +386,7 @@ function tick(now){
  const fov=(mode==2?72:60)+sp*.18;cam.fov+=(fov-cam.fov)*Math.min(1,dt*3);cam.updateProjectionMatrix();
  /* --- HUD --- */
  s.hudT+=dt;if(s.hudT>.12){s.hudT=0;const e=s.hud.querySelector('#gs');e.textContent=Math.round(sp*3.6);s.hud.querySelector('#gg').textContent=P.v<-.3?'R':'D'+s.gear;s.hud.querySelector('#gr').style.width=Math.round(s.rpm*100)+'%';
-  drawMini(s);if(W.race){const lg={uz:['Aylanish','Eng yaxshi'],en:['Lap','Best'],ru:['Круг','Лучший'],ar:['اللفة','الأفضل']}[document.documentElement.lang]||['Aylanish','Eng yaxshi'];s.hud.querySelector('#glap').textContent=lg[0]+' '+(s.laps+1)+' · '+fmt(t-s.lapT)+(s.best?' · '+lg[1]+' '+fmt(s.best):'')}
+  drawMini(s);if(W.race){const lg={uz:['Aylanish','Eng yaxshi'],az:['Dövrə','Ən yaxşı'],tr:['Tur','En iyi'],kk:['Айналым','Ең үздік'],ky:['Айлампа','Эң мыкты'],tg:['Давр','Беҳтарин'],tk:['Aýlaw','Iň gowy'],en:['Lap','Best'],ru:['Круг','Лучший'],ar:['اللفة','الأفضل']}[document.documentElement.lang]||['Aylanish','Eng yaxshi'];s.hud.querySelector('#glap').textContent=lg[0]+' '+(s.laps+1)+' · '+fmt(t-s.lapT)+(s.best?' · '+lg[1]+' '+fmt(s.best):'')}
   const bl=Math.floor(t*3)%2==0,ci=CAR?CAR.ind:0;s.hud.querySelector('#gil').textContent=(ci==1||ci==3)&&bl?'◀':'';s.hud.querySelector('#gir').textContent=(ci==2||ci==3)&&bl?'▶':''}
  /* --- ovoz --- */
  if(s.audio){const a=s.audio;a.o.frequency.setTargetAtTime(40+s.rpm*120,a.c.currentTime,.05);a.f.frequency.setTargetAtTime(380+sp*18,a.c.currentTime,.1);a.g.gain.setTargetAtTime(s.snd?(k.up?.07:.04):0,a.c.currentTime,.08)}
