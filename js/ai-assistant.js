@@ -232,8 +232,9 @@ const aibtn=document.createElement('button');
 aibtn.id='aibtn';
 aibtn.className='hb';
 aibtn.type='button';
-aibtn.innerHTML='<span class="ai-star">✦</span> <span>AI</span>';
+aibtn.innerHTML='<svg class="ic ai-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg><span class="hbt">AI</span>';
 aibtn.title='AI Studiya';
+aibtn.setAttribute('aria-label','AI Studiya');
 const anchor=q('#gbtn')||q('#bset')||q('header .sp');
 anchor?hd.insertBefore(aibtn,anchor):hd.append(aibtn);
 

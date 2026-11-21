@@ -427,6 +427,40 @@ Kvadrat: to’q sariq, o’ng ustunda hudud, bayroq, UZ|Square: orange, region, 
 Kvadrat: to’q sariq, pastki o’ngda hudud, bayroq, UZ|Square: orange, region, flag, UZ at bottom right|Квадрат: оранжевый, регион, флаг, UZ внизу справа
 Kvadrat: traktor belgisi, pastki o’ngda hudud, bayroq, UZ|Square: tractor symbol, region, flag, UZ at bottom right|Квадрат: знак трактора, регион, флаг, UZ внизу справа
 Kvadrat: to’q sariq, traktor belgisi, hudud, bayroq, UZ|Square: orange, tractor symbol, region, flag, UZ|Квадрат: оранжевый, знак трактора, регион, флаг, UZ
+YFT bilan YTD|YFT with YTD|YFT вместе с YTD
+YFT bilan YTD ham eksport|Also export YTD with YFT|Экспортировать YTD вместе с YFT
+YTD eksport|Export YTD|Экспорт YTD
+Importda HQ yaxshilash|HQ upgrade on import|HQ-улучшение при импорте
+Eksportda HQ yaxshilash|HQ upgrade on export|HQ-улучшение при экспорте
+LOW mashinani HQ (sifatli) qilish…|Upgrade LOW car to HQ…|Улучшить LOW авто в HQ…
+LOW → HQ (sifatli qilish)|LOW → HQ (Upgrade Quality)|LOW → HQ (Улучшение качества)
+Silliqlash darajasi (subdivision)|Smoothing level (subdivision)|Уровень сглаживания (subdivision)
+0 (faqat normallar)|0 (normals only)|0 (только нормали)
+1× (4× poligon — tavsiya)|1× (4× polygons — recommended)|1× (4× полигонов — реком.)
+2× (16× poligon — ultra)|2× (16× polygons — ultra)|2× (16× полигонов — ультра)
+O’tkir qirra burchagi (°)|Crease angle (°)|Угол резких граней (°)
+Avto PBR materiallar (kuzov, oyna, xrom, shina)|Auto PBR materials (body, glass, chrome, tire)|Авто PBR-материалы (кузов, стекло, хром, шина)
+Past sifatli teksturalarni 2× tiniqlashtirish|2× sharpen low-res textures|2× повышение чёткости текстур
+HQ qilish|Upgrade to HQ|Сделать HQ
+GTA V mashina: YFT + YTD (zip)|GTA V car: YFT + YTD (zip)|Авто GTA V: YFT + YTD (zip)
+YTD nomi|YTD name|Имя YTD
+GTA V mashinasi uchun YFT (skelet va bo’laklar) va YTD (DXT1/DXT5 teksturalar) bitta zip’da.|YFT (skeleton & parts) and YTD (DXT1/DXT5 textures) for GTA V vehicle in one zip.|YFT (скелет и детали) и YTD (текстуры DXT1/DXT5) для авто GTA V в одном zip.
+YFT optimizatsiyasi|Optimize YFT mesh|Оптимизация YFT
+YFT mesh optimizatsiyasi|YFT mesh optimization|Оптимизация меша YFT
+Takroriy uchlarni birlashtirib, degenerat uchburchaklarni tozalaydi (fayl hajmini kichraytiradi).|Welds duplicate vertices and combines degenerate triangles to reduce file size.|Объединяет дубликаты вершин и удаляет вырожденные треугольники для уменьшения размера файла.
+Ommaviy|Batch|Пакетно
+Tozalash|Clear|Очистить
+Tayyor|Done|Готово
+Modelni shu yerga tashlang|Drop a 3D model here|Перетащите 3D-модель сюда
+yoki Fayl → Ochish (import) orqali yuklang|or open via File → Open (import)|или откройте через Файл → Открыть (импорт)
+Tekstura qidirish…|Search textures…|Поиск текстур…
+Tekstura qo’shish…|Add texture…|Добавить текстуру…
+Meshga qo’llash|Apply to mesh|Применить к мешу
+Modeldan|From model|Из модели
+Yuklangan|Imported|Загружено
+Faol|In use|Активна
+Mos tekstura topilmadi|No matching textures|Текстуры не найдены
+Hali tekstura yo’q — PNG, JPG, TXD, YTD yoki model yuklang.|No textures yet — import PNG, JPG, TXD, YTD, or a model.|Текстур пока нет — откройте PNG, JPG, TXD, YTD или модель.
 `;
 const SUP=['uz','en','ru','ar','az','tr','kk','ky','tg','tk'];
 const D={en:{},ru:{},ar:{},az:{},tr:{},kk:{},ky:{},tg:{},tk:{}};const AF=[];const LARM={};const PF_MAP={};const LARM_MAP={};const nz=x=>x.replace(/[‘ʻʼ']/g,'’');

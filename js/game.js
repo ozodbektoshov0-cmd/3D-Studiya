@@ -411,7 +411,7 @@ function menu(){
  m.classList.add('on')}
 function init(){
  const hd=$q('header');if(!hd||$q('#gbtn'))return;
- const b=document.createElement('button');b.id='gbtn';b.className='pri';b.textContent='O’yin';b.title='O’yinni boshlash';
+ const b=document.createElement('button');b.id='gbtn';b.className='pri';b.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6.5" width="19" height="11" rx="5"/><path d="M7.5 10v4M5.5 12h4M15.5 11h.01M17.5 13h.01"/></svg><span class="hbt">O’yin</span>';b.title='O’yinni boshlash';b.setAttribute('aria-label','O’yin');
  const sp=hd.querySelector('.sp');sp?hd.insertBefore(b,sp):hd.append(b);
  b.onclick=()=>{if(!meshes().filter(m=>!m.userData.dummy).length){toast(document.documentElement.lang=='uz'?'Avval mashina modelini import qiling (Fayl → Ochish)':(window.I18N&&I18N.t('Avval mashina modelini import qiling (Fayl → Ochish)'))||'Import a car model first');return}menu()};
 }

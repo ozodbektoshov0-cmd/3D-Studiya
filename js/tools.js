@@ -77,7 +77,11 @@ const ENV=(()=>{const s=new THREE.Scene(),g=new THREE.SphereGeometry(50,32,16),P
  return new THREE.PMREMGenerator(R).fromScene(s,.02).texture})();
 const PRE={chrome:m=>{m.metalness=1;m.roughness=.04;m.color.set(0xf2f2f2)},paint:m=>{m.metalness=.6;m.roughness=.22},glass:m=>{m.metalness=.9;m.roughness=.02;m.opacity=.35;m.transparent=true;m.color.set(0xaac4d8)},matte:m=>{m.metalness=0;m.roughness=.9}};
 document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const k=b.dataset.p,L=$('#allm').checked?meshes().filter(o=>!o.userData.dummy):real();if(!L.length)return toast('Mesh tanlang');
- L.forEach(o=>mats(o).forEach(m=>{if(!m.isMeshStandardMaterial)return;PRE[k](m);m.envMap=k=='matte'?null:ENV;m.envMapIntensity=1;m.needsUpdate=true}));sync()});
+ const ms=[];L.forEach(o=>mats(o).forEach(m=>{if(m.isMeshStandardMaterial&&!ms.includes(m))ms.push(m)}));if(!ms.length)return;
+ const snap=()=>ms.map(m=>({m,metalness:m.metalness,roughness:m.roughness,color:m.color.getHex(),opacity:m.opacity,transparent:m.transparent,envMap:m.envMap,envMapIntensity:m.envMapIntensity}));
+ const putM=S=>S.forEach(s=>{s.m.metalness=s.metalness;s.m.roughness=s.roughness;s.m.color.setHex(s.color);s.m.opacity=s.opacity;s.m.transparent=s.transparent;s.m.envMap=s.envMap;s.m.envMapIntensity=s.envMapIntensity;s.m.needsUpdate=true});
+ const a=snap();ms.forEach(m=>{PRE[k](m);m.envMap=k=='matte'?null:ENV;m.envMapIntensity=1;m.needsUpdate=true});const z=snap();
+ hist(()=>{putM(a);sync()},()=>{putM(z);sync()},'Material: '+k);sync()});
 
 /* teksturalar: TXD va PNG/JPG ro’yxati, meshga yopishtirish, PNG saqlash */
 function applyT(t){const L=real();if(!L.length)return toast('Avval mesh tanlang');

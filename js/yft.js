@@ -24,7 +24,8 @@ async function yft(blob,ydr){
  function drw(D,grp){
   const LS=ptr(D+0x50);if(LS<0)return 0;const arr=ptr(LS),cnt=u16(LS+8);if(arr<0||!ok(arr,cnt*8))return 0;
   const SG=ptr(D+0x10),sa=SG>=0?ptr(SG+0x10):-1,sn=SG>=0?u16(SG+0x18):0,n0=n;
-  const dif=sh=>{if(sa<0||sh>=sn)return'';const s=ptr(sa+sh*8);if(s<0)return'';const pp=ptr(s);if(pp<0||v.getUint8(s+0x10)<1||v.getUint8(pp)!=0)return'';const t=ptr(pp+8);return t<0?'':str(ptr(t+0x28))};
+  const dif=sh=>{if(sa<0||sh>=sn)return'';const s=ptr(sa+sh*8);if(s<0)return'';const pp=ptr(s),pc=v.getUint8(s+0x10);if(pp<0||pc<1)return'';let fb='';for(let k=0;k<pc;k++){if(v.getUint8(pp+k*16)!=0)continue;const t=ptr(pp+k*16+8);const nm=t<0?'':str(ptr(t+0x28));if(nm){if(!/(bump|normal|_nrm|_spec|env)/i.test(nm))return nm;if(!fb)fb=nm}}return fb};
+  const colPrm=sh=>{if(sa<0||sh>=sn)return null;const s=ptr(sa+sh*8);if(s<0||u32(s+0x18)!==0x4C4F4353)return null;const pp=ptr(s),pc=v.getUint8(s+0x10);if(pp<0||pc<1)return null;let rgba=null,pbr=null;for(let k=0;k<pc;k++){if(v.getUint8(pp+k*16)!==1)continue;const reg=v.getUint8(pp+k*16+1),dp=ptr(pp+k*16+8);if(!ok(dp,16))continue;if(reg===0)rgba=[f4(dp),f4(dp+4),f4(dp+8),f4(dp+12)];else if(reg===1)pbr=[f4(dp),f4(dp+4)]}return rgba?{rgba,pbr}:null};
   for(let mi=0;mi<cnt;mi++){const m=ptr(arr+mi*8),ga=ptr(m+8),gc=u16(m+0x10),sm=ptr(m+0x20);if(m<0||ga<0)continue;
    for(let j=0;j<gc;j++){try{
     const g=ptr(ga+j*8),vb=ptr(g+0x18),ib=ptr(g+0x38);if(g<0||vb<0||ib<0)continue;
@@ -42,7 +43,8 @@ async function yft(blob,ydr){
     G.setIndex(new THREE.BufferAttribute(I,1));if(!Nn)G.computeVertexNormals();
     const sh=sm>=0?u16(sm+j*2):j,mt=new THREE.MeshStandardMaterial({color:0xd0d3d8,side:2});
     const tn=dif(sh);if(tn){mt.userData.tex=mt.name=tn;if(/glass|tint/i.test(tn)){mt.transparent=true;mt.opacity=.5}}
-    const me=new THREE.Mesh(G,mt);me.name='geom'+(n++)+'_'+(tn||'shader'+sh);grp.add(me)}catch(e){}}}
+    else{const cp=colPrm(sh);if(cp){mt.color.setRGB(cp.rgba[0],cp.rgba[1],cp.rgba[2]);if(cp.rgba[3]<0.99){mt.transparent=true;mt.opacity=cp.rgba[3]}if(cp.pbr){mt.roughness=cp.pbr[0];mt.metalness=cp.pbr[1];if(cp.pbr[1]>0.35&&typeof ENV!=='undefined'){mt.envMap=ENV;mt.envMapIntensity=1}}}}
+    const me=new THREE.Mesh(G,mt);me.name='geom'+(n++)+'_'+(tn||'mat'+sh);grp.add(me)}catch(e){}}}
   return n-n0}
  drw(Dr,out);
  let placed=0;

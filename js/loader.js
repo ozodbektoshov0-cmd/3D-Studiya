@@ -43,10 +43,19 @@ async function load(f){
  else throw Error('“.'+ext+'” formati hozircha qo’llanmaydi (YDD hozircha yo’q)');
  texNames(o);
  o.name=f.name.replace(/\.[^.]+$/,'');name=o.name;root.add(o);o.animations&&o.animations.length&&anim(o);$('#hint').style.display='none';refresh();fit(o);if(/^(yft|ydr|wft|wdr)$/.test(ext))missTex();
+ if($('#hqimp')&&$('#hqimp').checked&&window.HQUpgrade){
+  const imp=[];o.traverse(x=>{if(x.isMesh&&!x.userData.dummy)imp.push(x)});
+  if(imp.length){const r=HQUpgrade.upgradeToHQ(imp,{commit:false,levels:1,creaseDeg:48,materials:true,upscaleTex:true});
+   toast('HQ yaxshilandi: '+Math.round(r.trisBefore).toLocaleString()+' → '+Math.round(r.trisAfter).toLocaleString()+' uchburchak')}
+ }
  if(ext=='z3d')toast('Z3D: '+z3dImp.count+' obyekt, '+z3dImp.tris+' uchburchak'+(z3dImp.info.length?' ('+z3dImp.info.join('; ')+')':''));
  if(ext=='max')toast('MAX: '+Math.round(maxImp.tris)+' uchburchak'+(maxImp.info.length?' ('+maxImp.info.join('; ')+')':''));
 }
-async function loadAll(fs){for(const f of fs){try{await load(f)}catch(e){toast(f.name+': '+(e.message||e))}}}
+async function loadAll(fs){
+ const isTex=f=>/\.(ytd|txd|wtd|png|jpe?g|webp)$/i.test(f.name||'');
+ const ordered=[...fs].sort((a,b)=>(isTex(b)?1:0)-(isTex(a)?1:0));
+ for(const f of ordered){try{await load(f)}catch(e){toast(f.name+': '+(e.message||e))}}
+}
 $('#f').onchange=e=>{loadAll([...e.target.files]);e.target.value=''};
 vp.ondragover=e=>{e.preventDefault();vp.classList.add('drag')};vp.ondragleave=()=>vp.classList.remove('drag');
 vp.ondrop=e=>{e.preventDefault();vp.classList.remove('drag');loadAll([...e.dataTransfer.files])};

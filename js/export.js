@@ -8,20 +8,30 @@ function usdzMats(){const bk=[];
 $('#ex').onclick=()=>{
  if(!meshes().length)return toast('Avval model oching');
  if($('#onlysel')&&$('#onlysel').checked&&!pick().length)return toast('“Faqat tanlanganlar”: avval obyekt tanlang');
- if(/^(gta-car|gta-obj|col|ide|ipl)$/.test($('#fmt').value)&&!window._gp)return gtaAsk($('#fmt').value).then(v=>{if(v){window._gp=v;try{$('#ex').click()}finally{window._gp=null}}});
+ if(/^(gta-car|gta5-car|gta-obj|col|ide|ipl)$/.test($('#fmt').value)&&!window._gp)return gtaAsk($('#fmt').value).then(v=>{if(v){window._gp=v;try{$('#ex').click()}finally{window._gp=null}}});
  const P=window._gp||null;
- if(window.xrayPause)xrayPause();const fmt=$('#fmt').value,r0=root.rotation.x,D=fmt=='dff'||/^gta-/.test(fmt);tc.detach();const dm=meshes().filter(m=>m.userData.dummy&&!D);dm.forEach(m=>m.visible=false);
+ if(window.xrayPause)xrayPause();const fmt=$('#fmt').value,r0=root.rotation.x,D=/^(dff|yft|ydr)$/.test(fmt)||/^gta/.test(fmt);tc.detach();const dm=meshes().filter(m=>m.userData.dummy&&!D);dm.forEach(m=>m.visible=false);
  let hid=[];if($('#onlysel')&&$('#onlysel').checked){const ps=new Set(pick());hid=meshes().filter(m=>m.visible&&!ps.has(m)&&!(m.userData.dummy&&D));hid.forEach(m=>m.visible=false)}
+ let hqRes=null;
+ if(((P&&P.hq)||($('#hqexp')&&$('#hqexp').checked))&&window.HQUpgrade){
+  const hqTargets=meshes().filter(m=>m.visible&&!m.userData.dummy);
+  if(hqTargets.length)hqRes=HQUpgrade.upgradeToHQ(hqTargets,{commit:false,levels:1,creaseDeg:48,materials:true,upscaleTex:true});
+ }
  if(D)try{ensureTexNames()}catch(e){}
  root.rotation.x=$('#zup').checked&&!D&&fmt!='skp'&&fmt!='z3d'&&fmt!='3ds'&&fmt!='col'&&fmt!='ide'&&fmt!='ipl'?Math.PI/2:0;root.updateMatrixWorld(true);
- const done=(d,mime)=>{if(window.xrayResume)xrayResume();hid.forEach(m=>m.visible=true);dm.forEach(m=>m.visible=true);root.rotation.x=r0;root.updateMatrixWorld(true);if(sel)tc.attach(sel);
+ const finish=()=>{if(hqRes)try{hqRes.restore()}catch(e){}if(window.xrayResume)xrayResume();hid.forEach(m=>m.visible=true);dm.forEach(m=>m.visible=true);root.rotation.x=r0;root.updateMatrixWorld(true);if(sel)tc.attach(sel)};
+ const done=(d,mime)=>{const ytxAlso=fmt=='yft'&&$('#ytalso')&&$('#ytalso').checked;
+  const xtraInfo=fmt=='dff'?dffOut.info:fmt=='yft'?(window.yftOut?yftOut.info:null):fmt=='skp'?skpOut.info:fmt=='z3d'?z3dOut.info:null;
   saveBlob(new Blob([d],{type:mime}),(done.fn||name)+'.'+(done.ext||fmt));
-  if(fmt=='dff'&&$('#txalso')&&$('#txalso').checked)setTimeout(async()=>{try{const b=await txdOut();saveBlob(new Blob([b],{type:'application/octet-stream'}),name+'.txd');toast('TXD ham saqlandi (teksturalar)')}catch(e){}},600);const xi=fmt=='dff'?dffOut.info:fmt=='skp'?skpOut.info:fmt=='z3d'?z3dOut.info:null;toast(fmt.toUpperCase()+' tayyor'+(xi&&xi.length?' ('+xi.join(', ')+')':''))};
- const fail=e=>{if(window.xrayResume)xrayResume();hid.forEach(m=>m.visible=true);dm.forEach(m=>m.visible=true);root.rotation.x=r0;toast('Xato: '+(e.message||e))};
+  if(fmt=='dff'&&$('#txalso')&&$('#txalso').checked)setTimeout(async()=>{try{const b=await txdOut();saveBlob(new Blob([b],{type:'application/octet-stream'}),name+'.txd');toast('TXD ham saqlandi (teksturalar)')}catch(e){}},600);
+  if(ytxAlso&&typeof ytdOut==='function'){const hqHold=hqRes;hqRes=null;setTimeout(async()=>{try{const b=await ytdOut();saveBlob(new Blob([b],{type:'application/octet-stream'}),name+'.ytd');toast('YTD ham saqlandi (teksturalar)')}catch(e){}finally{if(hqHold)try{hqHold.restore()}catch(e){}}},600)}
+  finish();toast(fmt.toUpperCase()+' tayyor'+(xtraInfo&&xtraInfo.length?' ('+xtraInfo.join(', ')+')':''))};
+ const fail=e=>{finish();toast('Xato: '+(e.message||e))};
  try{
   if(fmt=='glb'||fmt=='gltf'){const x=new THREE.GLTFExporter(),o={binary:fmt=='glb',animations:window.CLIPS||[]},cb=r=>done(fmt=='glb'?r:JSON.stringify(r),'model/gltf');
    x.parse.length>3?x.parse(root,cb,fail,o):x.parse(root,cb,o)}
   else if(fmt=='dff')done(dffOut(),'application/octet-stream');
+  else if(fmt=='yft'||fmt=='ydr')done(yftOut({ydr:fmt=='ydr'}),'application/octet-stream');
   else if(fmt=='3ds'){toast('3DS tayyorlanmoqda…');engineOut('3ds',root,name).then(b=>done(b,'application/octet-stream'),fail)}
   else if(P){toast('GTA paketi tayyorlanmoqda…');gtaBuild(fmt,P,meshes().filter(m=>m.userData.dummy)).then(r=>{done.fn=r.name;done.ext=r.ext;done(r.blob,'application/octet-stream');if(r.notes.length)setTimeout(()=>toast(r.notes.join(' · ')),1800);else if(r.files)setTimeout(()=>toast('Zip ichida: '+r.files.join(', ')),1800)},fail)}
   else if(fmt=='skp')skpOut().then(b=>done(b,'application/octet-stream'),fail);

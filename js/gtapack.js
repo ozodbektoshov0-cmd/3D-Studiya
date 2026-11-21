@@ -7,8 +7,8 @@
 'use strict';
 const KEY='gtapk1',F=[['name','Model nomi',0],['txd','TXD nomi',0],['id','ID',1],['draw','Ko’rinish masofasi',1],['flags','Flags',1],['x','IPL X',1],['y','IPL Y',1],['z','IPL Z',1],['interior','Interior',1]];
 const gtaName=s=>(String(s||'model').toLowerCase().replace(/[^a-z0-9_]/g,'_').replace(/^_+|_+$/g,'')||'model').slice(0,20);
-const SHOW={'gta-car':['name','txd'],'gta-obj':F.map(f=>f[0]),'col':['name'],'ide':['name','txd','id','draw','flags'],'ipl':['name','id','x','y','z','interior']};
-const OPT=[['3ds','3DS'],['col','COL (to’qnashuv)'],['ide','IDE (obyekt ta’rifi)'],['ipl','IPL (joylashuv)'],['gta-car','GTA mashina: DFF + TXD (zip)'],['gta-obj','GTA obyekt: DFF + TXD + COL + IDE + IPL (zip)']];
+const SHOW={'gta-car':['name','txd'],'gta5-car':['name','txd'],'gta-obj':F.map(f=>f[0]),'col':['name'],'ide':['name','txd','id','draw','flags'],'ipl':['name','id','x','y','z','interior']};
+const OPT=[['3ds','3DS'],['col','COL (to’qnashuv)'],['ide','IDE (obyekt ta’rifi)'],['ipl','IPL (joylashuv)'],['gta-car','GTA mashina: DFF + TXD (zip)'],['gta5-car','GTA V mashina: YFT + YTD (zip)'],['gta-obj','GTA obyekt: DFF + TXD + COL + IDE + IPL (zip)']];
 const sel=document.querySelector('#fmt');
 if(sel)OPT.forEach(([v,t])=>{if(![...sel.options].some(o=>o.value==v)){const o=document.createElement('option');o.value=v;o.textContent=t;sel.append(o)}});
 const load0=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}};
@@ -22,16 +22,23 @@ window.gtaAsk=function(fmt){
   const h=document.createElement('div');h.className='ph';h.innerHTML='<b></b>';h.firstChild.textContent=OPT.find(o=>o[0]==fmt)[1];
   const body=document.createElement('div');body.className='db';const grid=document.createElement('div');grid.className='gpg';
   const inp={};
-  SHOW[fmt].forEach(k=>{const f=F.find(x=>x[0]==k),l=document.createElement('label'),s=document.createElement('span');s.textContent=f[1];
+  SHOW[fmt].forEach(k=>{const f=F.find(x=>x[0]==k),l=document.createElement('label'),s=document.createElement('span');s.textContent=k=='txd'&&fmt=='gta5-car'?'YTD nomi':f[1];
    const i=document.createElement('input');i.type=f[2]?'number':'text';if(f[2])i.step='any';i.value=d[k];inp[k]=i;l.append(s,i);grid.append(l)});
+  let hqChk=null;
+  if(/^(gta-car|gta5-car|gta-obj)$/.test(fmt)){
+   const hqRow=document.createElement('label');hqRow.className='chk';hqRow.style.flexDirection='row';hqRow.style.alignItems='center';hqRow.style.gap='7px';hqRow.style.marginTop='10px';hqRow.style.color='var(--tx)';
+   hqChk=document.createElement('input');hqChk.type='checkbox';const hqe=document.querySelector('#hqexp');hqChk.checked=!!(hqe&&hqe.checked);
+   hqRow.append(hqChk,document.createTextNode('Eksportda HQ yaxshilash'));
+   body.append(grid,hqRow);
+  }else{body.append(grid)}
   const note=document.createElement('p');note.className='gnote';
-  note.textContent={'gta-car':'Mashina uchun DFF va TXD bitta zip’da.','gta-obj':'IDE: ID, model, TXD, masofa, flags · IPL: joylashuv va interior · COL: avtomatik to’qnashuv.','col':'Model uchun COL (to’qnashuv) fayli.','ide':'IDE faylida bitta obyekt ta’rifi yoziladi.','ipl':'IPL faylida obyektning xaritadagi joyi yoziladi.'}[fmt];
+  note.textContent={'gta-car':'Mashina uchun DFF va TXD bitta zip’da.','gta5-car':'GTA V mashinasi uchun YFT (skelet va bo’laklar) va YTD (DXT1/DXT5 teksturalar) bitta zip’da.','gta-obj':'IDE: ID, model, TXD, masofa, flags · IPL: joylashuv va interior · COL: avtomatik to’qnashuv.','col':'Model uchun COL (to’qnashuv) fayli.','ide':'IDE faylida bitta obyekt ta’rifi yoziladi.','ipl':'IPL faylida obyektning xaritadagi joyi yoziladi.'}[fmt];
   const row=document.createElement('div');row.className='row';
   const ok=document.createElement('button');ok.className='pri';ok.textContent='Eksport';const no=document.createElement('button');no.textContent='Bekor';
-  row.append(ok,no);body.append(grid,note,row);dlg.append(h,body);document.body.append(dlg);
+  row.append(ok,no);body.append(note,row);dlg.append(h,body);document.body.append(dlg);
   const done=v=>{if(dlg.open)dlg.close();dlg.remove();res(v)};
   ok.onclick=()=>{const v={};for(const k in inp)v[k]=F.find(x=>x[0]==k)[2]?(+inp[k].value||0):gtaName(inp[k].value);
-   v.name=v.name||nm;v.txd=v.txd||v.name;
+   v.name=v.name||nm;v.txd=v.txd||v.name;v.hq=!!(hqChk&&hqChk.checked);
    try{localStorage.setItem(KEY,JSON.stringify(Object.assign({},v,{txdFor:v.name})))}catch(e){}
    const full=Object.assign({},d,v);done(full)};
   no.onclick=()=>done(null);dlg.addEventListener('cancel',e=>{e.preventDefault();done(null)});dlg.addEventListener('keydown',e=>e.stopPropagation());
@@ -52,6 +59,11 @@ window.gtaBuild=async function(fmt,P,dm){
   try{return await engineOut('col',root,P.name)}finally{dm.forEach((m,i)=>m.visible=v[i])}};
  if(fmt=='col'){const b=await colBytes();return{blob:b,ext:'col',name:P.name,notes}}
  const files={};
+ if(fmt=='gta5-car'){
+  files[P.name+'.yft']=await u8(yftOut());
+  try{const t=await ytdOut();if(t&&(t.byteLength||t.length))files[P.txd+'.ytd']=await u8(t);else notes.push('YTD: tekstura yo’q')}catch(e){notes.push('YTD yaratilmadi: '+(e.message||e))}
+  return{blob:new Blob([fflate.zipSync(files,{level:6})],{type:'application/zip'}),ext:'zip',name:P.name+'_gta5',notes,files:Object.keys(files)};
+ }
  files[P.name+'.dff']=await u8(dffOut());
  try{const t=await txdOut();if(t&&(t.byteLength||t.length))files[P.txd+'.txd']=await u8(t);else notes.push('TXD: tekstura yo’q')}catch(e){notes.push('TXD yaratilmadi: '+(e.message||e))}
  if(fmt=='gta-obj'){
